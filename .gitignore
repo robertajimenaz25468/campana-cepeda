@@ -1,0 +1,33 @@
+# Logs y archivos temporales
+*.log
+temp-*.txt
+temp-*.json
+temp-*.log
+
+# Entornos
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node / build
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# npm artifacts
+package.json
+package-lock.json
+
+co.mp3
+index.original.html

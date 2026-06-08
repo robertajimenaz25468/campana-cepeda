@@ -1,0 +1,10 @@
+# No desplegar en Vercel — solo se necesitan localmente
+*.sql
+*.ps1
+*.py
+README.md
+.gitignore
+.git
+node_modules
+package.json
+package-lock.json
