@@ -883,78 +883,81 @@
             }
             #themeToggle,
             #proclamasToggle {
+                display: none !important;
+            }
+            #controlPill {
                 position: fixed;
+                top: 18px;
                 right: 18px;
                 z-index: 12000;
                 display: inline-flex;
                 align-items: center;
-                justify-content: flex-start;
-                gap: 10px;
-                width: 212px;
-                padding: 11px 16px;
+                gap: 6px;
+                padding: 6px;
                 border-radius: 999px;
                 border: 1px solid var(--border-strong);
                 background: var(--surface-glass);
-                color: var(--text-primary);
                 backdrop-filter: blur(22px);
                 -webkit-backdrop-filter: blur(22px);
                 box-shadow: var(--shadow-panel);
                 transition:
-                    transform 0.2s ease,
                     border-color 0.2s ease,
-                    background 0.2s ease;
+                    box-shadow 0.2s ease;
             }
-            #themeToggle {
-                top: 18px;
-            }
-            #proclamasToggle {
-                top: 86px;
-            }
-            #themeToggle:hover,
-            #proclamasToggle:hover {
-                transform: translateY(-1px);
+            #controlPill:hover {
                 border-color: rgba(243, 210, 108, 0.45);
             }
-            #themeToggle .theme-badge,
-            #proclamasToggle .theme-badge {
-                width: 30px;
-                height: 30px;
-                border-radius: 999px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--gold-gradient);
-                color: #1d1308;
-                box-shadow: 0 8px 18px rgba(197, 155, 39, 0.28);
-                flex-shrink: 0;
-            }
-            #proclamasToggle.is-live {
+            #controlPill.is-live {
                 border-color: rgba(243, 210, 108, 0.52);
                 box-shadow:
                     0 0 0 1px rgba(243, 210, 108, 0.18),
                     0 18px 32px rgba(197, 155, 39, 0.18),
                     var(--shadow-panel);
             }
-            #themeToggle .theme-copy,
-            #proclamasToggle .theme-copy {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                line-height: 1;
+            .ctrl-badge {
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--gold-gradient);
+                color: #1d1308;
+                box-shadow: 0 6px 14px rgba(197, 155, 39, 0.28);
+                flex-shrink: 0;
+                cursor: pointer;
+                border: none;
+                outline: none;
+                font-size: 15px;
+                transition:
+                    transform 0.15s ease,
+                    box-shadow 0.15s ease;
             }
-            #themeToggle .theme-copy strong,
-            #proclamasToggle .theme-copy strong {
-                font-family: "Cinzel", serif;
-                font-size: 10px;
-                letter-spacing: 0.18em;
-                text-transform: uppercase;
-                color: var(--text-primary);
+            .ctrl-badge:hover {
+                transform: scale(1.1);
+                box-shadow: 0 8px 20px rgba(197, 155, 39, 0.45);
             }
-            #themeToggle .theme-copy span,
-            #proclamasToggle .theme-copy span {
-                font-size: 10px;
-                color: var(--text-muted);
-                margin-top: 4px;
+            .ctrl-badge:active {
+                transform: scale(0.9);
+            }
+            .ctrl-badge--live {
+                box-shadow:
+                    0 0 12px rgba(252, 209, 22, 0.55),
+                    0 6px 14px rgba(197, 155, 39, 0.28);
+                animation: badgeLivePulse 1.5s ease-in-out infinite;
+            }
+            @keyframes badgeLivePulse {
+                0%,
+                100% {
+                    box-shadow:
+                        0 0 12px rgba(252, 209, 22, 0.55),
+                        0 6px 14px rgba(197, 155, 39, 0.28);
+                }
+                50% {
+                    box-shadow:
+                        0 0 22px rgba(252, 209, 22, 0.85),
+                        0 6px 14px rgba(197, 155, 39, 0.28);
+                }
             }
             #gateScreen {
                 background: linear-gradient(
@@ -1091,11 +1094,11 @@
                 color: var(--text-faint);
             }
             body
-                > *:not(#ambientProclamasLayer):not(#themeToggle):not(
-                    #proclamasToggle
-                ):not(#gateScreen):not(#toast):not(#cooldownOverlay):not(
-                    #msOverlay
-                ):not(#tagModal) {
+                > *:not(#ambientProclamasLayer):not(#controlPill):not(
+                    #gateScreen
+                ):not(#toast):not(#cooldownOverlay):not(#msOverlay):not(
+                    #tagModal
+                ) {
                 position: relative;
                 z-index: 2;
             }
@@ -1171,11 +1174,9 @@
             }
             html[data-ambient-proclamas="on"]
                 body
-                > *:not(#ambientProclamasLayer):not(#themeToggle):not(
-                    #proclamasToggle
-                ):not(#proclamasSky):not(#proclamasWaves):not(
-                    #proclamasLiveIndicator
-                ) {
+                > *:not(#ambientProclamasLayer):not(#controlPill):not(
+                    #proclamasSky
+                ):not(#proclamasWaves):not(#proclamasLiveIndicator) {
                 opacity: 0 !important;
                 visibility: hidden !important;
                 pointer-events: none !important;
@@ -1591,18 +1592,16 @@
                     padding-top: 18px !important;
                     overflow: visible !important;
                 }
-                #themeToggle,
-                #proclamasToggle {
+                #controlPill {
                     top: 12px;
                     right: 12px;
-                    padding: 10px 14px;
+                    padding: 5px;
+                    gap: 4px;
                 }
-                #proclamasToggle {
-                    top: 82px;
-                }
-                #themeToggle .theme-copy span,
-                #proclamasToggle .theme-copy span {
-                    display: none;
+                .ctrl-badge {
+                    width: 32px;
+                    height: 32px;
+                    font-size: 13px;
                 }
                 #proclamasVolcano,
                 footer {
@@ -1648,32 +1647,25 @@
             <span id="proclamasLiveDot"></span>
             EN VIVO
         </div>
-        <button
-            id="themeToggle"
-            type="button"
-            aria-label="Cambiar entre tema claro y oscuro"
-        >
-            <span class="theme-badge"><i class="fa-solid fa-moon"></i></span>
-            <span class="theme-copy">
-                <strong id="themeToggleTitle">Modo oscuro</strong>
-                <span id="themeToggleHint"
-                    >Contraste nocturno institucional</span
-                >
-            </span>
-        </button>
-        <button
-            id="proclamasToggle"
-            type="button"
-            aria-label="Activar proclamas en tiempo real"
-        >
-            <span class="theme-badge"
-                ><i id="proclamasToggleIcon" class="fa-solid fa-bullhorn"></i
-            ></span>
-            <span class="theme-copy">
-                <strong id="proclamasToggleTitle">Proclamas off</strong>
-                <span id="proclamasToggleHint">Activar tiempo real</span>
-            </span>
-        </button>
+        <div id="controlPill" aria-label="Controles">
+            <button
+                id="ctrlTheme"
+                class="ctrl-badge"
+                type="button"
+                aria-label="Cambiar tema"
+            >
+                <i id="ctrlThemeIcon" class="fa-solid fa-moon"></i>
+            </button>
+            <button
+                id="ctrlProclamas"
+                class="ctrl-badge"
+                type="button"
+                aria-label="Proclamas"
+                aria-pressed="false"
+            >
+                <i id="ctrlProclamasIcon" class="fa-solid fa-bullhorn"></i>
+            </button>
+        </div>
 
         <!-- MANDATORY OBLIGATORY GATE OVERLAY (SCREEN-SIZED BLOCKER) -->
         <div
@@ -6542,28 +6534,22 @@
                 }
 
                 function updateProclamasToggle() {
-                    var btn = document.getElementById("proclamasToggle");
-                    var icon = document.getElementById("proclamasToggleIcon");
-                    var title = document.getElementById("proclamasToggleTitle");
-                    var hint = document.getElementById("proclamasToggleHint");
+                    var pill = document.getElementById("controlPill");
+                    var icon = document.getElementById("ctrlProclamasIcon");
+                    var btn = document.getElementById("ctrlProclamas");
                     var isLive = !!(
                         ambientController &&
                         typeof ambientController.isRunning === "function" &&
                         ambientController.isRunning()
                     );
-                    if (!btn || !icon || !title || !hint) {
+                    if (!pill || !icon || !btn) {
                         return;
                     }
-                    btn.classList.toggle("is-live", isLive);
+                    pill.classList.toggle("is-live", isLive);
+                    btn.classList.toggle("ctrl-badge--live", isLive);
                     icon.className = isLive
                         ? "fa-solid fa-tower-broadcast"
                         : "fa-solid fa-bullhorn";
-                    title.textContent = isLive
-                        ? "Proclamas on"
-                        : "Proclamas off";
-                    hint.textContent = isLive
-                        ? "Solo eventos en vivo"
-                        : "Activar tiempo real";
                     btn.setAttribute("aria-pressed", isLive ? "true" : "false");
                 }
 
@@ -6659,7 +6645,7 @@
                 document.addEventListener("DOMContentLoaded", function () {
                     ensureController();
                     updateProclamasToggle();
-                    var toggle = document.getElementById("proclamasToggle");
+                    var toggle = document.getElementById("ctrlProclamas");
                     if (toggle) {
                         toggle.addEventListener("click", function () {
                             if (
@@ -6688,25 +6674,11 @@
 
                 function updateToggle() {
                     var isLight = getTheme() === "light";
-                    var badgeIcon = document.querySelector(
-                        "#themeToggle .theme-badge i",
-                    );
-                    var title = document.getElementById("themeToggleTitle");
-                    var hint = document.getElementById("themeToggleHint");
-                    if (badgeIcon) {
-                        badgeIcon.className = isLight
+                    var icon = document.getElementById("ctrlThemeIcon");
+                    if (icon) {
+                        icon.className = isLight
                             ? "fa-solid fa-sun"
                             : "fa-solid fa-moon";
-                    }
-                    if (title) {
-                        title.textContent = isLight
-                            ? "Modo claro"
-                            : "Modo oscuro";
-                    }
-                    if (hint) {
-                        hint.textContent = isLight
-                            ? "Lectura marfil de alta claridad"
-                            : "Contraste nocturno institucional";
                     }
                     if (metaTheme) {
                         metaTheme.setAttribute(
@@ -6717,7 +6689,7 @@
                 }
 
                 document.addEventListener("DOMContentLoaded", function () {
-                    var toggle = document.getElementById("themeToggle");
+                    var toggle = document.getElementById("ctrlTheme");
                     updateToggle();
                     if (toggle) {
                         toggle.addEventListener("click", function () {
