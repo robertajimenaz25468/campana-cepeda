@@ -5156,6 +5156,8 @@
                     //     tras la primera interacción del usuario con la bocina ───
                     if (window.GaitanAudio) {
                         GaitanAudio.onSeal();
+                        // Auto-play Gaitan voice on seal
+                        setTimeout(function() { GaitanAudio.play(); }, 500);
                     }
 
                     // ─── FIRST-COMMIT TOAST (solo una vez por sesión) ───
@@ -5175,6 +5177,9 @@
                 // Action: Enter Directly (Welcome Back Screen)
                 $("gateDirectEnterBtn").addEventListener("click", function () {
                     playSubwayRewardChime();
+                    // Pause Gaitan, play Himno
+                    if (window.GaitanAudio && window.GaitanAudio.pause) { window.GaitanAudio.pause(); }
+                    if (window.HimnoAudio) { window.HimnoAudio.play(); }
                     exitGateScreen();
                 });
 
@@ -5204,6 +5209,8 @@
                     setTimeout(function () {
                         gate.style.display = "none";
                     }, 700);
+                    // Play Himno on exit if not already playing
+                    if (window.HimnoAudio && !window.HimnoAudio.isPlaying()) { window.HimnoAudio.play(); }
                     toast("🇨🇴 Bienvenidos al Tablero del Compromiso Soberano");
                 }
 
@@ -5545,6 +5552,128 @@
              - Al firmar el sello (gateSubmit) → auto-unmute a volumen máximo
              - Cumple política autoplay: NO suena hasta primera interacción
              ═══════════════════════════════════════════════════════════════════════ */
+
+                /* ═══════════════════════════════════════════════════════════════════════
+             HIMNO NACIONAL — unstoppable, auto-plays on proclamas screen
+             ═══════════════════════════════════════════════════════════════════════ */
+                window.HimnoAudio = (() => {
+                    const B64_SRC = "himno.b64.js";
+                    const CACHE_KEY = "cp_himno_v1";
+                    const MAX_VOLUME = 0.9;
+
+                    const state = {
+                        audio: null,
+                        isReady: false,
+                        isLoading: false,
+                        shouldLoop: false,
+                        proclamasActive: false,
+                    };
+
+                    function base64ToBlob(b64) {
+                        const bin = atob(b64);
+                        const len = bin.length;
+                        const buf = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) buf[i] = bin.charCodeAt(i);
+                        return new Blob([buf], { type: "audio/mpeg" });
+                    }
+
+                    async function fetchBase64() {
+                        const url = B64_SRC + "?_=" + Date.now();
+                        const ctrl = new AbortController();
+                        const t = setTimeout(() => ctrl.abort(), 12000);
+                        try {
+                            const r = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
+                            if (!r.ok) throw new Error("HTTP " + r.status);
+                            const code = await r.text();
+                            new Function(code)();
+                            var b64 = typeof window.HIMNO_B64 === "string" ? window.HIMNO_B64 : window._HIMNO_XDATA;
+                            if (typeof b64 !== "string" || b64.length < 100) throw new Error("HIMNO_B64 missing");
+                            return b64;
+                        } finally { clearTimeout(t); }
+                    }
+
+                    async function load() {
+                        if (state.isLoading || state.isReady) return;
+                        state.isLoading = true;
+                        try {
+                            const b64 = await fetchBase64();
+                            const blob = base64ToBlob(b64);
+                            const buf = await blob.arrayBuffer();
+                            const u8 = new Uint8Array(buf);
+                            const CHUNK = 0x8000;
+                            let b64Out = "";
+                            for (let i = 0; i < u8.length; i += CHUNK) {
+                                b64Out += String.fromCharCode.apply(null, u8.subarray(i, i + CHUNK));
+                            }
+                            const dataUrl = "data:audio/mpeg;base64," + btoa(b64Out);
+                            try { window.HIMNO_B64 = null; } catch (e) {}
+                            try { window._HIMNO_XDATA = null; } catch (e) {}
+                            state.audio = new Audio();
+                            state.audio.preload = "auto";
+                            state.audio.loop = false;
+                            state.audio.volume = MAX_VOLUME;
+                            state.audio.src = dataUrl;
+                            await new Promise((resolve, reject) => {
+                                let done = false;
+                                const ok = () => { if (!done) { done = true; state.audio.removeEventListener("canplay", ok); state.audio.removeEventListener("error", fail); clearTimeout(to); resolve(); } };
+                                const fail = () => { if (!done) { done = true; clearTimeout(to); reject(new Error("load-fail")); } };
+                                const to = setTimeout(() => fail(), 10000);
+                                state.audio.addEventListener("canplay", ok, { once: true });
+                                state.audio.addEventListener("error", fail, { once: true });
+                                if (state.audio.readyState >= 3) ok();
+                            });
+                            state.audio.addEventListener("ended", onEnded);
+                            state.isReady = true;
+                            state.isLoading = false;
+                        } catch (e) {
+                            state.isLoading = false;
+                            console.warn("[himno] load failed:", e && e.message);
+                        }
+                    }
+
+                    function onEnded() {
+                        if (state.proclamasActive) {
+                            // Loop: restart while proclamas screen is active
+                            if (state.audio && state.isReady) {
+                                state.audio.currentTime = 0;
+                                state.audio.play().catch(() => {});
+                            }
+                        }
+                    }
+
+                    async function play() {
+                        if (!state.isReady) await load();
+                        if (!state.audio || !state.isReady) return;
+                        try {
+                            state.audio.currentTime = 0;
+                            state.audio.volume = MAX_VOLUME;
+                            await state.audio.play();
+                        } catch (e) {
+                            console.warn("[himno] play rejected:", e && e.message);
+                        }
+                    }
+
+                    function notifyProclamasActive(active) {
+                        state.proclamasActive = active;
+                        if (active) {
+                            // If already playing, let it finish naturally (onEnded will restart)
+                            if (!state.audio || state.audio.paused || state.audio.ended) {
+                                play();
+                            }
+                        }
+                        // If deactivating, onEnded won't restart
+                    }
+
+                    function isPlaying() {
+                        return state.audio && !state.audio.paused && !state.audio.ended;
+                    }
+
+                    // Preload on init
+                    setTimeout(() => load(), 2000);
+
+                    return { play, notifyProclamasActive, isPlaying, load };
+                })();
+
                 // Exposed to window so the gateSubmit click handler (defined later) and the
                 // init() flow can call GaitanAudio.bind/preload/onSeal without re-exposing.
                 window.GaitanAudio = (() => {
@@ -6606,6 +6735,8 @@
                     controller.start();
                     ensureRealtimeChannel();
                     updateProclamasToggle();
+                    // Himno plays on proclamas screen
+                    if (window.HimnoAudio) { window.HimnoAudio.notifyProclamasActive(true); }
                 }
 
                 function stopRealtimeProclamas() {
@@ -6614,6 +6745,8 @@
                     }
                     teardownRealtimeChannel();
                     updateProclamasToggle();
+                    // Himno stops looping when leaving proclamas
+                    if (window.HimnoAudio) { window.HimnoAudio.notifyProclamasActive(false); }
                 }
 
                 window.dispatchRealtimeProclama = function (message) {
