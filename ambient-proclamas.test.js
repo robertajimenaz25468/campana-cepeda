@@ -3,7 +3,8 @@ const assert = require('node:assert/strict');
 
 const {
   computeLanes,
-  pickSpawnLane
+  pickSpawnLane,
+  createAmbientProclamasController
 } = require('./ambient-proclamas.js');
 
 test('computeLanes keeps lane centers inside viewport', () => {
@@ -62,7 +63,7 @@ test('pickSpawnLane returns null when all lanes are blocked near spawn edge', ()
   assert.equal(choice, null);
 });
 
-test('pickSpawnLane treats bubble height as part of the blocking gap', () => {
+test('pickSpawnLane unlocks a lane once the previous bubble top clears the lane gap', () => {
   const lanes = computeLanes({
     viewportWidth: 500,
     bubbleWidth: 210,
@@ -73,13 +74,35 @@ test('pickSpawnLane treats bubble height as part of the blocking gap', () => {
   const choice = pickSpawnLane({
     lanes,
     activeItems: [
-      { laneIndex: 0, y: 650, height: 80 },
-      { laneIndex: 1, y: 690, height: 5 }
+      { laneIndex: 0, y: 650 },
+      { laneIndex: 1, y: 709 }
     ],
     spawnY: 820,
     minVerticalGap: 120
   });
 
-  assert.equal(choice.laneIndex, 1);
-  assert.equal(choice.x, lanes[1].x);
+  assert.equal(choice.laneIndex, 0);
+  assert.equal(choice.x, lanes[0].x);
+});
+
+test('controller ignores messages while stopped', () => {
+  global.document = {
+    documentElement: {
+      setAttribute() {},
+      removeAttribute() {}
+    },
+    getElementById() {
+      return {
+        appendChild() {},
+        removeChild() {}
+      };
+    }
+  };
+  global.innerWidth = 1280;
+  global.innerHeight = 720;
+  global.requestAnimationFrame = () => 1;
+  global.cancelAnimationFrame = () => {};
+
+  const controller = createAmbientProclamasController();
+  assert.equal(controller.enqueue('Mensaje nuevo'), false);
 });

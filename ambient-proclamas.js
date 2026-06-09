@@ -9,25 +9,6 @@
 })(
   typeof globalThis !== 'undefined' ? globalThis : this,
   function(root) {
-    const FALLBACK_MESSAGES = [
-      'Cepeda Presidente 2026',
-      'Paz con garantía territorial',
-      'Colombia potencia de la vida',
-      'Soberanía popular para el pueblo',
-      'Justicia social en cada región',
-      'Unidad por Colombia',
-      'Reforma agraria ya',
-      'Pacto histórico por la vida'
-    ];
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
-    }
-
-    function dedupe(items) {
-      return Array.from(new Set(items.filter(Boolean)));
-    }
-
     function normalizeMessage(message) {
       return String(message || '')
         .replace(/\s+/g, ' ')
@@ -36,11 +17,14 @@
         .slice(0, 88);
     }
 
-    function getItemBottom(item) {
-      const hasExplicitHeight = item && typeof item.height === 'number';
-      const height = hasExplicitHeight ? Math.max(0, item.height) : 42;
-      const y = item && typeof item.y === 'number' ? item.y : 0;
-      return y + height;
+    function resolveBubbleWidth(viewportWidth, settings) {
+      if (viewportWidth <= 520) {
+        return Math.max(164, Math.min(settings.mobileBubbleWidth || 188, viewportWidth - 28));
+      }
+      if (viewportWidth <= 960) {
+        return Math.max(188, settings.tabletBubbleWidth || 236);
+      }
+      return Math.max(240, settings.bubbleWidth || 296);
     }
 
     function computeLanes(config) {
@@ -78,18 +62,19 @@
           return item.laneIndex === lane.index;
         });
         const blocked = laneItems.some(function(item) {
-          return getItemBottom(item) > spawnY - minVerticalGap;
+          const itemTop = item && typeof item.y === 'number' ? item.y : 0;
+          return itemTop > spawnY - minVerticalGap;
         });
 
         if (blocked) {
           continue;
         }
 
-        const nearestBottom = laneItems.length
+        const nearestTop = laneItems.length
           ? Math.max.apply(
               null,
               laneItems.map(function(item) {
-                return getItemBottom(item);
+                return item && typeof item.y === 'number' ? item.y : 0;
               })
             )
           : -Infinity;
@@ -98,7 +83,7 @@
           laneIndex: lane.index,
           x: lane.x,
           activeCount: laneItems.length,
-          nearestBottom
+          nearestTop
         });
       }
 
@@ -110,7 +95,7 @@
         if (a.activeCount !== b.activeCount) {
           return a.activeCount - b.activeCount;
         }
-        return a.nearestBottom - b.nearestBottom;
+        return a.nearestTop - b.nearestTop;
       });
 
       return {
@@ -123,26 +108,28 @@
       const settings = Object.assign(
         {
           layerId: 'ambientProclamasLayer',
-          bubbleWidth: 232,
-          bubbleMinWidth: 180,
-          gutter: 24,
+          bubbleWidth: 296,
+          tabletBubbleWidth: 236,
+          mobileBubbleWidth: 188,
+          gutter: 18,
           sidePadding: 18,
-          spawnIntervalMs: 1150,
-          minVerticalGap: 150,
-          maxActiveItems: 8,
-          speedPxPerSecond: 34
+          spawnLeadPx: 66,
+          spawnIntervalMs: 70,
+          minVerticalGap: 52,
+          maxActiveItems: 14,
+          speedPxPerSecond: 56,
+          maxQueueItems: 30
         },
         options || {}
       );
 
       const state = {
         activeItems: [],
-        pool: [],
-        lastSpawnAt: 0,
-        lastFrameAt: 0,
-        frameId: 0,
-        poolRefreshId: 0,
+        queue: [],
         running: false,
+        frameId: 0,
+        lastFrameAt: 0,
+        lastSpawnAt: 0,
         lanes: []
       };
 
@@ -151,7 +138,7 @@
       }
 
       function refreshLanes() {
-        const maxWidth = root.innerWidth <= 640 ? settings.bubbleMinWidth : settings.bubbleWidth;
+        const maxWidth = resolveBubbleWidth(root.innerWidth, settings);
         state.lanes = computeLanes({
           viewportWidth: root.innerWidth,
           bubbleWidth: maxWidth,
@@ -160,71 +147,48 @@
         });
       }
 
-      function extractMessagesFromCards() {
-        const cards = Array.from(root.document.querySelectorAll('#wallCards > *'));
-        return cards
-          .map(function(card) {
-            const lines = card.innerText
-              .split('\n')
-              .map(function(line) {
-                return line.trim();
-              })
-              .filter(Boolean);
-            if (!lines.length) {
-              return '';
-            }
-            const title = lines[0];
-            const quote = lines.find(function(line) {
-              return /["“”]/.test(line) || line.length > 18;
-            });
-            const badge = lines.find(function(line) {
-              return line !== title && line !== quote && line.length < 24;
-            });
-            const composed = badge && quote ? badge + ' · ' + quote : quote || title;
-            return normalizeMessage(composed);
-          })
-          .filter(Boolean);
-      }
-
-      function extractMessagesFromTabs() {
-        return Array.from(root.document.querySelectorAll('#tabMuroBtn, #tabLeaderBtn, #tabTappersBtn'))
-          .map(function(node) {
-            return normalizeMessage(node.textContent);
-          })
-          .filter(Boolean);
-      }
-
-      function refreshPool() {
-        state.pool = dedupe(
-          extractMessagesFromCards()
-            .concat(extractMessagesFromTabs())
-            .concat(FALLBACK_MESSAGES)
-        );
-      }
-
       function createBubble(message, laneChoice) {
         const layer = getLayer();
         if (!layer) {
           return null;
         }
 
+        const bubbleWidth = resolveBubbleWidth(root.innerWidth, settings);
+        const spawnY = root.innerHeight + settings.spawnLeadPx;
         const bubble = root.document.createElement('div');
         bubble.className = 'ambient-proclama';
-        bubble.textContent = normalizeMessage(message);
-        bubble.style.maxWidth = root.innerWidth <= 640 ? '74vw' : '260px';
+        bubble.style.width = bubbleWidth + 'px';
+        bubble.style.maxWidth = bubbleWidth + 'px';
+        bubble.style.minWidth = bubbleWidth + 'px';
         bubble.style.left = laneChoice.x + 'px';
         bubble.style.top = '0px';
         bubble.style.transform = 'translate(-50%, 0px)';
+
+        const spark = root.document.createElement('span');
+        spark.className = 'ambient-proclama__spark';
+
+        const copy = root.document.createElement('span');
+        copy.className = 'ambient-proclama__copy';
+        copy.textContent = normalizeMessage(message);
+
+        bubble.appendChild(spark);
+        bubble.appendChild(copy);
         layer.appendChild(bubble);
 
         const rect = bubble.getBoundingClientRect();
+        const halfWidth = (rect.width || bubbleWidth) / 2;
+        const clampedX = Math.min(
+          root.innerWidth - halfWidth - settings.sidePadding,
+          Math.max(halfWidth + settings.sidePadding, laneChoice.x)
+        );
+        bubble.style.left = clampedX + 'px';
         return {
           node: bubble,
           laneIndex: laneChoice.laneIndex,
-          x: laneChoice.x,
-          y: root.innerHeight + 16,
-          width: rect.width || settings.bubbleWidth,
-          height: rect.height || 42,
+          x: clampedX,
+          y: spawnY,
+          width: rect.width || bubbleWidth,
+          height: rect.height || 52,
           speed: settings.speedPxPerSecond
         };
       }
@@ -235,25 +199,23 @@
         }
       }
 
-      function spawn(now) {
-        if (now - state.lastSpawnAt < settings.spawnIntervalMs) {
+      function trySpawn(now) {
+        if (!state.running || !state.queue.length) {
           return;
         }
         if (state.activeItems.length >= settings.maxActiveItems) {
           return;
         }
-        if (!state.pool.length) {
-          refreshPool();
-        }
-        if (!state.pool.length) {
+        if (now - state.lastSpawnAt < settings.spawnIntervalMs) {
           return;
         }
 
         refreshLanes();
+        const spawnY = root.innerHeight + settings.spawnLeadPx;
         const laneChoice = pickSpawnLane({
           lanes: state.lanes,
           activeItems: state.activeItems,
-          spawnY: root.innerHeight + 16,
+          spawnY,
           minVerticalGap: settings.minVerticalGap
         });
 
@@ -261,8 +223,8 @@
           return;
         }
 
-        const message = state.pool[Math.floor(Math.random() * state.pool.length)];
-        const item = createBubble(message, laneChoice);
+        const nextMessage = state.queue.shift();
+        const item = createBubble(nextMessage, laneChoice);
         if (!item) {
           return;
         }
@@ -276,15 +238,19 @@
           return;
         }
 
-        const delta = state.lastFrameAt ? (now - state.lastFrameAt) / 1000 : 0.016;
+        if (!state.lastFrameAt) {
+          state.lastFrameAt = now;
+        }
+
+        const delta = Math.min(0.05, (now - state.lastFrameAt) / 1000);
         state.lastFrameAt = now;
 
-        spawn(now);
+        trySpawn(now);
 
         state.activeItems = state.activeItems.filter(function(item) {
           item.y -= item.speed * delta;
           if (item.node) {
-            item.node.style.transform = 'translate(-50%, ' + item.y.toFixed(2) + 'px)';
+            item.node.style.transform = 'translate3d(-50%, ' + item.y.toFixed(2) + 'px, 0)';
           }
           const offscreen = item.y < -(item.height + 80);
           if (offscreen) {
@@ -299,70 +265,61 @@
 
       function start() {
         if (!root.document || state.running) {
-          return;
+          return false;
         }
         const layer = getLayer();
         if (!layer) {
-          return;
+          return false;
         }
-        root.document.documentElement.setAttribute('data-ambient-proclamas', 'on');
-        refreshPool();
         refreshLanes();
+        root.document.documentElement.setAttribute('data-ambient-proclamas', 'on');
         state.running = true;
         state.lastFrameAt = 0;
         state.lastSpawnAt = 0;
         state.frameId = root.requestAnimationFrame(tick);
-        state.poolRefreshId = root.setInterval(refreshPool, 5000);
+        return true;
       }
 
       function stop() {
         state.running = false;
+        state.queue = [];
         if (state.frameId) {
           root.cancelAnimationFrame(state.frameId);
           state.frameId = 0;
         }
-        if (state.poolRefreshId) {
-          root.clearInterval(state.poolRefreshId);
-          state.poolRefreshId = 0;
-        }
         state.activeItems.forEach(removeItem);
         state.activeItems = [];
+        if (root.document && root.document.documentElement) {
+          root.document.documentElement.removeAttribute('data-ambient-proclamas');
+        }
+      }
+
+      function enqueue(message) {
+        const normalized = normalizeMessage(message);
+        if (!state.running || !normalized) {
+          return false;
+        }
+        state.queue.push(normalized);
+        if (state.queue.length > settings.maxQueueItems) {
+          state.queue = state.queue.slice(-settings.maxQueueItems);
+        }
+        return true;
+      }
+
+      function isRunning() {
+        return state.running;
       }
 
       return {
         start,
         stop,
-        refreshPool,
+        enqueue,
+        isRunning,
         refreshLanes
       };
     }
 
-    function autoStart() {
-      if (!root || !root.document) {
-        return;
-      }
-      root.document.addEventListener('DOMContentLoaded', function() {
-        if (root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          root.document.documentElement.removeAttribute('data-ambient-proclamas');
-          return;
-        }
-        const controller = createAmbientProclamasController();
-        controller.start();
-        root.addEventListener('resize', controller.refreshLanes);
-        root.document.addEventListener('visibilitychange', function() {
-          if (root.document.hidden) {
-            controller.stop();
-            return;
-          }
-          controller.start();
-        });
-      });
-    }
-
-    autoStart();
-
     return {
-      FALLBACK_MESSAGES,
       computeLanes,
       pickSpawnLane,
       createAmbientProclamasController
