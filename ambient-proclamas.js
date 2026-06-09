@@ -149,7 +149,7 @@
         spawnIntervalMs: 70,
         minVerticalGap: 52,
         maxActiveItems: 14,
-        speedPxPerSecond: 56,
+        speedPxPerSecond: 100,
         maxQueueItems: 30,
       },
       options || {},

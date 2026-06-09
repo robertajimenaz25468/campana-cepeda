@@ -1176,7 +1176,7 @@
                 body
                 > *:not(#ambientProclamasLayer):not(#controlPill):not(
                     #proclamasSky
-                ):not(#proclamasWaves):not(#proclamasLiveIndicator) {
+                ):not(#proclamasWaves) {
                 opacity: 0 !important;
                 visibility: hidden !important;
                 pointer-events: none !important;
@@ -1283,49 +1283,6 @@
                 padding: 3px 10px;
                 white-space: nowrap;
                 pointer-events: none;
-            }
-
-            /* ═══ LIVE INDICATOR ═══ */
-            #proclamasLiveIndicator {
-                position: fixed;
-                top: 24px;
-                left: 50%;
-                transform: translateX(-50%);
-                z-index: 9100;
-                display: none;
-                align-items: center;
-                gap: 8px;
-                font-family: "Cinzel", serif;
-                font-size: 9px;
-                font-weight: 800;
-                letter-spacing: 0.2em;
-                text-transform: uppercase;
-                color: rgba(255, 255, 255, 0.65);
-                pointer-events: none;
-            }
-            html[data-ambient-proclamas="on"] #proclamasLiveIndicator {
-                display: flex;
-            }
-            #proclamasLiveDot {
-                width: 7px;
-                height: 7px;
-                border-radius: 50%;
-                background: #22c55e;
-                box-shadow:
-                    0 0 8px rgba(34, 197, 94, 0.6),
-                    0 0 16px rgba(34, 197, 94, 0.3);
-                animation: liveDotPulse 1.8s ease-in-out infinite;
-            }
-            @keyframes liveDotPulse {
-                0%,
-                100% {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-                50% {
-                    opacity: 0.4;
-                    transform: scale(0.7);
-                }
             }
 
             /* ═══ WAVE RIBBONS — flowing golden abstract lines ═══ */
@@ -1454,13 +1411,55 @@
                 font-weight: 500;
             }
 
-            /* Accent glow variants — bold left border */
-            .proclama-card--accent-gold { border-left: 4px solid rgba(252,209,22,0.7) !important; }
-            .proclama-card--accent-blue { border-left: 4px solid rgba(0,56,147,0.7) !important; }
-            .proclama-card--accent-red  { border-left: 4px solid rgba(206,17,38,0.65) !important; }
-            html[data-theme="light"] .proclama-card--accent-gold { border-left: 4px solid #FCD116 !important; }
-            html[data-theme="light"] .proclama-card--accent-blue { border-left: 4px solid #003893 !important; }
-            html[data-theme="light"] .proclama-card--accent-red  { border-left: 4px solid #CE1126 !important; }
+            /* Accent glow variants */
+            .proclama-card--accent-gold {
+                border-left: 4px solid rgba(252, 209, 22, 0.55);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.35),
+                    0 0 22px rgba(252, 209, 22, 0.1),
+                    0 0 50px rgba(197, 155, 39, 0.04),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            }
+            .proclama-card--accent-blue {
+                border-left: 4px solid rgba(0, 56, 147, 0.55);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.35),
+                    0 0 22px rgba(0, 56, 147, 0.12),
+                    0 0 50px rgba(0, 56, 147, 0.04),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            }
+            .proclama-card--accent-red {
+                border-left: 4px solid rgba(206, 17, 38, 0.5);
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.35),
+                    0 0 22px rgba(206, 17, 38, 0.1),
+                    0 0 50px rgba(206, 17, 38, 0.03),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            }
+            html[data-theme="light"] .proclama-card--accent-gold {
+                border-left: 4px solid #fcd116;
+                box-shadow:
+                    0 8px 28px rgba(0, 20, 60, 0.08),
+                    0 0 0 1px rgba(197, 155, 39, 0.06),
+                    0 0 18px rgba(252, 209, 22, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            }
+            html[data-theme="light"] .proclama-card--accent-blue {
+                border-left: 4px solid #003893;
+                box-shadow:
+                    0 8px 28px rgba(0, 20, 60, 0.08),
+                    0 0 0 1px rgba(197, 155, 39, 0.06),
+                    0 0 18px rgba(0, 56, 147, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            }
+            html[data-theme="light"] .proclama-card--accent-red {
+                border-left: 4px solid #ce1126;
+                box-shadow:
+                    0 8px 28px rgba(0, 20, 60, 0.08),
+                    0 0 0 1px rgba(197, 155, 39, 0.06),
+                    0 0 18px rgba(206, 17, 38, 0.12),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            }
             html[data-theme="light"] .proclama-card--featured {
                 background: #ffffff;
                 border-color: rgba(197, 155, 39, 0.7);
@@ -1510,10 +1509,6 @@
                 .proclamas-wave,
                 .proclama-card {
                     animation: none !important;
-                }
-                #proclamasLiveDot {
-                    animation: none;
-                    opacity: 0.7;
                 }
             }
 
@@ -1650,10 +1645,6 @@
             <div class="proclamas-wave"></div>
             <div class="proclamas-wave"></div>
             <div class="proclamas-wave"></div>
-        </div>
-        <div id="proclamasLiveIndicator" aria-hidden="true">
-            <span id="proclamasLiveDot"></span>
-            EN VIVO
         </div>
         <div id="controlPill" aria-label="Controles">
             <button
@@ -2459,10 +2450,6 @@
                             <span
                                 class="inline-flex h-2 w-2 rounded-full bg-green-500 animate-pulse"
                             ></span>
-                            <span
-                                class="text-[8px] font-sans font-semibold tracking-wider text-green-400 uppercase mr-1"
-                                >En Vivo</span
-                            >
 
                             <!-- Real-time search bar -->
                             <div class="relative">
