@@ -181,7 +181,7 @@
       });
     }
 
-    function createCard(message, laneChoice, isFeatured) {
+    function createCard(message, laneChoice, isFeatured, accentColor) {
       var layer = getLayer();
       if (!layer) {
         return null;
@@ -194,10 +194,11 @@
       );
       var spawnY = root.innerHeight + settings.spawnLeadPx;
 
+      var accentClass = accentColor ? " proclama-card--accent-" + accentColor : "";
       var card = root.document.createElement("div");
       card.className = isFeatured
-        ? "proclama-card proclama-card--featured"
-        : "proclama-card";
+        ? "proclama-card proclama-card--featured" + accentClass
+        : "proclama-card" + accentClass;
       card.style.width = cardWidth + "px";
       card.style.maxWidth = cardWidth + "px";
       card.style.left = laneChoice.x + "px";
@@ -289,6 +290,11 @@
       var nextMessage = state.queue.shift();
       state.spawnCount++;
 
+      var accentColors = ["gold", "blue", "red"];
+      var accentColor = state.featuredSpawned
+        ? accentColors[state.spawnCount % 3]
+        : accentColors[(state.spawnCount + 1) % 3];
+
       // Every ~8th card is the featured "TU PROCLAMA" card, but only once per session
       var isFeatured =
         !state.featuredSpawned &&
@@ -298,7 +304,7 @@
         state.featuredSpawned = true;
       }
 
-      var item = createCard(nextMessage, laneChoice, isFeatured);
+      var item = createCard(nextMessage, laneChoice, isFeatured, accentColor);
       if (!item) {
         return;
       }
