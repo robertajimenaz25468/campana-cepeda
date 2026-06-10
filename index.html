@@ -4019,12 +4019,13 @@
                     function playIfSilent() {
                         var a = getAudio();
                         if (!a) return;
-                        if (!a.paused && !a.ended) return;
                         if (window.GaitanAudio && window.GaitanAudio.isPlaying()) return;
+                        a.load();
                         a.currentTime = 0;
                         a.loop = true;
                         a.volume = 0.9;
-                        a.play().catch(function () {});
+                        var p = a.play();
+                        if (p && p.catch) { p.catch(function () {}); }
                     }
 
                     function stop() {
