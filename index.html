@@ -906,13 +906,7 @@
                             <span class="text-lg">⚡</span> BOOST x50 <span class="text-lg">⚡</span>
                         </button>
 
-                        <!-- Boost x50 button -->
-                        <button
-                            id="boostBtn"
-                            class="w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
-                        >
-                            ⚡ BOOST x50 LISTO
-                        </button>
+
                     </div>
                 </div>
             </section>
@@ -3175,8 +3169,8 @@
                         el.textContent = "⚡ x50 ACTIVO " + left + "s | " + used + "/" + BOOST_MAX_PTS;
                         el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_15px_rgba(52,211,153,0.4)] animate-pulse cursor-default";
                     } else {
-                        el.textContent = "⚡ BOOST x50 LISTO";
-                        el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer";
+                        el.innerHTML = '<span class="text-lg">⚡</span> BOOST x50 <span class="text-lg">⚡</span>';
+                        el.className = "boost-glow w-full md:max-w-md mx-auto bg-gradient-to-r from-amber-500 via-colombia-gold to-amber-400 text-stone-950 font-cinzel font-black text-[11px] p-3 rounded-xl uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(245,158,11,0.5),0_0_60px_rgba(197,155,39,0.25)] hover:shadow-[0_0_45px_rgba(245,158,11,0.7),0_0_80px_rgba(197,155,39,0.4)] hover:scale-[1.03] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2";
                     }
                 }
 
