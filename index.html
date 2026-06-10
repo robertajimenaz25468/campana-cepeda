@@ -3626,14 +3626,7 @@
                         return;
                     }
 
-                    // --- CAPTCHA ---
-                    var ci = document.getElementById("captchaAnswer");
-                    if (!ci || parseInt(ci.value) !== _captchaResult) {
-                        toast("⚠️ Verifica el captcha");
-                        if (ci) ci.value = "";
-                        generateCaptcha();
-                        return;
-                    }
+
 
                     // ─── ANTI-BOT: Validate form fill time ───
                     if (!validateFormTiming()) return;
