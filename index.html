@@ -89,1552 +89,7 @@
             };
         </script>
 
-        <style>
-            body {
-                background: radial-gradient(
-                    circle at 50% -10%,
-                    #000000 0%,
-                    #000000 70%
-                );
-                background-attachment: fixed;
-                -webkit-tap-highlight-color: transparent;
-            }
-
-            .trend-line {
-                stroke-dasharray: 1000;
-                stroke-dashoffset: 1000;
-                animation: drawTrend 2.5s ease-out forwards;
-            }
-            @keyframes drawTrend {
-                to {
-                    stroke-dashoffset: 0;
-                }
-            }
-
-            /* Diplomatic Glassmorphism Core */
-            .diplomatic-panel {
-                background: rgba(0, 0, 0, 0.75);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border: 1px solid rgba(197, 155, 39, 0.12);
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-                transition:
-                    border 0.3s ease,
-                    box-shadow 0.3s ease;
-            }
-
-            .diplomatic-panel:hover {
-                border: 1px solid rgba(197, 155, 39, 0.25);
-                box-shadow: 0 20px 45px rgba(62, 10, 92, 0.25);
-            }
-
-            /* Custom Clean Scrollbars */
-            ::-webkit-scrollbar {
-                width: 4px;
-                height: 4px;
-            }
-            ::-webkit-scrollbar-track {
-                background: rgba(0, 0, 0, 0.3);
-            }
-            ::-webkit-scrollbar-thumb {
-                background: #c59b27;
-                border-radius: 99px;
-            }
-            .tabs-scroll::-webkit-scrollbar {
-                display: none;
-            }
-
-            @keyframes sparkUp {
-                0% {
-                    transform: translateY(0) scale(0.8) rotate(0deg);
-                    opacity: 0;
-                }
-                15% {
-                    opacity: 1;
-                }
-                100% {
-                    transform: translateY(var(--ty)) translateX(var(--tx))
-                        scale(0.25) rotate(var(--rot));
-                    opacity: 0;
-                }
-            }
-
-            .sparkle {
-                position: absolute;
-                pointer-events: none;
-                animation: sparkUp var(--d) cubic-bezier(0.1, 0.8, 0.3, 1)
-                    forwards;
-                will-change: transform, opacity;
-            }
-
-            @keyframes floatCard {
-                0%,
-                100% {
-                    transform: translateY(0);
-                }
-                50% {
-                    transform: translateY(-4px);
-                }
-            }
-            .float-card {
-                animation: floatCard 6s ease-in-out infinite;
-            }
-
-            @keyframes pulseGoldRing {
-                0%,
-                100% {
-                    box-shadow: 0 0 15px rgba(197, 155, 39, 0.1);
-                    border-color: rgba(197, 155, 39, 0.2);
-                }
-                50% {
-                    box-shadow: 0 0 35px rgba(197, 155, 39, 0.4);
-                    border-color: rgba(197, 155, 39, 0.5);
-                }
-            }
-            .pulse-gold {
-                animation: pulseGoldRing 3.5s infinite ease-in-out;
-            }
-
-            .tricolor-ribbon {
-                background: linear-gradient(
-                    to right,
-                    #fcd116 0%,
-                    #fcd116 33.3%,
-                    #003893 33.3%,
-                    #003893 66.6%,
-                    #ce1126 66.6%
-                );
-            }
-
-            /* ═══ VOLCÁN DE PROCLAMAS — sistema de animación 100% nuevo ═══
-     Componentes:
-       1. Cielo oscuro con leve nebulosa tricolor
-       2. Aura inferior pulsante (boca del volcán)
-       3. Estela de luz patriótica (movimiento horizontal)
-       4. 4 carriles (lanes) por donde erupcionan los tags
-       5. Cada tag: emerge, sube, se balancea, estalla en chispas, se desvanece
-       6. Estrellas fijas con parpadeo lento
-  */
-
-            /* 1) Cielo: gradiente vertical oscuro con sutiles tonos cálidos abajo */
-            .proclamas-sky {
-                background:
-                    radial-gradient(
-                        ellipse 80% 60% at 50% 110%,
-                        rgba(197, 155, 39, 0.22) 0%,
-                        transparent 55%
-                    ),
-                    radial-gradient(
-                        ellipse 60% 50% at 20% 0%,
-                        rgba(0, 56, 147, 0.25) 0%,
-                        transparent 50%
-                    ),
-                    radial-gradient(
-                        ellipse 60% 50% at 80% 0%,
-                        rgba(206, 17, 38, 0.18) 0%,
-                        transparent 50%
-                    ),
-                    linear-gradient(
-                        180deg,
-                        #000000 0%,
-                        #0a0a0a 50%,
-                        #000000 100%
-                    );
-            }
-
-            /* 2) Aura de la boca: luz dorada que pulsa suavemente */
-            .proclamas-core {
-                background: radial-gradient(
-                    ellipse 50% 100% at 50% 100%,
-                    rgba(252, 209, 22, 0.55) 0%,
-                    rgba(252, 209, 22, 0.18) 30%,
-                    rgba(197, 155, 39, 0.06) 60%,
-                    transparent 80%
-                );
-                filter: blur(6px);
-                animation: proclaCorePulse 3.6s ease-in-out infinite;
-            }
-            @keyframes proclaCorePulse {
-                0%,
-                100% {
-                    opacity: 0.55;
-                    transform: translateX(-50%) scaleX(1);
-                }
-                50% {
-                    opacity: 0.9;
-                    transform: translateX(-50%) scaleX(1.08);
-                }
-            }
-
-            /* 3) Estela de luz patriótica cruzando el cielo: amarillo→azul→rojo */
-            .proclamas-shoot {
-                background: linear-gradient(
-                    to right,
-                    transparent 0%,
-                    #fcd116 30%,
-                    #003893 60%,
-                    #ce1126 90%,
-                    transparent 100%
-                );
-                box-shadow:
-                    0 0 12px rgba(252, 209, 22, 0.5),
-                    0 0 6px rgba(206, 17, 38, 0.4);
-                filter: blur(0.4px);
-                border-radius: 99px;
-                animation: proclaShoot 7s linear infinite;
-                opacity: 0.85;
-            }
-            @keyframes proclaShoot {
-                0% {
-                    transform: translateX(-120%);
-                    opacity: 0;
-                }
-                8% {
-                    opacity: 0.9;
-                }
-                92% {
-                    opacity: 0.9;
-                }
-                100% {
-                    transform: translateX(calc(100vw + 100%));
-                    opacity: 0;
-                }
-            }
-
-            /* 4) Capa de erupciones: contenedor absoluto, las burbujas se posicionan
-        con `left: %` inline y `transform: translateX(-50%)` se aplica en el
-        keyframe para mantener el centrado. */
-            .proclamas-floating {
-                position: absolute;
-                inset: 0;
-                pointer-events: none;
-            }
-
-            /* 5) El tag mismo: burbuja con borde dorado que erupciona
-        `left: %` se asigna inline; el centrado horizontal se hace dentro
-        del keyframe via translateX(-50%). */
-            .procla-bubble {
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                display: inline-flex;
-                align-items: center;
-                gap: 5px;
-                padding: 4px 11px;
-                border-radius: 999px;
-                background: linear-gradient(
-                    135deg,
-                    rgba(252, 209, 22, 0.95) 0%,
-                    rgba(243, 210, 108, 0.95) 100%
-                );
-                color: #000000;
-                font-family: "Cinzel", serif;
-                font-weight: 900;
-                font-size: 11px;
-                letter-spacing: 0.2em;
-                text-transform: uppercase;
-                white-space: nowrap;
-                box-shadow:
-                    0 0 14px rgba(252, 209, 22, 0.7),
-                    0 0 4px rgba(255, 255, 255, 0.4) inset;
-                border: 1px solid rgba(255, 255, 255, 0.4);
-                will-change: transform, opacity;
-                pointer-events: none;
-            }
-            .procla-bubble .procla-star {
-                color: #ce1126;
-                text-shadow: 0 0 4px rgba(206, 17, 38, 0.6);
-                font-size: 11px;
-            }
-
-            /* Animación principal: ERUPCIÓN del tag (lenta y legible)
-     Fases (con duración total ~8s):
-       0%   → estado inicial oculto abajo
-       6%   → pop rápido de entrada (escala 1.05)
-       12%  → encoge a tamaño normal, listo para subir
-       25%  → terminó de subir, llega al centro
-       70%  → HOLD: permanece en el centro para que se LEA bien
-       88%  → empieza a balancearse / subir más
-       100% → estallido final (escala 0.6, opacidad 0)
-  */
-            @keyframes proclaErupt {
-                0% {
-                    transform: translateX(-50%) translateY(8px) scale(0.4);
-                    opacity: 0;
-                }
-                6% {
-                    transform: translateX(-50%) translateY(0px) scale(1.05);
-                    opacity: 1;
-                }
-                12% {
-                    transform: translateX(-50%) translateY(-6px) scale(1);
-                }
-                25% {
-                    transform: translateX(calc(-50% - 3px)) translateY(-22px)
-                        scale(1);
-                }
-                70% {
-                    transform: translateX(calc(-50% + 3px)) translateY(-22px)
-                        scale(1);
-                    opacity: 1;
-                }
-                88% {
-                    transform: translateX(calc(-50% - 2px)) translateY(-36px)
-                        scale(0.98);
-                }
-                100% {
-                    transform: translateX(-50%) translateY(-52px) scale(0.6);
-                    opacity: 0;
-                }
-            }
-
-            /* 6) Chispa individual que sale disparada al estallar */
-            .procla-spark {
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                border-radius: 50%;
-                will-change: transform, opacity;
-                pointer-events: none;
-            }
-            .procla-spark.gold {
-                background: #fcd116;
-                box-shadow: 0 0 6px #fcd116;
-            }
-            .procla-spark.blue {
-                background: #4d8fff;
-                box-shadow: 0 0 6px #4d8fff;
-            }
-            .procla-spark.red {
-                background: #ff4d6d;
-                box-shadow: 0 0 6px #ff4d6d;
-            }
-            .procla-spark.white {
-                background: #ffffff;
-                box-shadow: 0 0 8px #ffffff;
-            }
-
-            /* 7) Estrellas decorativas que titilan lentamente */
-            .proclamas-star {
-                position: absolute;
-                width: 2px;
-                height: 2px;
-                border-radius: 50%;
-                background: rgba(252, 209, 22, 0.85);
-                box-shadow: 0 0 3px rgba(252, 209, 22, 0.7);
-                animation: proclaTwinkle var(--td, 3s) ease-in-out infinite;
-                animation-delay: var(--td, 0s);
-            }
-            @keyframes proclaTwinkle {
-                0%,
-                100% {
-                    opacity: 0.25;
-                    transform: scale(0.8);
-                }
-                50% {
-                    opacity: 1;
-                    transform: scale(1.2);
-                }
-            }
-
-            /* Estrellas con color azul/rojo para variedad */
-            .proclamas-star.s-blue {
-                background: rgba(77, 143, 255, 0.85);
-                box-shadow: 0 0 3px rgba(77, 143, 255, 0.7);
-            }
-            .proclamas-star.s-red {
-                background: rgba(255, 77, 109, 0.85);
-                box-shadow: 0 0 3px rgba(255, 77, 109, 0.7);
-            }
-
-            /* Respetar preferencia de reducción de movimiento */
-            @media (prefers-reduced-motion: reduce) {
-                .proclamas-core,
-                .proclamas-shoot,
-                .proclamas-star {
-                    animation: none;
-                }
-                .procla-bubble {
-                    animation-duration: 4s !important;
-                }
-            }
-
-            /* Compact Wall Card styling */
-            .muro-card {
-                background: linear-gradient(
-                    135deg,
-                    rgba(27, 8, 38, 0.8) 0%,
-                    rgba(13, 3, 18, 0.95) 100%
-                );
-                border: 1px solid rgba(197, 155, 39, 0.1);
-                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            }
-            .muro-card:hover {
-                transform: translateY(-2px) scale(1.02);
-                border-color: rgba(197, 155, 39, 0.45);
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            }
-
-            /* Entrance animation for newly synced live supports */
-            .muro-card-new {
-                animation: slideInNew 0.5s cubic-bezier(0.16, 1, 0.3, 1)
-                    forwards;
-            }
-            @keyframes slideInNew {
-                from {
-                    opacity: 0;
-                    transform: scale(0.9) translateY(15px);
-                    filter: blur(4px);
-                }
-                to {
-                    opacity: 1;
-                    transform: scale(1) translateY(0);
-                    filter: blur(0);
-                }
-            }
-
-            /* Rotating outer circle animation for the medal */
-            @keyframes rot-text {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-            .rotate-inside {
-                animation: rot-text 32s linear infinite;
-                transform-origin: center;
-            }
-
-            /* ═══════════════════════════════════════════════════════════
-     ANTI-DDOS COOLDOWN OVERLAY STYLES
-     ═══════════════════════════════════════════════════════════ */
-            #cooldownOverlay {
-                position: fixed;
-                inset: 0;
-                z-index: 9500;
-                background: radial-gradient(
-                    circle at 50% 30%,
-                    #000000 0%,
-                    #09010c 60%,
-                    #000 100%
-                );
-                backdrop-filter: blur(8px);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.5s ease;
-            }
-            #cooldownOverlay.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
-            #cooldownOverlay .cd-ring {
-                width: 220px;
-                height: 220px;
-                border-radius: 50%;
-                border: 3px solid rgba(197, 155, 39, 0.15);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                background: radial-gradient(
-                    circle,
-                    rgba(197, 155, 39, 0.04) 0%,
-                    transparent 70%
-                );
-            }
-            #cooldownOverlay .cd-ring svg {
-                position: absolute;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                transform: rotate(-90deg);
-            }
-            #cooldownOverlay .cd-ring circle.cd-progress {
-                fill: none;
-                stroke: #c59b27;
-                stroke-width: 4;
-                stroke-linecap: round;
-                stroke-dasharray: 660;
-                stroke-dashoffset: 0;
-                transition: stroke-dashoffset 1s linear;
-            }
-            #cooldownOverlay .cd-time {
-                font-family: "Cinzel", serif;
-                font-weight: 900;
-                font-size: 2.5rem;
-                color: #f3d26c;
-                text-shadow: 0 0 20px rgba(197, 155, 39, 0.4);
-                z-index: 2;
-            }
-            .cd-shake {
-                animation: cdShake 0.4s ease-in-out;
-            }
-            @keyframes cdShake {
-                0%,
-                100% {
-                    transform: translateX(0);
-                }
-                20% {
-                    transform: translateX(-8px);
-                }
-                40% {
-                    transform: translateX(8px);
-                }
-                60% {
-                    transform: translateX(-4px);
-                }
-                80% {
-                    transform: translateX(4px);
-                }
-            }
-
-            /* Tap button blocked state */
-            .tap-blocked {
-                opacity: 0.5 !important;
-                pointer-events: none !important;
-                filter: grayscale(0.6);
-                transition: all 0.3s ease;
-            }
-
-            /* ═══════════════════════════════════════════════════════════
-     GAITÁN PATRIO SOUND CARD — animación profesional
-     ═══════════════════════════════════════════════════════════ */
-            .gaitan-card {
-                backdrop-filter: blur(14px);
-                -webkit-backdrop-filter: blur(14px);
-                /* halo dorado permanente para que siempre destaque visualmente */
-                box-shadow:
-                    0 4px 24px rgba(197, 155, 39, 0.18),
-                    inset 0 1px 0 rgba(197, 155, 39, 0.1);
-                position: relative;
-                overflow: hidden;
-            }
-            /* shimmer diagonal permanente para que el card se note */
-            .gaitan-card::before {
-                content: "";
-                position: absolute;
-                top: 0;
-                left: -100%;
-                width: 50%;
-                height: 100%;
-                background: linear-gradient(
-                    90deg,
-                    transparent,
-                    rgba(197, 155, 39, 0.08),
-                    transparent
-                );
-                animation: gaitanShimmer 4s ease-in-out infinite;
-                pointer-events: none;
-            }
-            @keyframes gaitanShimmer {
-                0% {
-                    left: -100%;
-                }
-                60% {
-                    left: 200%;
-                }
-                100% {
-                    left: 200%;
-                }
-            }
-            .gaitan-card[data-state="active"] {
-                border-color: rgba(197, 155, 39, 0.65) !important;
-                box-shadow:
-                    0 0 32px rgba(197, 155, 39, 0.4),
-                    inset 0 0 18px rgba(197, 155, 39, 0.08);
-            }
-            .gaitan-card[data-state="loading"] .gaitan-bell {
-                animation: gaitanSpin 1.4s linear infinite;
-            }
-            .gaitan-card[data-state="error"] {
-                border-color: rgba(220, 80, 80, 0.5);
-                box-shadow: 0 0 18px rgba(220, 80, 80, 0.18);
-            }
-            @keyframes gaitanSpin {
-                to {
-                    transform: rotate(360deg);
-                }
-            }
-            .gaitan-wave {
-                display: flex;
-                align-items: flex-end;
-                justify-content: center;
-                gap: 3px;
-                height: 100%;
-            }
-            .gaitan-wave .bar {
-                width: 3.5px;
-                height: 6px;
-                background: linear-gradient(to top, #c59b27, #f3d26c);
-                border-radius: 2px;
-                opacity: 0.25;
-                transform-origin: bottom center;
-                box-shadow: 0 0 4px rgba(197, 155, 39, 0.6);
-                transition: opacity 0.3s ease;
-            }
-            .gaitan-card[data-state="active"] .gaitan-wave .bar {
-                opacity: 1;
-                animation: gaitanBar 0.9s ease-in-out infinite;
-            }
-            .gaitan-card[data-state="active"] .gaitan-wave .bar:nth-child(1) {
-                animation-delay: 0s;
-            }
-            .gaitan-card[data-state="active"] .gaitan-wave .bar:nth-child(2) {
-                animation-delay: 0.15s;
-            }
-            .gaitan-card[data-state="active"] .gaitan-wave .bar:nth-child(3) {
-                animation-delay: 0.3s;
-            }
-            .gaitan-card[data-state="active"] .gaitan-wave .bar:nth-child(4) {
-                animation-delay: 0.15s;
-            }
-            .gaitan-card[data-state="active"] .gaitan-wave .bar:nth-child(5) {
-                animation-delay: 0s;
-            }
-            /* mostrar siempre un "nivel bajo" de las barras en estado muted/listo para que
-     se vea que el card es interactivo (no aparezca vacío) */
-            .gaitan-card[data-state="muted"] .gaitan-wave .bar,
-            .gaitan-card[data-state="ready"] .gaitan-wave .bar {
-                opacity: 0.4;
-                height: 6px;
-            }
-            @keyframes gaitanBar {
-                0%,
-                100% {
-                    transform: scaleY(0.4);
-                    height: 8px;
-                }
-                50% {
-                    transform: scaleY(2.2);
-                    height: 32px;
-                }
-            }
-            .gaitan-bell {
-                box-shadow:
-                    0 0 14px rgba(197, 155, 39, 0.5),
-                    0 0 4px rgba(243, 210, 108, 0.3);
-            }
-            .gaitan-card[data-state="active"] .gaitan-bell {
-                box-shadow:
-                    0 0 32px rgba(197, 155, 39, 0.85),
-                    0 0 8px rgba(243, 210, 108, 0.5);
-            }
-            /* Reduce motion: respect user preference */
-            @media (prefers-reduced-motion: reduce) {
-                .gaitan-card[data-state="active"] .gaitan-wave .bar {
-                    animation: none;
-                    opacity: 0.7;
-                }
-                .gaitan-card::before {
-                    animation: none;
-                }
-            }
-        </style>
-        <style>
-            :root {
-                color-scheme: dark;
-                --colombia-dark-bg: 0, 0, 0;
-                --colombia-gold: 197, 155, 39;
-                --colombia-gold-light: 243, 210, 108;
-                --colombia-blue: 0, 56, 147;
-                --colombia-red: 206, 17, 38;
-                --page-bg: #000000;
-                --page-bg-alt: #0a0a0a;
-                --page-sheen: rgba(243, 210, 108, 0.16);
-                --surface-0: rgba(0, 0, 0, 0.76);
-                --surface-1: rgba(0, 0, 0, 0.88);
-                --surface-2: rgba(0, 0, 0, 0.86);
-                --surface-card: linear-gradient(
-                    145deg,
-                    rgba(0, 0, 0, 0.94),
-                    rgba(0, 0, 0, 0.94)
-                );
-                --surface-card-soft: linear-gradient(
-                    145deg,
-                    rgba(0, 0, 0, 0.9),
-                    rgba(0, 0, 0, 0.9)
-                );
-                --surface-glass: linear-gradient(
-                    145deg,
-                    rgba(0, 0, 0, 0.82),
-                    rgba(0, 0, 0, 0.72)
-                );
-                --border-soft: rgba(243, 210, 108, 0.12);
-                --border-strong: rgba(243, 210, 108, 0.32);
-                --text-primary: #f7f0e4;
-                --text-secondary: #ddd0be;
-                --text-muted: #a99680;
-                --text-faint: #81715f;
-                --shadow-panel: 0 22px 60px rgba(0, 0, 0, 0.4);
-                --gold-gradient: linear-gradient(
-                    135deg,
-                    #f3d26c 0%,
-                    #f0c94b 44%,
-                    #c59b27 100%
-                );
-                --tricolor-gradient: linear-gradient(
-                    90deg,
-                    rgba(252, 209, 22, 1) 0%,
-                    rgba(252, 209, 22, 1) 34%,
-                    rgba(0, 56, 147, 0.96) 34%,
-                    rgba(0, 56, 147, 0.96) 67%,
-                    rgba(206, 17, 38, 0.96) 67%,
-                    rgba(206, 17, 38, 0.96) 100%
-                );
-            }
-            html[data-theme="light"] {
-                color-scheme: light;
-                --page-bg: #ffffff;
-                --page-bg-alt: #f0f2f5;
-                --page-sheen: rgba(252, 209, 22, 0.35);
-                --surface-0: rgba(255, 255, 255, 0.98);
-                --surface-1: rgba(255, 255, 255, 0.98);
-                --surface-2: rgba(248, 249, 252, 0.96);
-                --surface-card: linear-gradient(
-                    145deg,
-                    rgba(255, 255, 255, 1),
-                    #f8f9fc
-                );
-                --surface-card-soft: linear-gradient(
-                    145deg,
-                    rgba(255, 255, 255, 1),
-                    #f4f5f9
-                );
-                --surface-glass: linear-gradient(
-                    145deg,
-                    rgba(255, 255, 255, 0.95),
-                    rgba(248, 249, 252, 0.9)
-                );
-                --border-soft: rgba(197, 155, 39, 0.3);
-                --border-strong: rgba(197, 155, 39, 0.7);
-                --text-primary: #000000;
-                --text-secondary: #1a1a1a;
-                --text-muted: #555555;
-                --text-faint: #8a9aba;
-                --shadow-panel: 0 18px 42px rgba(0, 20, 60, 0.1);
-            }
-            html {
-                min-height: 100%;
-                background:
-                    radial-gradient(
-                        circle at 12% 8%,
-                        rgba(0, 56, 147, 0.24),
-                        transparent 22%
-                    ),
-                    radial-gradient(
-                        circle at 82% 10%,
-                        rgba(206, 17, 38, 0.18),
-                        transparent 20%
-                    ),
-                    radial-gradient(
-                        circle at 50% 0%,
-                        var(--page-sheen),
-                        transparent 30%
-                    ),
-                    linear-gradient(
-                        180deg,
-                        var(--page-bg) 0%,
-                        var(--page-bg-alt) 100%
-                    );
-                background-attachment: fixed;
-            }
-            body {
-                background: transparent !important;
-                color: var(--text-primary);
-                position: relative;
-                min-height: 100%;
-                overflow-x: hidden !important;
-            }
-            body::before,
-            body::after {
-                content: "";
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-            }
-            body::before {
-                z-index: -2;
-                background:
-                    radial-gradient(
-                        circle at 18% 20%,
-                        rgba(252, 209, 22, 0.08),
-                        transparent 18%
-                    ),
-                    radial-gradient(
-                        circle at 84% 12%,
-                        rgba(206, 17, 38, 0.08),
-                        transparent 16%
-                    ),
-                    radial-gradient(
-                        circle at 50% 35%,
-                        rgba(255, 255, 255, 0.05),
-                        transparent 26%
-                    );
-                mix-blend-mode: screen;
-            }
-            body::after {
-                z-index: -1;
-                inset: 14px;
-                border: 1px solid rgba(197, 155, 39, 0.1);
-                border-radius: 32px;
-                opacity: 0.72;
-            }
-            #themeToggle,
-            #proclamasToggle {
-                display: none !important;
-            }
-            #controlPill {
-                position: fixed;
-                top: 18px;
-                right: 18px;
-                z-index: 12000;
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-                padding: 6px;
-                border-radius: 999px;
-                border: 1px solid var(--border-strong);
-                background: var(--surface-glass);
-                backdrop-filter: blur(22px);
-                -webkit-backdrop-filter: blur(22px);
-                box-shadow: var(--shadow-panel);
-                transition:
-                    border-color 0.2s ease,
-                    box-shadow 0.2s ease;
-            }
-            #controlPill:hover {
-                border-color: rgba(243, 210, 108, 0.45);
-            }
-            #controlPill.is-live {
-                border-color: rgba(243, 210, 108, 0.52);
-                box-shadow:
-                    0 0 0 1px rgba(243, 210, 108, 0.18),
-                    0 18px 32px rgba(197, 155, 39, 0.18),
-                    var(--shadow-panel);
-            }
-            .ctrl-badge {
-                width: 36px;
-                height: 36px;
-                border-radius: 999px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--gold-gradient);
-                color: #1d1308;
-                box-shadow: 0 6px 14px rgba(197, 155, 39, 0.28);
-                flex-shrink: 0;
-                cursor: pointer;
-                border: none;
-                outline: none;
-                font-size: 15px;
-                transition:
-                    transform 0.15s ease,
-                    box-shadow 0.15s ease;
-            }
-            .ctrl-badge:hover {
-                transform: scale(1.1);
-                box-shadow: 0 8px 20px rgba(197, 155, 39, 0.45);
-            }
-            .ctrl-badge:active {
-                transform: scale(0.9);
-            }
-            .ctrl-badge--live {
-                box-shadow:
-                    0 0 12px rgba(252, 209, 22, 0.55),
-                    0 6px 14px rgba(197, 155, 39, 0.28);
-                animation: badgeLivePulse 1.5s ease-in-out infinite;
-            }
-            @keyframes badgeLivePulse {
-                0%,
-                100% {
-                    box-shadow:
-                        0 0 12px rgba(252, 209, 22, 0.55),
-                        0 6px 14px rgba(197, 155, 39, 0.28);
-                }
-                50% {
-                    box-shadow:
-                        0 0 22px rgba(252, 209, 22, 0.85),
-                        0 6px 14px rgba(197, 155, 39, 0.28);
-                }
-            }
-            #gateScreen {
-                background: linear-gradient(
-                    180deg,
-                    rgba(0, 0, 0, 0.92) 0%,
-                    rgba(0, 0, 0, 0.84) 60%,
-                    rgba(0, 0, 0, 0.92) 100%
-                ) !important;
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-            }
-            html[data-theme="light"] #gateScreen {
-                background: linear-gradient(
-                    180deg,
-                    rgba(244, 246, 251, 0.97) 0%,
-                    rgba(255, 255, 255, 0.94) 60%,
-                    rgba(240, 243, 250, 0.97) 100%
-                ) !important;
-            }
-            .diplomatic-panel {
-                background: var(--surface-glass) !important;
-                backdrop-filter: blur(24px);
-                -webkit-backdrop-filter: blur(24px);
-                border: 1px solid var(--border-soft) !important;
-                box-shadow: var(--shadow-panel) !important;
-                transition:
-                    transform 0.25s ease,
-                    border 0.25s ease,
-                    box-shadow 0.25s ease,
-                    background 0.25s ease;
-                position: relative;
-            }
-            .diplomatic-panel:hover {
-                border-color: var(--border-strong) !important;
-                box-shadow:
-                    0 24px 64px rgba(62, 10, 92, 0.12),
-                    var(--shadow-panel) !important;
-                transform: translateY(-1px);
-            }
-            .diplomatic-panel::before {
-                content: "";
-                position: absolute;
-                inset: 0;
-                pointer-events: none;
-                background:
-                    linear-gradient(
-                        120deg,
-                        rgba(243, 210, 108, 0.08),
-                        transparent 22%,
-                        transparent 76%,
-                        rgba(0, 56, 147, 0.06)
-                    ),
-                    radial-gradient(
-                        circle at top right,
-                        rgba(255, 255, 255, 0.08),
-                        transparent 24%
-                    );
-                opacity: 0.9;
-            }
-            #proclamasVolcano {
-                margin: 10px 18px 0;
-                border-radius: 24px 24px 0 0;
-                border: 1px solid var(--border-soft);
-                border-bottom: 0;
-                box-shadow: var(--shadow-panel);
-                overflow: hidden;
-                display: none !important;
-            }
-            main {
-                max-width: 1440px !important;
-                width: min(1440px, calc(100% - 36px)) !important;
-                margin-top: 0;
-                padding: 28px 0 34px !important;
-                align-items: start;
-            }
-            #panelMuro,
-            #panelLeader,
-            #panelTappers {
-                background: var(--surface-0);
-                border: 1px solid var(--border-soft);
-                border-radius: 26px;
-                padding: 18px;
-                box-shadow: var(--shadow-panel);
-            }
-            #wallCards > *,
-            #lb > li,
-            #tappersList > li {
-                background: var(--surface-card);
-                border: 1px solid var(--border-soft);
-                border-radius: 20px;
-                box-shadow: 0 14px 34px rgba(7, 4, 12, 0.12);
-                transition:
-                    transform 0.2s ease,
-                    border-color 0.2s ease,
-                    box-shadow 0.2s ease;
-            }
-            #wallCards > *:hover,
-            #lb > li:hover,
-            #tappersList > li:hover {
-                transform: translateY(-2px);
-                border-color: var(--border-strong);
-                box-shadow: 0 20px 36px rgba(12, 6, 18, 0.16);
-            }
-            #tabMuroBtn,
-            #tabLeaderBtn,
-            #tabTappersBtn {
-                position: relative;
-                padding: 13px 18px;
-                border-radius: 999px 999px 0 0;
-                border-bottom-width: 0 !important;
-                background: transparent;
-                color: var(--text-muted);
-            }
-            #tabMuroBtn.text-colombia-gold,
-            #tabLeaderBtn.text-colombia-gold,
-            #tabTappersBtn.text-colombia-gold {
-                color: rgb(var(--colombia-gold));
-                box-shadow: inset 0 -2px 0 rgba(243, 210, 108, 0.38);
-            }
-            #tabMuroBtn:hover,
-            #tabLeaderBtn:hover,
-            #tabTappersBtn:hover {
-                color: rgb(var(--colombia-gold));
-                background: rgba(243, 210, 108, 0.06);
-            }
-            footer {
-                margin: 0 18px 12px;
-                border-radius: 28px 28px 18px 18px;
-            }
-            footer + div {
-                width: min(1440px, calc(100% - 36px));
-                margin: 0 auto 24px;
-                border-top: 1px solid var(--border-soft) !important;
-                color: var(--text-faint);
-            }
-            body
-                > *:not(#ambientProclamasLayer):not(#controlPill):not(
-                    #gateScreen
-                ):not(#toast):not(#cooldownOverlay):not(#msOverlay):not(
-                    #tagModal
-                ) {
-                position: relative;
-                z-index: 2;
-            }
-            #ambientProclamasLayer {
-                position: fixed;
-                inset: 0;
-                overflow: hidden;
-                pointer-events: none;
-                z-index: 1;
-            }
-            #ambientProclamasLayer::before,
-            #ambientProclamasLayer::after {
-                content: "";
-                position: absolute;
-                inset: -14%;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.32s ease;
-            }
-            #ambientProclamasLayer::before {
-                background:
-                    radial-gradient(
-                        circle at 14% 22%,
-                        rgba(0, 88, 214, 0.3),
-                        transparent 24%
-                    ),
-                    radial-gradient(
-                        circle at 78% 18%,
-                        rgba(230, 47, 64, 0.24),
-                        transparent 26%
-                    ),
-                    radial-gradient(
-                        circle at 52% 76%,
-                        rgba(243, 210, 108, 0.22),
-                        transparent 32%
-                    ),
-                    radial-gradient(
-                        circle at 34% 54%,
-                        rgba(139, 45, 255, 0.18),
-                        transparent 26%
-                    );
-                filter: blur(86px);
-                transform: scale(1.06);
-            }
-            #ambientProclamasLayer::after {
-                inset: 0;
-                background:
-                    linear-gradient(
-                        115deg,
-                        transparent 0%,
-                        rgba(243, 210, 108, 0.08) 44%,
-                        transparent 58%
-                    ),
-                    repeating-linear-gradient(
-                        90deg,
-                        rgba(255, 255, 255, 0.03) 0 1px,
-                        transparent 1px 172px
-                    ),
-                    repeating-linear-gradient(
-                        0deg,
-                        rgba(255, 255, 255, 0.02) 0 1px,
-                        transparent 1px 168px
-                    );
-                mask-image: linear-gradient(
-                    180deg,
-                    transparent 0%,
-                    rgba(0, 0, 0, 0.86) 14%,
-                    rgba(0, 0, 0, 0.96) 100%
-                );
-            }
-            html[data-ambient-proclamas="on"] body {
-                overflow: hidden !important;
-            }
-            html[data-ambient-proclamas="on"]
-                body
-                > *:not(#ambientProclamasLayer):not(#controlPill):not(
-                    #proclamasSky
-                ):not(#proclamasWaves) {
-                opacity: 0 !important;
-                visibility: hidden !important;
-                pointer-events: none !important;
-            }
-            html[data-ambient-proclamas="on"] #ambientProclamasLayer {
-                z-index: 9000;
-                background: transparent;
-            }
-            html[data-ambient-proclamas="on"] #ambientProclamasLayer::before,
-            html[data-ambient-proclamas="on"] #ambientProclamasLayer::after {
-                opacity: 1;
-            }
-            html[data-ambient-proclamas="on"] #ambientProclamasLayer::before {
-                animation: proclamaAuraDrift 13s ease-in-out infinite alternate;
-            }
-
-            /* ═══ PROCLAMA CARD — premium glassmorphism waterfall card ═══ */
-            .proclama-card {
-                position: absolute;
-                top: 0;
-                display: flex;
-                align-items: flex-start;
-                gap: 12px;
-                box-sizing: border-box;
-                padding: 14px 16px;
-                border-radius: 14px;
-                border: 1px solid rgba(243, 210, 108, 0.14);
-                background: rgba(15, 20, 40, 0.78);
-                backdrop-filter: blur(18px);
-                -webkit-backdrop-filter: blur(18px);
-                box-shadow:
-                    0 8px 32px rgba(0, 0, 0, 0.35),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-                color: rgba(240, 235, 220, 0.92);
-                will-change: transform;
-            }
-            .proclama-card__logo {
-                flex: 0 0 34px;
-                width: 34px;
-                height: 34px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-top: 2px;
-            }
-            .proclama-card__c-icon {
-                width: 34px;
-                height: 34px;
-                display: block;
-                filter: drop-shadow(0 0 6px rgba(252, 209, 22, 0.35));
-            }
-            .proclama-card__content {
-                flex: 1 1 auto;
-                min-width: 0;
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-            }
-            .proclama-card__city {
-                font-family: "Plus Jakarta Sans", sans-serif;
-                font-size: 13px;
-                font-weight: 600;
-                line-height: 1.2;
-                color: rgba(243, 210, 108, 0.9);
-                letter-spacing: 0.01em;
-                display: block;
-            }
-            .proclama-card__message {
-                font-family: "Plus Jakarta Sans", sans-serif;
-                font-size: 12px;
-                font-weight: 400;
-                line-height: 1.45;
-                color: rgba(235, 228, 210, 0.85);
-                letter-spacing: 0.01em;
-                display: block;
-                word-break: break-word;
-                overflow-wrap: break-word;
-            }
-
-            /* Featured card: TU PROCLAMA */
-            .proclama-card--featured {
-                border-color: rgba(252, 209, 22, 0.35);
-                background: rgba(20, 25, 50, 0.88);
-                box-shadow:
-                    0 0 28px rgba(252, 209, 22, 0.18),
-                    0 0 60px rgba(197, 155, 39, 0.08),
-                    0 8px 32px rgba(0, 0, 0, 0.35),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-            }
-            .proclama-card__badge {
-                position: absolute;
-                top: -22px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-family: "Cinzel", serif;
-                font-size: 8px;
-                font-weight: 800;
-                letter-spacing: 0.16em;
-                text-transform: uppercase;
-                color: #fcd116;
-                background: rgba(10, 14, 28, 0.85);
-                border: 1px solid rgba(252, 209, 22, 0.25);
-                border-radius: 6px;
-                padding: 3px 10px;
-                white-space: nowrap;
-                pointer-events: none;
-            }
-
-            /* ═══ WAVE RIBBONS — flowing golden abstract lines ═══ */
-            #proclamasWaves {
-                position: fixed;
-                inset: 0;
-                z-index: 0;
-                pointer-events: none;
-                overflow: hidden;
-                opacity: 0;
-                transition: opacity 0.6s ease;
-            }
-            html[data-ambient-proclamas="on"] #proclamasWaves {
-                opacity: 1;
-            }
-            .proclamas-wave {
-                position: absolute;
-                left: -10%;
-                width: 140%;
-                height: 2px;
-                border-radius: 50%;
-                background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(252, 209, 22, 0.07) 35%,
-                    rgba(243, 210, 108, 0.04) 50%,
-                    rgba(206, 17, 38, 0.03) 65%,
-                    transparent 100%
-                );
-                animation: waveDrift var(--wd, 20s) ease-in-out infinite;
-                animation-delay: var(--wdel, 0s);
-            }
-            .proclamas-wave:nth-child(1) {
-                top: 12%;
-                --wd: 22s;
-                --wdel: 0s;
-                height: 1.5px;
-            }
-            .proclamas-wave:nth-child(2) {
-                top: 28%;
-                --wd: 26s;
-                --wdel: -5s;
-                height: 1px;
-            }
-            .proclamas-wave:nth-child(3) {
-                top: 48%;
-                --wd: 19s;
-                --wdel: -9s;
-                height: 2px;
-            }
-            .proclamas-wave:nth-child(4) {
-                top: 64%;
-                --wd: 24s;
-                --wdel: -3s;
-                height: 1px;
-            }
-            .proclamas-wave:nth-child(5) {
-                top: 78%;
-                --wd: 21s;
-                --wdel: -7s;
-                height: 1.5px;
-            }
-            @keyframes waveDrift {
-                0% {
-                    transform: translateX(-8%) scaleY(1);
-                }
-                50% {
-                    transform: translateX(4%) scaleY(0.6);
-                }
-                100% {
-                    transform: translateX(-8%) scaleY(1);
-                }
-            }
-
-            /* ═══ PROCLAMAS SKY — deep diplomatic noir background ═══ */
-            #proclamasSky {
-                position: fixed;
-                inset: 0;
-                z-index: 0;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.6s ease;
-                background:
-                    radial-gradient(
-                        ellipse 60% 40% at 30% 20%,
-                        rgba(0, 56, 147, 0.12),
-                        transparent 50%
-                    ),
-                    radial-gradient(
-                        ellipse 50% 35% at 70% 15%,
-                        rgba(206, 17, 38, 0.08),
-                        transparent 50%
-                    ),
-                    radial-gradient(
-                        ellipse 70% 55% at 50% 85%,
-                        rgba(252, 209, 22, 0.06),
-                        transparent 55%
-                    ),
-                    linear-gradient(
-                        175deg,
-                        #080d1a 0%,
-                        #0a0f20 30%,
-                        #0d1225 60%,
-                        #0b0e1c 100%
-                    );
-            }
-            html[data-ambient-proclamas="on"] #proclamasSky {
-                opacity: 1;
-            }
-
-            /* Light theme overrides */
-            html[data-theme="light"] .proclama-card {
-                background: #ffffff;
-                border-color: rgba(197, 155, 39, 0.45);
-                box-shadow:
-                    0 8px 32px rgba(0, 20, 60, 0.12),
-                    0 0 0 1px rgba(197, 155, 39, 0.15),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-            }
-            html[data-theme="light"] .proclama-card__city {
-                color: #000000;
-                font-weight: 700;
-            }
-            html[data-theme="light"] .proclama-card__message {
-                color: #0d1b4a;
-                font-weight: 500;
-            }
-
-            /* Accent glow variants */
-            .proclama-card--accent-gold {
-                border-left: 4px solid rgba(252, 209, 22, 0.55);
-                box-shadow:
-                    0 8px 32px rgba(0, 0, 0, 0.35),
-                    0 0 22px rgba(252, 209, 22, 0.1),
-                    0 0 50px rgba(197, 155, 39, 0.04),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            }
-            .proclama-card--accent-blue {
-                border-left: 4px solid rgba(0, 56, 147, 0.55);
-                box-shadow:
-                    0 8px 32px rgba(0, 0, 0, 0.35),
-                    0 0 22px rgba(0, 56, 147, 0.12),
-                    0 0 50px rgba(0, 56, 147, 0.04),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            }
-            .proclama-card--accent-red {
-                border-left: 4px solid rgba(206, 17, 38, 0.5);
-                box-shadow:
-                    0 8px 32px rgba(0, 0, 0, 0.35),
-                    0 0 22px rgba(206, 17, 38, 0.1),
-                    0 0 50px rgba(206, 17, 38, 0.03),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-            }
-            html[data-theme="light"] .proclama-card--accent-gold {
-                border-left: 4px solid #fcd116;
-                box-shadow:
-                    0 8px 28px rgba(0, 20, 60, 0.08),
-                    0 0 0 1px rgba(197, 155, 39, 0.06),
-                    0 0 18px rgba(252, 209, 22, 0.15),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-            }
-            html[data-theme="light"] .proclama-card--accent-blue {
-                border-left: 4px solid #003893;
-                box-shadow:
-                    0 8px 28px rgba(0, 20, 60, 0.08),
-                    0 0 0 1px rgba(197, 155, 39, 0.06),
-                    0 0 18px rgba(0, 56, 147, 0.15),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-            }
-            html[data-theme="light"] .proclama-card--accent-red {
-                border-left: 4px solid #ce1126;
-                box-shadow:
-                    0 8px 28px rgba(0, 20, 60, 0.08),
-                    0 0 0 1px rgba(197, 155, 39, 0.06),
-                    0 0 18px rgba(206, 17, 38, 0.12),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-            }
-            html[data-theme="light"] .proclama-card--featured {
-                background: #ffffff;
-                border-color: rgba(197, 155, 39, 0.7);
-                box-shadow:
-                    0 0 35px rgba(252, 209, 22, 0.4),
-                    0 0 70px rgba(206, 17, 38, 0.12),
-                    0 8px 28px rgba(0, 20, 60, 0.08);
-            }
-            html[data-theme="light"] #proclamasSky {
-                background:
-                    radial-gradient(
-                        ellipse 60% 40% at 30% 20%,
-                        rgba(0, 56, 147, 0.1),
-                        transparent 50%
-                    ),
-                    radial-gradient(
-                        ellipse 50% 35% at 70% 15%,
-                        rgba(206, 17, 38, 0.12),
-                        transparent 50%
-                    ),
-                    radial-gradient(
-                        ellipse 70% 55% at 50% 85%,
-                        rgba(252, 209, 22, 0.18),
-                        transparent 55%
-                    ),
-                    linear-gradient(
-                        175deg,
-                        #ffffff 0%,
-                        #ffffff 30%,
-                        #f0f2f5 60%,
-                        #e8eaf0 100%
-                    );
-            }
-            html[data-theme="light"] .proclamas-wave {
-                background: linear-gradient(
-                    90deg,
-                    transparent 0%,
-                    rgba(252, 209, 22, 0.15) 35%,
-                    rgba(197, 155, 39, 0.08) 50%,
-                    rgba(0, 56, 147, 0.08) 65%,
-                    transparent 100%
-                );
-            }
-
-            /* Respect reduced motion */
-            @media (prefers-reduced-motion: reduce) {
-                .proclamas-wave,
-                .proclama-card {
-                    animation: none !important;
-                }
-            }
-
-            html[data-theme="light"] .text-white {
-                color: #000000 !important;
-            }
-            html[data-theme="light"] .text-stone-100,
-            html[data-theme="light"] .text-stone-200 {
-                color: #000000 !important;
-            }
-            html[data-theme="light"] .text-stone-300 {
-                color: #1a1a1a !important;
-            }
-            html[data-theme="light"] .text-stone-400 {
-                color: #333333 !important;
-            }
-            html[data-theme="light"] .text-stone-500,
-            html[data-theme="light"] .text-stone-600 {
-                color: #555555 !important;
-            }
-            html[data-theme="light"] .bg-black\/85 {
-                background: rgba(255, 255, 255, 0.98) !important;
-            }
-            html[data-theme="light"] .bg-black\/60 {
-                background: rgba(255, 255, 255, 0.94) !important;
-            }
-            html[data-theme="light"] .bg-black\/50 {
-                background: rgba(255, 255, 255, 0.9) !important;
-            }
-            html[data-theme="light"] .bg-black\/45 {
-                background: rgba(255, 255, 255, 0.86) !important;
-            }
-            html[data-theme="light"] .bg-black\/40 {
-                background: rgba(255, 255, 255, 0.82) !important;
-            }
-            html[data-theme="light"] .bg-black\/25 {
-                background: rgba(255, 255, 255, 0.7) !important;
-            }
-            html[data-theme="light"] .bg-white\/5 {
-                background: rgba(197, 155, 39, 0.08) !important;
-            }
-            html[data-theme="light"] .hover\:bg-white\/10:hover {
-                background: rgba(197, 155, 39, 0.16) !important;
-            }
-            html[data-theme="light"] .border-stone-800\/60,
-            html[data-theme="light"] .border-stone-700\/60 {
-                border-color: rgba(197, 155, 39, 0.22) !important;
-            }
-            html[data-theme="light"] .gaitan-card {
-                background: linear-gradient(
-                    135deg,
-                    #ffffff,
-                    #f0f2f8
-                ) !important;
-                box-shadow:
-                    0 16px 40px rgba(0, 20, 60, 0.15),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            }
-            html[data-theme="light"] .gaitan-card p,
-            html[data-theme="light"] .gaitan-card h4 {
-                color: #000000 !important;
-            }
-            html[data-theme="light"] footer,
-            html[data-theme="light"] #toast,
-            html[data-theme="light"] #cooldownOverlay .text-center,
-            html[data-theme="light"] #msOverlay > div,
-            html[data-theme="light"] #tagModal > div {
-                background: var(--surface-glass) !important;
-                color: #1a1a1a;
-            }
-            @media (max-width: 900px) {
-                body {
-                    overflow-y: auto !important;
-                }
-                body::after {
-                    inset: 8px;
-                    border-radius: 22px;
-                }
-                main {
-                    width: calc(100% - 20px) !important;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 16px;
-                    padding-top: 18px !important;
-                    overflow: visible !important;
-                }
-                #controlPill {
-                    top: 12px;
-                    right: 12px;
-                    padding: 5px;
-                    gap: 4px;
-                }
-                .ctrl-badge {
-                    width: 32px;
-                    height: 32px;
-                    font-size: 13px;
-                }
-                #proclamasVolcano,
-                footer {
-                    margin-left: 10px;
-                    margin-right: 10px;
-                }
-                .proclama-card {
-                    padding: 10px 12px;
-                    gap: 10px;
-                }
-                .proclama-card__city {
-                    font-size: 11px;
-                }
-                .proclama-card__message {
-                    font-size: 11px;
-                }
-                .proclama-card__logo {
-                    flex: 0 0 30px;
-                    width: 30px;
-                    height: 30px;
-                }
-                .proclama-card__c-icon {
-                    width: 30px;
-                    height: 30px;
-                }
-                footer + div {
-                    width: calc(100% - 20px);
-                }
-            }
-        </style>
+        <link rel="stylesheet" href="styles.css?v=20260609a" />
     </head>
     <body class="font-sans text-stone-200 min-h-screen overflow-x-hidden">
         <div id="ambientProclamasLayer" aria-hidden="true"></div>
@@ -1841,6 +296,20 @@
                         <!-- ═══ PATRIO SOUND CARD: Voz de Gaitán (audio protegido) ═══
                Card visible en el gate, justo después del botón de sellar.
                Estructura horizontal: bocina (botón) + ecualizador + texto. -->
+                        <!-- AUDIO: simple HTML5 audio elements -->
+                        <audio
+                            id="himnoAudio"
+                            src="himno.m4a"
+                            preload="auto"
+                            style="display: none"
+                        ></audio>
+                        <audio
+                            id="gaitanAudioEl"
+                            src="gaitan.mp3"
+                            preload="auto"
+                            style="display: none"
+                        ></audio>
+
                         <div
                             id="gaitanCard"
                             class="gaitan-card relative w-full md:max-w-md mx-auto rounded-2xl border-2 border-colombia-goldLight bg-gradient-to-br from-[#1a1a1a] via-[#000000] to-[#222222] p-4 flex flex-col gap-3 select-none transition-all duration-500 shadow-[0_0_24px_rgba(243,210,108,0.45),inset_0_1px_0_rgba(243,210,108,0.2)]"
@@ -2817,14 +1286,6 @@
             </div>
         </div>
 
-        <style>
-            .modal.show,
-            .ms-overlay.show {
-                opacity: 1;
-                pointer-events: auto;
-            }
-        </style>
-
         <!-- MAIN ENGINE SCRIPT -->
         <script>
             (function () {
@@ -3729,53 +2190,9 @@
                     $("trendDelta").textContent = sign + delta.toFixed(1) + "%";
                 }
 
-                /* === MULTISENSORY SOUND FEEDBACK: Subway Point Chime (Reward Ding) === */
-                var audioCtx = null;
+                /* === SOUND FEEDBACK: disabled (audio backend removed) === */
                 function playSubwayRewardChime() {
-                    try {
-                        if (!audioCtx)
-                            audioCtx = new (
-                                window.AudioContext || window.webkitAudioContext
-                            )();
-                        if (audioCtx.state === "suspended") audioCtx.resume();
-
-                        var now = audioCtx.currentTime;
-
-                        // Tone 1: Sweet, bright C5
-                        var osc1 = audioCtx.createOscillator();
-                        var gain1 = audioCtx.createGain();
-                        osc1.type = "sine";
-                        osc1.frequency.setValueAtTime(523.25, now);
-                        gain1.gain.setValueAtTime(0.12, now);
-                        gain1.gain.exponentialRampToValueAtTime(
-                            0.001,
-                            now + 0.12,
-                        );
-                        osc1.connect(gain1);
-                        gain1.connect(audioCtx.destination);
-                        osc1.start(now);
-                        osc1.stop(now + 0.12);
-
-                        // Tone 2: Harmonious perfect 5th with positive rising pitch slide
-                        var osc2 = audioCtx.createOscillator();
-                        var gain2 = audioCtx.createGain();
-                        osc2.type = "sine";
-                        osc2.frequency.setValueAtTime(783.99, now + 0.06); // G5
-                        osc2.frequency.exponentialRampToValueAtTime(
-                            1046.5,
-                            now + 0.15,
-                        ); // Slide to C6
-                        gain2.gain.setValueAtTime(0, now);
-                        gain2.gain.setValueAtTime(0.14, now + 0.06);
-                        gain2.gain.exponentialRampToValueAtTime(
-                            0.001,
-                            now + 0.28,
-                        );
-                        osc2.connect(gain2);
-                        gain2.connect(audioCtx.destination);
-                        osc2.start(now + 0.06);
-                        osc2.stop(now + 0.28);
-                    } catch (e) {}
+                    /* no-op: audio backend removed */
                 }
 
                 /* === SUPABASE API SYNC LAYER === */
@@ -5067,6 +3484,29 @@
                         // Normal registration view
                         $("gateFormContainer").classList.remove("hidden");
                         $("gateWelcomeBack").classList.add("hidden");
+                        // Reproducir Gaitan al primer clic/toque del usuario (autoplay bloqueado por browsers)
+                        if (window.GaitanAudio) {
+                            // Intento inmediato (probablemente bloqueado, pero se intenta)
+                            setTimeout(function () {
+                                GaitanAudio.play();
+                            }, 800);
+                            // Plan B: disparar en el primer clic/toque real del usuario sobre el gate
+                            var gateEl = $("gateScreen");
+                            if (gateEl && !gateEl._gaitanWired) {
+                                gateEl._gaitanWired = true;
+                                gateEl.addEventListener(
+                                    "click",
+                                    function primeraInteraccion() {
+                                        GaitanAudio.play();
+                                        gateEl.removeEventListener(
+                                            "click",
+                                            primeraInteraccion,
+                                        );
+                                    },
+                                    { once: true },
+                                );
+                            }
+                        }
                     }
                 }
 
@@ -5157,7 +3597,9 @@
                     if (window.GaitanAudio) {
                         GaitanAudio.onSeal();
                         // Auto-play Gaitan voice on seal
-                        setTimeout(function() { GaitanAudio.play(); }, 500);
+                        setTimeout(function () {
+                            GaitanAudio.play();
+                        }, 500);
                     }
 
                     // ─── FIRST-COMMIT TOAST (solo una vez por sesión) ───
@@ -5178,8 +3620,12 @@
                 $("gateDirectEnterBtn").addEventListener("click", function () {
                     playSubwayRewardChime();
                     // Pause Gaitan, play Himno
-                    if (window.GaitanAudio && window.GaitanAudio.pause) { window.GaitanAudio.pause(); }
-                    if (window.HimnoAudio) { window.HimnoAudio.play(); }
+                    if (window.GaitanAudio && window.GaitanAudio.pause) {
+                        window.GaitanAudio.pause();
+                    }
+                    if (window.HimnoAudio) {
+                        window.HimnoAudio.play();
+                    }
                     exitGateScreen();
                 });
 
@@ -5210,7 +3656,9 @@
                         gate.style.display = "none";
                     }, 700);
                     // Play Himno on exit if not already playing
-                    if (window.HimnoAudio && !window.HimnoAudio.isPlaying()) { window.HimnoAudio.play(); }
+                    if (window.HimnoAudio && !window.HimnoAudio.isPlaying()) {
+                        window.HimnoAudio.play();
+                    }
                     toast("🇨🇴 Bienvenidos al Tablero del Compromiso Soberano");
                 }
 
@@ -5542,750 +3990,197 @@
                     }, 3200);
                 }
 
-                /* ═══════════════════════════════════════════════════════════════════════
-             GAITÁN PATRIO SOUND ENGINE
-             - Audio cargado desde gaitan.b64.js (base64) → NUNCA URL directa al MP3
-             - Al cargar la página, pre-cachea el ArrayBuffer en IndexedDB
-             - Genera un Blob URL efímero (blob:...) que no es descargable
-             - State machine: idle → loading → ready ↔ playing ↔ paused ↔ error
-             - RETRY: 3 intentos con backoff (1s, 2s, 4s) en cualquier fallo
-             - Al firmar el sello (gateSubmit) → auto-unmute a volumen máximo
-             - Cumple política autoplay: NO suena hasta primera interacción
-             ═══════════════════════════════════════════════════════════════════════ */
+                /* === AUDIO SIMPLIFICADO: HTML5 <audio> básico, sin base64 ni encriptación === */
 
-                /* ═══════════════════════════════════════════════════════════════════════
-             HIMNO NACIONAL — unstoppable, auto-plays on proclamas screen
-             ═══════════════════════════════════════════════════════════════════════ */
+                /* HIMNO NACIONAL — plays once on gate exit, no looping */
                 window.HimnoAudio = (() => {
-                    const B64_SRC = "himno.b64.js";
-                    const CACHE_KEY = "cp_himno_v1";
-                    const MAX_VOLUME = 0.9;
+                    var _played = false;
 
-                    const state = {
-                        audio: null,
-                        isReady: false,
-                        isLoading: false,
-                        shouldLoop: false,
-                        proclamasActive: false,
-                    };
-
-                    function base64ToBlob(b64) {
-                        const bin = atob(b64);
-                        const len = bin.length;
-                        const buf = new Uint8Array(len);
-                        for (let i = 0; i < len; i++) buf[i] = bin.charCodeAt(i);
-                        return new Blob([buf], { type: "audio/mpeg" });
+                    function getAudio() {
+                        return document.getElementById("himnoAudio");
                     }
 
-                    async function fetchBase64() {
-                        const url = B64_SRC + "?_=" + Date.now();
-                        const ctrl = new AbortController();
-                        const t = setTimeout(() => ctrl.abort(), 12000);
+                    function play() {
+                        if (_played) return;
+                        var a = getAudio();
+                        if (!a) return;
                         try {
-                            const r = await fetch(url, { signal: ctrl.signal, cache: "no-store" });
-                            if (!r.ok) throw new Error("HTTP " + r.status);
-                            const code = await r.text();
-                            new Function(code)();
-                            var b64 = typeof window.HIMNO_B64 === "string" ? window.HIMNO_B64 : window._HIMNO_XDATA;
-                            if (typeof b64 !== "string" || b64.length < 100) throw new Error("HIMNO_B64 missing");
-                            return b64;
-                        } finally { clearTimeout(t); }
-                    }
-
-                    async function load() {
-                        if (state.isLoading || state.isReady) return;
-                        state.isLoading = true;
-                        try {
-                            const b64 = await fetchBase64();
-                            const blob = base64ToBlob(b64);
-                            const buf = await blob.arrayBuffer();
-                            const u8 = new Uint8Array(buf);
-                            const CHUNK = 0x8000;
-                            let b64Out = "";
-                            for (let i = 0; i < u8.length; i += CHUNK) {
-                                b64Out += String.fromCharCode.apply(null, u8.subarray(i, i + CHUNK));
-                            }
-                            const dataUrl = "data:audio/mpeg;base64," + btoa(b64Out);
-                            try { window.HIMNO_B64 = null; } catch (e) {}
-                            try { window._HIMNO_XDATA = null; } catch (e) {}
-                            state.audio = new Audio();
-                            state.audio.preload = "auto";
-                            state.audio.loop = false;
-                            state.audio.volume = MAX_VOLUME;
-                            state.audio.src = dataUrl;
-                            await new Promise((resolve, reject) => {
-                                let done = false;
-                                const ok = () => { if (!done) { done = true; state.audio.removeEventListener("canplay", ok); state.audio.removeEventListener("error", fail); clearTimeout(to); resolve(); } };
-                                const fail = () => { if (!done) { done = true; clearTimeout(to); reject(new Error("load-fail")); } };
-                                const to = setTimeout(() => fail(), 10000);
-                                state.audio.addEventListener("canplay", ok, { once: true });
-                                state.audio.addEventListener("error", fail, { once: true });
-                                if (state.audio.readyState >= 3) ok();
-                            });
-                            state.audio.addEventListener("ended", onEnded);
-                            state.isReady = true;
-                            state.isLoading = false;
-                        } catch (e) {
-                            state.isLoading = false;
-                            console.warn("[himno] load failed:", e && e.message);
-                        }
-                    }
-
-                    function onEnded() {
-                        if (state.proclamasActive) {
-                            // Loop: restart while proclamas screen is active
-                            if (state.audio && state.isReady) {
-                                state.audio.currentTime = 0;
-                                state.audio.play().catch(() => {});
-                            }
-                        }
-                    }
-
-                    async function play() {
-                        if (!state.isReady) await load();
-                        if (!state.audio || !state.isReady) return;
-                        try {
-                            state.audio.currentTime = 0;
-                            state.audio.volume = MAX_VOLUME;
-                            await state.audio.play();
-                        } catch (e) {
-                            console.warn("[himno] play rejected:", e && e.message);
-                        }
+                            a.currentTime = 0;
+                            a.volume = 0.9;
+                            a.play()
+                                .then(function () {
+                                    _played = true;
+                                })
+                                .catch(function () {});
+                        } catch (e) {}
                     }
 
                     function notifyProclamasActive(active) {
-                        state.proclamasActive = active;
-                        if (active) {
-                            // If already playing, let it finish naturally (onEnded will restart)
-                            if (!state.audio || state.audio.paused || state.audio.ended) {
-                                play();
-                            }
-                        }
-                        // If deactivating, onEnded won't restart
+                        if (active && !_played) play();
                     }
 
                     function isPlaying() {
-                        return state.audio && !state.audio.paused && !state.audio.ended;
+                        var a = getAudio();
+                        return a && !a.paused && !a.ended;
                     }
 
-                    // Preload on init
-                    setTimeout(() => load(), 2000);
+                    function load() {} // no-op: el <audio> se precarga solo
 
-                    return { play, notifyProclamasActive, isPlaying, load };
+                    return {
+                        play: play,
+                        notifyProclamasActive: notifyProclamasActive,
+                        isPlaying: isPlaying,
+                        load: load,
+                    };
                 })();
 
-                // Exposed to window so the gateSubmit click handler (defined later) and the
-                // init() flow can call GaitanAudio.bind/preload/onSeal without re-exposing.
+                /* GAITAN PATRIO SOUND — simple HTML5 audio con UI de bocina */
                 window.GaitanAudio = (() => {
-                    const B64_SRC = "gaitan.b64.js";
-                    const CACHE_KEY = "cp_gaitan_v1";
-                    const MAX_RETRIES = 3;
-                    const RETRY_DELAY_MS = [1000, 2000, 4000];
-                    const MAX_VOLUME = 0.95;
-
-                    const $ = (id) => document.getElementById(id);
-                    const el = {
+                    var _el = {
                         card: null,
                         toggle: null,
                         icon: null,
                         status: null,
-                        progress: null,
-                        time: null,
                         load: null,
                         seek: null,
                         knob: null,
                         rewound: null,
                     };
-                    const state = {
-                        audio: null,
-                        blobUrl: null,
-                        muted: true, // empieza muteado
-                        isReady: false,
-                        isLoading: false,
-                        currentRetry: 0,
-                        onSealed: false, // se vuelve true tras sellar el compromiso
-                        dragging: false, // true mientras el usuario arrastra el knob
-                    };
+                    var _muted = true;
 
-                    /* ─── UI helpers ─── */
+                    function byId(id) {
+                        return document.getElementById(id);
+                    }
+                    function getAudio() {
+                        return document.getElementById("gaitanAudioEl");
+                    }
+
                     function setCardState(s) {
-                        if (!el.card) return;
-                        el.card.dataset.state = s;
+                        if (_el.card) _el.card.dataset.state = s;
                     }
                     function setIcon(muted) {
-                        if (!el.icon) return;
-                        el.icon.className = muted
-                            ? "fa-solid fa-volume-xmark text-stone-950 text-xl"
-                            : "fa-solid fa-volume-high text-stone-950 text-xl";
+                        if (_el.icon)
+                            _el.icon.className = muted
+                                ? "fa-solid fa-volume-xmark text-stone-950 text-xl"
+                                : "fa-solid fa-volume-high text-stone-950 text-xl";
                     }
                     function setStatusText(text, color) {
-                        if (!el.status) return;
-                        el.status.textContent = text;
-                        el.status.className =
-                            "text-[8px] font-cinzel uppercase tracking-widest px-1.5 py-0.5 rounded-full border " +
-                            (color ||
-                                "bg-stone-800/70 text-stone-400 border-stone-700/60");
+                        if (_el.status) {
+                            _el.status.textContent = text;
+                            _el.status.className =
+                                "text-[8px] font-cinzel uppercase tracking-widest px-1.5 py-0.5 rounded-full border " +
+                                (color ||
+                                    "bg-stone-800/70 text-stone-400 border-stone-700/60");
+                        }
                     }
                     function setLoadText(text) {
-                        if (!el.load) return;
-                        el.load.textContent = text;
-                    }
-                    function fmtTime(s) {
-                        if (!isFinite(s) || s < 0) s = 0;
-                        const m = Math.floor(s / 60);
-                        const sec = Math.floor(s % 60);
-                        return m + ":" + (sec < 10 ? "0" : "") + sec;
+                        if (_el.load) _el.load.textContent = text;
                     }
                     function setAriaPressed(pressed) {
-                        if (el.toggle)
-                            el.toggle.setAttribute(
+                        if (_el.toggle)
+                            _el.toggle.setAttribute(
                                 "aria-pressed",
                                 String(pressed),
                             );
                     }
-
-                    /* ─── IndexedDB cache ─── */
-                    function openDB() {
-                        return new Promise((resolve, reject) => {
-                            if (!("indexedDB" in window))
-                                return reject(new Error("no-idb"));
-                            const req = indexedDB.open("cp_audio_cache", 1);
-                            req.onupgradeneeded = () => {
-                                if (
-                                    !req.result.objectStoreNames.contains(
-                                        "blobs",
-                                    )
-                                ) {
-                                    req.result.createObjectStore("blobs");
-                                }
-                            };
-                            req.onsuccess = () => resolve(req.result);
-                            req.onerror = () =>
-                                reject(req.error || new Error("idb-open-fail"));
-                        });
-                    }
-                    async function cacheGet(key) {
-                        try {
-                            const db = await openDB();
-                            return await new Promise((resolve) => {
-                                const tx = db.transaction("blobs", "readonly");
-                                const store = tx.objectStore("blobs");
-                                const req = store.get(key);
-                                req.onsuccess = () =>
-                                    resolve(req.result || null);
-                                req.onerror = () => resolve(null);
-                            });
-                        } catch (e) {
-                            return null;
-                        }
-                    }
-                    async function cachePut(key, blob) {
-                        try {
-                            const db = await openDB();
-                            await new Promise((resolve) => {
-                                const tx = db.transaction("blobs", "readwrite");
-                                tx.objectStore("blobs").put(blob, key);
-                                tx.oncomplete = () => resolve();
-                                tx.onerror = () => resolve();
-                            });
-                        } catch (e) {
-                            /* silent fail, cache is best-effort */
-                        }
-                    }
-
-                    /* ─── Decodificación de base64 → Blob → blob URL ─── */
-                    function base64ToBlob(b64) {
-                        // atob es la única decodificación permitida en cliente
-                        const bin = atob(b64);
-                        const len = bin.length;
-                        const buf = new Uint8Array(len);
-                        for (let i = 0; i < len; i++)
-                            buf[i] = bin.charCodeAt(i);
-                        return new Blob([buf], { type: "audio/mpeg" });
-                    }
-
-                    async function fetchBase64Module() {
-                        // cargar gaitan.b64.js con cache-busting y timeout
-                        const url = B64_SRC + "?_=" + Date.now();
-                        const ctrl = new AbortController();
-                        const t = setTimeout(() => ctrl.abort(), 12000);
-                        try {
-                            const r = await fetch(url, {
-                                signal: ctrl.signal,
-                                cache: "no-store",
-                            });
-                            if (!r.ok) throw new Error("HTTP " + r.status);
-                            // ejecutar como módulo para definir window.GAITAN_B64
-                            const code = await r.text();
-                            new Function(code)();
-                            var encodedAudio =
-                                typeof window.GAITAN_B64 === "string"
-                                    ? window.GAITAN_B64
-                                    : window._GAITAN_XDATA;
-                            if (
-                                typeof encodedAudio !== "string" ||
-                                encodedAudio.length < 100
-                            ) {
-                                throw new Error(
-                                    "GAITAN_B64/_GAITAN_XDATA missing or invalid",
-                                );
-                            }
-                            return encodedAudio;
-                        } finally {
-                            clearTimeout(t);
-                        }
-                    }
-
-                    /* ─── Pipeline de carga con RETRY ─── */
-                    async function load() {
-                        if (state.isLoading) return;
-                        if (state.isReady && state.audio) return;
-                        state.isLoading = true;
-                        setCardState("loading");
-                        setStatusText(
-                            "Cargando",
-                            "bg-colombia-gold/20 text-colombia-goldLight border-colombia-gold/30",
-                        );
-                        setLoadText("Descargando audio protegido…");
-
-                        for (
-                            let attempt = 0;
-                            attempt <= MAX_RETRIES;
-                            attempt++
-                        ) {
-                            try {
-                                // 1) intentar desde IndexedDB
-                                let blob = null;
-                                if (attempt === 0) {
-                                    blob = await cacheGet(CACHE_KEY);
-                                    if (blob)
-                                        setLoadText(
-                                            "Recuperando de caché local…",
-                                        );
-                                }
-                                // 2) si no hay caché, descargar y decodificar
-                                if (!blob) {
-                                    setLoadText(
-                                        (attempt === 0
-                                            ? "Descargando"
-                                            : "Reintentando") +
-                                            " módulo cifrado…",
-                                    );
-                                    const b64 = await fetchBase64Module();
-                                    blob = base64ToBlob(b64);
-                                    // guardar en caché (best-effort)
-                                    cachePut(CACHE_KEY, blob);
-                                }
-                                // 3) construir data: URL (no requiere blob: ni permisos CSP media-src)
-                                //    Decodificar blob → ArrayBuffer → re-encode base64 a string,
-                                //    luego prefijar con "data:audio/mpeg;base64,".
-                                //    Esto es 100% self-contained y NO expone URL directa.
-                                const buf = await blob.arrayBuffer();
-                                const u8 = new Uint8Array(buf);
-                                // re-encode base64 en chunks para no saturar el call stack
-                                const CHUNK = 0x8000;
-                                let b64Out = "";
-                                for (let i = 0; i < u8.length; i += CHUNK) {
-                                    b64Out += String.fromCharCode.apply(
-                                        null,
-                                        u8.subarray(i, i + CHUNK),
-                                    );
-                                }
-                                const dataUrl =
-                                    "data:audio/mpeg;base64," + btoa(b64Out);
-                                // liberar el string base64 global ASAP
-                                try {
-                                    window.GAITAN_B64 = null;
-                                } catch (e) {}
-                                try {
-                                    window._GAITAN_XDATA = null;
-                                } catch (e) {}
-                                // 4) inicializar elemento <audio>
-                                if (!state.audio) state.audio = new Audio();
-                                state.audio.preload = "auto";
-                                state.audio.loop = false;
-                                state.audio.volume = state.muted
-                                    ? 0
-                                    : MAX_VOLUME;
-                                state.audio.src = dataUrl;
-                                // 5) esperar metadata (canplay) — con timeout
-                                await new Promise((resolve, reject) => {
-                                    let done = false;
-                                    const ok = () => {
-                                        if (!done) {
-                                            done = true;
-                                            cleanup();
-                                            resolve();
-                                        }
-                                    };
-                                    const fail = (e) => {
-                                        if (!done) {
-                                            done = true;
-                                            cleanup();
-                                            reject(
-                                                e ||
-                                                    new Error(
-                                                        "audio-load-fail",
-                                                    ),
-                                            );
-                                        }
-                                    };
-                                    const cleanup = () => {
-                                        state.audio.removeEventListener(
-                                            "canplay",
-                                            ok,
-                                        );
-                                        state.audio.removeEventListener(
-                                            "error",
-                                            fail,
-                                        );
-                                        clearTimeout(to);
-                                    };
-                                    const to = setTimeout(
-                                        () =>
-                                            fail(
-                                                new Error(
-                                                    "audio-metadata-timeout",
-                                                ),
-                                            ),
-                                        10000,
-                                    );
-                                    state.audio.addEventListener(
-                                        "canplay",
-                                        ok,
-                                        { once: true },
-                                    );
-                                    state.audio.addEventListener(
-                                        "error",
-                                        fail,
-                                        { once: true },
-                                    );
-                                    // si ya tiene metadata suficiente, resolver de inmediato
-                                    if (state.audio.readyState >= 3) ok();
-                                });
-                                // 6) éxito
-                                state.isReady = true;
-                                state.isLoading = false;
-                                state.currentRetry = 0;
-                                setCardState(state.muted ? "muted" : "active");
-                                setStatusText(
-                                    state.muted ? "Listo" : "Reproduciendo",
-                                    "bg-emerald-900/30 text-emerald-300 border-emerald-700/40",
-                                );
-                                setLoadText(
-                                    "Audio listo — sello el compromiso para activar",
-                                );
-                                updateKnob();
-                                wireAudioEvents();
-                                return;
-                            } catch (e) {
-                                console.warn(
-                                    "[gaitan] attempt",
-                                    attempt,
-                                    "failed:",
-                                    e && e.message,
-                                );
-                                state.currentRetry = attempt;
-                                if (attempt < MAX_RETRIES) {
-                                    setLoadText(
-                                        "Reintento " +
-                                            (attempt + 1) +
-                                            "/" +
-                                            MAX_RETRIES +
-                                            " en " +
-                                            RETRY_DELAY_MS[attempt] / 1000 +
-                                            "s…",
-                                    );
-                                    setStatusText(
-                                        "Reintentando",
-                                        "bg-amber-900/30 text-amber-300 border-amber-700/40",
-                                    );
-                                    await new Promise((r) =>
-                                        setTimeout(r, RETRY_DELAY_MS[attempt]),
-                                    );
-                                } else {
-                                    // agotado
-                                    state.isLoading = false;
-                                    setCardState("error");
-                                    setStatusText(
-                                        "Sin audio",
-                                        "bg-red-900/30 text-red-300 border-red-700/40",
-                                    );
-                                    setLoadText(
-                                        "Audio no disponible — la página funciona sin sonido",
-                                    );
-                                    console.error(
-                                        "[gaitan] all retries exhausted",
-                                        e,
-                                    );
-                                }
-                            }
-                        }
-                    }
-
-                    /* ─── Update knob: posiciona el knob y el rewind según currentTime ───
-               - knob.left = (currentTime/duration)*100%
-               - rewound.width = (currentTime/duration)*100%   (pinta desde 0 hasta el knob)
-               - mientras el audio suena, el knob avanza solo (sigue la reproducción)
-               - el knob NUNCA puede quedar más a la derecha de donde el audio ha llegado
-            */
                     function updateKnob() {
-                        if (
-                            !state.audio ||
-                            !state.audio.duration ||
-                            !isFinite(state.audio.duration)
-                        ) {
-                            if (el.knob) el.knob.style.left = "0%";
-                            if (el.rewound) el.rewound.style.width = "0%";
-                            if (el.seek)
-                                el.seek.setAttribute("aria-valuenow", "0");
+                        var a = getAudio();
+                        if (!a || !a.duration || !isFinite(a.duration)) {
+                            if (_el.knob) _el.knob.style.left = "0%";
+                            if (_el.rewound) _el.rewound.style.width = "0%";
                             return;
                         }
-                        const pct = Math.max(
+                        var pct = Math.max(
                             0,
-                            Math.min(
-                                100,
-                                (state.audio.currentTime /
-                                    state.audio.duration) *
-                                    100,
-                            ),
+                            Math.min(100, (a.currentTime / a.duration) * 100),
                         );
-                        if (el.knob) el.knob.style.left = pct + "%";
-                        if (el.rewound) el.rewound.style.width = pct + "%";
-                        if (el.seek)
-                            el.seek.setAttribute(
-                                "aria-valuenow",
-                                String(Math.round(pct)),
-                            );
+                        if (_el.knob) _el.knob.style.left = pct + "%";
+                        if (_el.rewound) _el.rewound.style.width = pct + "%";
                     }
 
-                    /* ─── Eventos del <audio> ─── */
-                    function wireAudioEvents() {
-                        if (!state.audio) return;
-                        state.audio.addEventListener("timeupdate", () => {
-                            // Si el usuario está arrastrando, NO sobrescribimos la posición
-                            if (state.dragging) return;
-                            updateKnob();
-                        });
-                        state.audio.addEventListener("ended", () => {
-                            // Al terminar, el knob vuelve al inicio (currentTime = 0)
-                            if (el.knob) el.knob.style.left = "0%";
-                            if (el.rewound) el.rewound.style.width = "0%";
-                            setCardState(state.muted ? "muted" : "ready");
-                            if (!state.muted)
-                                setStatusText(
-                                    "Listo",
-                                    "bg-emerald-900/30 text-emerald-300 border-emerald-700/40",
-                                );
-                        });
-                        state.audio.addEventListener("pause", () => {
-                            if (state.muted) return;
-                            setCardState("ready");
-                            setStatusText(
-                                "En pausa",
-                                "bg-stone-700/40 text-stone-300 border-stone-600/40",
-                            );
-                        });
-                    }
-
-                    /* ─── SEEK-BACKWARD: lógica del knob arrastrable ───
-               Reglas:
-                 - mousedown sobre el seek: comenzar drag
-                 - mousemove durante drag: calcular nueva posición, CLAMP a [0, maxRewindable]
-                 - maxRewindable = (audio.currentTime / duration) → el usuario SOLO puede retroceder
-                   hasta donde va la reproducción actual. NO puede adelantar (eso requeriría buffer de futuro).
-                 - mouseup: terminar drag, el audio continúa desde la nueva posición
-                 - click simple (sin drag): saltar a esa posición (también clamped)
-            */
-                    function setupSeek() {
-                        if (!el.seek) return;
-                        const seek = el.seek;
-                        const knob = el.knob;
-
-                        function pointerToPercent(clientX) {
-                            const r = seek.getBoundingClientRect();
-                            // Mapear X del cliente → porcentaje dentro de la barra
-                            let pct = ((clientX - r.left) / r.width) * 100;
-                            pct = Math.max(0, Math.min(100, pct));
-                            return pct;
-                        }
-
-                        function maxRewindablePct() {
-                            if (!state.audio || !state.audio.duration) return 0;
-                            return Math.max(
-                                0,
-                                Math.min(
-                                    100,
-                                    (state.audio.currentTime /
-                                        state.audio.duration) *
-                                        100,
-                                ),
-                            );
-                        }
-
-                        function applySeekTo(pct) {
-                            // pct viene de pointerToPercent → representa "dónde quiere el usuario ir"
-                            // Clamp: nunca puede ir más allá de currentTime/duration (no se puede adelantar)
-                            const max = maxRewindablePct();
-                            const clamped = Math.min(pct, max);
-                            if (!state.audio || !state.audio.duration) return;
-                            const newTime =
-                                (clamped / 100) * state.audio.duration;
-                            try {
-                                state.audio.currentTime = Math.max(0, newTime);
-                            } catch (e) {
-                                /* ignore */
-                            }
-                            // Actualizar visualmente el knob y la barra rewound
-                            if (knob) knob.style.left = clamped + "%";
-                            if (el.rewound)
-                                el.rewound.style.width = clamped + "%";
-                            if (seek)
-                                seek.setAttribute(
-                                    "aria-valuenow",
-                                    String(Math.round(clamped)),
-                                );
-                        }
-
-                        // ── Pointer events (cubre mouse + touch + pen) ──
-                        function onPointerDown(ev) {
-                            if (!state.audio || !state.audio.duration) return;
-                            ev.preventDefault();
-                            state.dragging = true;
-                            seek.setPointerCapture &&
-                                seek.setPointerCapture(ev.pointerId);
-                            const pct = pointerToPercent(ev.clientX);
-                            applySeekTo(pct);
-                            // Cambiar cursor
-                            seek.style.cursor = "grabbing";
-                        }
-                        function onPointerMove(ev) {
-                            if (!state.dragging) return;
-                            if (!state.audio || !state.audio.duration) return;
-                            ev.preventDefault();
-                            const pct = pointerToPercent(ev.clientX);
-                            applySeekTo(pct);
-                        }
-                        function onPointerUp(ev) {
-                            if (!state.dragging) return;
-                            state.dragging = false;
-                            try {
-                                seek.releasePointerCapture &&
-                                    seek.releasePointerCapture(ev.pointerId);
-                            } catch (e) {}
-                            seek.style.cursor = "";
-                        }
-                        function onPointerCancel(ev) {
-                            state.dragging = false;
-                            seek.style.cursor = "";
-                        }
-                        // Keyboard accessibility: ← y ↓ retroceden, Home va al inicio
-                        function onKeyDown(ev) {
-                            if (!state.audio || !state.audio.duration) return;
-                            const stepPct = 2; // cada pulsación retrocede 2% del audio
-                            const curPct =
-                                (state.audio.currentTime /
-                                    state.audio.duration) *
-                                100;
-                            if (
-                                ev.key === "ArrowLeft" ||
-                                ev.key === "ArrowDown"
-                            ) {
-                                ev.preventDefault();
-                                applySeekTo(curPct - stepPct);
-                            } else if (ev.key === "Home") {
-                                ev.preventDefault();
-                                applySeekTo(0);
-                            }
-                            // ArrowRight y ArrowUp: NO hacemos nada (no se puede adelantar)
-                        }
-
-                        seek.addEventListener("pointerdown", onPointerDown);
-                        seek.addEventListener("pointermove", onPointerMove);
-                        seek.addEventListener("pointerup", onPointerUp);
-                        seek.addEventListener("pointercancel", onPointerCancel);
-                        seek.addEventListener("keydown", onKeyDown);
-                        // Evitar el menú contextual en el knob
-                        seek.addEventListener("contextmenu", (e) =>
-                            e.preventDefault(),
-                        );
-                    }
-
-                    /* ─── Reproducir / Pausar ─── */
-                    async function play() {
-                        if (!state.isReady) await load();
-                        if (!state.audio) return;
+                    function play() {
+                        var a = getAudio();
+                        if (!a) return;
                         try {
-                            state.audio.volume = MAX_VOLUME;
-                            await state.audio.play();
-                            state.muted = false;
-                            setIcon(false);
-                            setAriaPressed(true);
-                            setCardState("active");
-                            setStatusText(
-                                "Reproduciendo",
-                                "bg-emerald-900/30 text-emerald-300 border-emerald-700/40",
-                            );
-                        } catch (e) {
-                            // autoplay bloqueado: dejar muteado y notificar
-                            console.warn(
-                                "[gaitan] play() rejected:",
-                                e && e.message,
-                            );
-                            state.muted = true;
-                            state.audio.volume = 0;
-                            setIcon(true);
-                            setAriaPressed(false);
-                            setCardState("muted");
-                            setStatusText(
-                                "Toca la bocina",
-                                "bg-amber-900/30 text-amber-300 border-amber-700/40",
-                            );
-                            setLoadText(
-                                "Toque la bocina para activar el audio (política del navegador)",
-                            );
-                        }
+                            a.volume = 0.95;
+                            a.play()
+                                .then(function () {
+                                    _muted = false;
+                                    setIcon(false);
+                                    setAriaPressed(true);
+                                    setCardState("active");
+                                    setStatusText(
+                                        "Reproduciendo",
+                                        "bg-emerald-900/30 text-emerald-300 border-emerald-700/40",
+                                    );
+                                })
+                                .catch(function () {
+                                    _muted = true;
+                                    a.volume = 0;
+                                    setIcon(true);
+                                    setAriaPressed(false);
+                                    setCardState("muted");
+                                    setStatusText(
+                                        "Toca la bocina",
+                                        "bg-amber-900/30 text-amber-300 border-amber-700/40",
+                                    );
+                                });
+                        } catch (e) {}
                     }
+
                     function pause() {
-                        if (!state.audio) return;
-                        state.audio.pause();
-                        state.muted = true;
+                        var a = getAudio();
+                        if (!a) return;
+                        a.pause();
+                        _muted = true;
+                        a.volume = 0;
                         setIcon(true);
                         setAriaPressed(false);
-                        // actualizar UI: card "ready" (muteado, sin animación), status "En pausa"
                         setCardState("ready");
                         setStatusText(
                             "En pausa",
                             "bg-stone-700/40 text-stone-300 border-stone-600/40",
                         );
                     }
-                    async function toggle() {
-                        if (state.muted) await play();
+
+                    function toggle() {
+                        if (_muted) play();
                         else pause();
                     }
 
-                    /* ─── API pública ─── */
                     function bind() {
-                        el.card = $("gaitanCard");
-                        el.toggle = $("gaitanToggle");
-                        el.icon = $("gaitanIcon");
-                        el.status = $("gaitanStatus");
-                        el.progress = $("gaitanProgress");
-                        el.time = $("gaitanTime");
-                        el.load = $("gaitanLoadStatus");
-                        el.seek = $("gaitanSeek");
-                        el.knob = $("gaitanKnob");
-                        el.rewound = $("gaitanRewound");
-                        if (el.toggle) {
-                            el.toggle.addEventListener("click", function (ev) {
+                        _el.card = byId("gaitanCard");
+                        _el.toggle = byId("gaitanToggle");
+                        _el.icon = byId("gaitanIcon");
+                        _el.status = byId("gaitanStatus");
+                        _el.load = byId("gaitanLoadStatus");
+                        _el.seek = byId("gaitanSeek");
+                        _el.knob = byId("gaitanKnob");
+                        _el.rewound = byId("gaitanRewound");
+
+                        var a = getAudio();
+                        if (a) {
+                            a.addEventListener("timeupdate", updateKnob);
+                            a.addEventListener("ended", function () {
+                                _muted = true;
+                                a.volume = 0;
+                                setIcon(true);
+                                setAriaPressed(false);
+                                setCardState("muted");
+                                setStatusText(
+                                    "Finalizado",
+                                    "bg-stone-700/40 text-stone-300 border-stone-600/40",
+                                );
+                            });
+                        }
+
+                        if (_el.toggle) {
+                            _el.toggle.addEventListener("click", function (ev) {
                                 ev.preventDefault();
                                 ev.stopPropagation();
                                 toggle();
                             });
                         }
-                        // Inicializar el knob arrastrable (solo retrocede)
-                        setupSeek();
-                        // Estado inicial
                         setIcon(true);
                         setAriaPressed(false);
                         setCardState("muted");
@@ -6293,58 +4188,47 @@
                             "Inactivo",
                             "bg-stone-800/70 text-stone-400 border-stone-700/60",
                         );
+                        setLoadText("Toca la bocina para activar");
                     }
-                    async function preload() {
-                        // pre-carga silenciosa: cachea el blob, sin reproducir
-                        try {
-                            await load();
-                        } catch (e) {
-                            /* errores manejados dentro de load() */
-                        }
-                    }
+
+                    function preload() {} // no-op: el <audio> se precarga solo
+
                     function onSeal() {
-                        state.onSealed = true;
-                        // Política: NO autoplay agresivo. Tras sellar, dejamos el audio en
-                        // estado "Listo" — el primer toque en la bocina lo reproducirá a
-                        // volumen máximo. Si el audio estaba sonando, lo pausamos y reseteamos
-                        // al inicio para que el listener escuche la proclama completa.
-                        if (state.isReady && state.audio) {
+                        var a = getAudio();
+                        if (a) {
                             try {
-                                state.audio.pause();
-                                state.audio.currentTime = 0;
-                            } catch (e) {
-                                /* ignore */
-                            }
-                            state.muted = true;
-                            state.audio.volume = 0;
+                                a.pause();
+                                a.currentTime = 0;
+                            } catch (e) {}
+                            _muted = true;
+                            a.volume = 0;
                             setIcon(true);
                             setAriaPressed(false);
                             setCardState("ready");
                             setStatusText(
-                                "Listo para activar",
+                                "Listo",
                                 "bg-colombia-gold/20 text-colombia-goldLight border-colombia-gold/40",
                             );
-                            setLoadText(
-                                "Sello registrado — toca la bocina para escuchar a Gaitán",
-                            );
-                            // Resetear knob al inicio
-                            if (el.knob) el.knob.style.left = "0%";
-                            if (el.rewound) el.rewound.style.width = "0%";
-                            if (el.seek)
-                                el.seek.setAttribute("aria-valuenow", "0");
+                            setLoadText("Sello registrado — toca la bocina");
+                            updateKnob();
                         }
                     }
+
                     function isReady() {
-                        return state.isReady;
+                        return !!getAudio();
                     }
+
+                    function load() {} // no-op
+
                     return {
-                        bind,
-                        preload,
-                        toggle,
-                        play,
-                        pause,
-                        onSeal,
-                        isReady,
+                        bind: bind,
+                        preload: preload,
+                        toggle: toggle,
+                        play: play,
+                        pause: pause,
+                        onSeal: onSeal,
+                        isReady: isReady,
+                        load: load,
                     };
                 })();
 
@@ -6595,28 +4479,8 @@
         </script>
         <script src="ambient-proclamas.js?v=20260609c" defer></script>
         <script>
-            (function () {
-                var isLocal =
-                    location.hostname === "127.0.0.1" ||
-                    location.hostname === "localhost" ||
-                    location.hostname === "::1" ||
-                    location.hostname.startsWith("192.168.");
-
-                function dismissGate() {
-                    var gate = document.getElementById("gateScreen");
-                    if (gate) {
-                        gate.style.display = "none";
-                    }
-                    document.documentElement.style.overflow = "auto";
-                    document.body.style.overflow = "auto";
-                }
-
-                document.addEventListener("DOMContentLoaded", function () {
-                    if (isLocal) {
-                        dismissGate();
-                    }
-                });
-            })();
+            // Gate screen always active — no localhost bypass.
+            // Must register before accessing the dashboard.
         </script>
         <script>
             (function () {
@@ -6736,7 +4600,9 @@
                     ensureRealtimeChannel();
                     updateProclamasToggle();
                     // Himno plays on proclamas screen
-                    if (window.HimnoAudio) { window.HimnoAudio.notifyProclamasActive(true); }
+                    if (window.HimnoAudio) {
+                        window.HimnoAudio.notifyProclamasActive(true);
+                    }
                 }
 
                 function stopRealtimeProclamas() {
@@ -6746,7 +4612,9 @@
                     teardownRealtimeChannel();
                     updateProclamasToggle();
                     // Himno stops looping when leaving proclamas
-                    if (window.HimnoAudio) { window.HimnoAudio.notifyProclamasActive(false); }
+                    if (window.HimnoAudio) {
+                        window.HimnoAudio.notifyProclamasActive(false);
+                    }
                 }
 
                 window.dispatchRealtimeProclama = function (message) {
