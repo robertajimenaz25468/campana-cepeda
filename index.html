@@ -98,6 +98,7 @@
             .boost-active{animation:boostActivePulse 1s ease-in-out infinite}
             @keyframes boostActivePulse{0%,100%{box-shadow:0 0 30px rgba(52,211,153,.5)}50%{box-shadow:0 0 50px rgba(52,211,153,.8)}}
         </style>
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
     <body class="font-sans text-stone-200 min-h-screen overflow-x-hidden">
         <div id="ambientProclamasLayer" aria-hidden="true"></div>
@@ -292,24 +293,9 @@
                             />
                         </div>
 
-                        <!-- CAPTCHA matematico -->
-                        <div
-                            id="captchaBox"
-                            class="w-full md:max-w-md mx-auto bg-black/40 border border-colombia-gold/20 rounded-xl p-3 flex items-center justify-between gap-3"
-                        >
-                            <span
-                                id="captchaQuestion"
-                                class="font-cinzel text-xs font-bold text-colombia-goldLight tracking-wider"
-                                >Cargando...</span
-                            >
-                            <input
-                                id="captchaAnswer"
-                                type="number"
-                                placeholder="?"
-                                autocomplete="off"
-                                class="w-16 bg-black/60 text-center text-xs font-cinzel font-bold text-white border border-colombia-gold/40 rounded-lg px-2 py-1.5 focus:outline-none focus:border-colombia-gold"
-                            />
-                        </div>
+                        <!-- Cloudflare Turnstile -->
+                        <div class="cf-turnstile" data-sitekey="TU_SITE_KEY_AQUI" data-theme="dark" style="display:flex;justify-content:center;"></div>
+
 
                         <!-- Confirm button -->
                         <button
@@ -3623,6 +3609,13 @@
                     var hpPhone = $("cp_phone_hp");
                     if ((hpWeb && hpWeb.value) || (hpPhone && hpPhone.value)) {
                         console.warn("[bot] honeypot triggered");
+                        return;
+                    }
+
+                    // --- Cloudflare Turnstile ---
+                    var turnstileToken = document.querySelector('[name="cf-turnstile-response"]');
+                    if (!turnstileToken || !turnstileToken.value) {
+                        toast("⚠️ Verifica que no eres un robot");
                         return;
                     }
 
