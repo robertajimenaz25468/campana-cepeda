@@ -299,7 +299,7 @@
                         <!-- AUDIO: simple HTML5 audio elements -->
                         <audio
                             id="himnoAudio"
-                            src="himno.m4a"
+                            src="himno.mp3"
                             preload="auto"
                             style="display: none"
                         ></audio>
@@ -3592,14 +3592,9 @@
                     playSubwayRewardChime();
                     addPts(20);
 
-                    // ─── GAITÁN PATRIO SOUND: marcar como sellado y preparar reproducción
-                    //     tras la primera interacción del usuario con la bocina ───
+                    // Marcar sello: cuando Gaitan termine, sonara el Himno
                     if (window.GaitanAudio) {
                         GaitanAudio.onSeal();
-                        // Auto-play Gaitan voice on seal
-                        setTimeout(function () {
-                            GaitanAudio.play();
-                        }, 500);
                     }
 
                     // ─── FIRST-COMMIT TOAST (solo una vez por sesión) ───
@@ -3619,12 +3614,10 @@
                 // Action: Enter Directly (Welcome Back Screen)
                 $("gateDirectEnterBtn").addEventListener("click", function () {
                     playSubwayRewardChime();
-                    // Pause Gaitan, play Himno
-                    if (window.GaitanAudio && window.GaitanAudio.pause) {
+                    // Marcar sello y dejar que Gaitan termine → Himno automatico
+                    if (window.GaitanAudio) {
+                        window.GaitanAudio.onSeal();
                         window.GaitanAudio.pause();
-                    }
-                    if (window.HimnoAudio) {
-                        window.HimnoAudio.play();
                     }
                     exitGateScreen();
                 });
@@ -3655,10 +3648,7 @@
                     setTimeout(function () {
                         gate.style.display = "none";
                     }, 700);
-                    // Play Himno on exit if not already playing
-                    if (window.HimnoAudio && !window.HimnoAudio.isPlaying()) {
-                        window.HimnoAudio.play();
-                    }
+                    // El Himno sonara via Gaitan.onSeal() si aplica
                     toast("🇨🇴 Bienvenidos al Tablero del Compromiso Soberano");
                 }
 
@@ -3990,33 +3980,58 @@
                     }, 3200);
                 }
 
-                /* === AUDIO SIMPLIFICADO: HTML5 <audio> básico, sin base64 ni encriptación === */
+                /* === AUDIO SIMPLIFICADO: HTML5 <audio> basico === */
 
-                /* HIMNO NACIONAL — plays once on gate exit, no looping */
+                /* HIMNO NACIONAL */
                 window.HimnoAudio = (() => {
-                    var _played = false;
+                    var _proclamasActive = false;
 
                     function getAudio() {
                         return document.getElementById("himnoAudio");
                     }
 
                     function play() {
-                        if (_played) return;
                         var a = getAudio();
                         if (!a) return;
                         try {
                             a.currentTime = 0;
+                            a.loop = false;
                             a.volume = 0.9;
-                            a.play()
-                                .then(function () {
-                                    _played = true;
-                                })
-                                .catch(function () {});
+                            a.play().catch(function () {});
                         } catch (e) {}
                     }
 
+                    function playAfterGaitan() {
+                        var a = getAudio();
+                        if (!a) return;
+                        a.loop = false;
+                        a.currentTime = 0;
+                        a.volume = 0.9;
+                        a.play().catch(function () {});
+                    }
+
                     function notifyProclamasActive(active) {
-                        if (active && !_played) play();
+                        _proclamasActive = active;
+                        if (active) { playIfSilent(); }
+                        else { stop(); }
+                    }
+
+                    function playIfSilent() {
+                        var a = getAudio();
+                        if (!a) return;
+                        if (!a.paused && !a.ended) return;
+                        if (window.GaitanAudio && window.GaitanAudio.isPlaying()) return;
+                        a.currentTime = 0;
+                        a.loop = true;
+                        a.volume = 0.9;
+                        a.play().catch(function () {});
+                    }
+
+                    function stop() {
+                        var a = getAudio();
+                        if (!a) return;
+                        try { a.pause(); a.currentTime = 0; } catch (e) {}
+                        a.loop = false;
                     }
 
                     function isPlaying() {
@@ -4024,10 +4039,23 @@
                         return a && !a.paused && !a.ended;
                     }
 
-                    function load() {} // no-op: el <audio> se precarga solo
+                    function load() {}
+
+                    var a = getAudio();
+                    if (a) {
+                        a.addEventListener("ended", function () {
+                            if (_proclamasActive) {
+                                a.currentTime = 0;
+                                a.play().catch(function () {});
+                            }
+                        });
+                    }
 
                     return {
                         play: play,
+                        playAfterGaitan: playAfterGaitan,
+                        playIfSilent: playIfSilent,
+                        stop: stop,
                         notifyProclamasActive: notifyProclamasActive,
                         isPlaying: isPlaying,
                         load: load,
@@ -4047,6 +4075,7 @@
                         rewound: null,
                     };
                     var _muted = true;
+                    var _sealed = false;
 
                     function byId(id) {
                         return document.getElementById(id);
@@ -4171,6 +4200,12 @@
                                     "Finalizado",
                                     "bg-stone-700/40 text-stone-300 border-stone-600/40",
                                 );
+                                if (_sealed && window.HimnoAudio) {
+                                    _sealed = false;
+                                    setTimeout(function () {
+                                        window.HimnoAudio.playAfterGaitan();
+                                    }, 400);
+                                }
                             });
                         }
 
@@ -4194,24 +4229,22 @@
                     function preload() {} // no-op: el <audio> se precarga solo
 
                     function onSeal() {
+                        _sealed = true;
                         var a = getAudio();
                         if (a) {
-                            try {
-                                a.pause();
-                                a.currentTime = 0;
-                            } catch (e) {}
-                            _muted = true;
-                            a.volume = 0;
-                            setIcon(true);
-                            setAriaPressed(false);
-                            setCardState("ready");
-                            setStatusText(
-                                "Listo",
-                                "bg-colombia-gold/20 text-colombia-goldLight border-colombia-gold/40",
-                            );
-                            setLoadText("Sello registrado — toca la bocina");
-                            updateKnob();
+                            if (a.ended || a.paused) {
+                                _sealed = false;
+                                if (window.HimnoAudio) {
+                                    window.HimnoAudio.playAfterGaitan();
+                                }
+                            }
                         }
+                        setStatusText(
+                            "Listo",
+                            "bg-colombia-gold/20 text-colombia-goldLight border-colombia-gold/40",
+                        );
+                        setLoadText("Sello registrado — toca la bocina");
+                        updateKnob();
                     }
 
                     function isReady() {
