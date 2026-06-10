@@ -297,8 +297,16 @@
                Card visible en el gate, justo después del botón de sellar.
                Estructura horizontal: bocina (botón) + ecualizador + texto. -->
                         <!-- AUDIO: cifrado XOR, desencriptado en memoria -->
-                        <audio id="himnoAudio" preload="auto" style="display:none"></audio>
-                        <audio id="gaitanAudioEl" preload="auto" style="display:none"></audio>
+                        <audio
+                            id="himnoAudio"
+                            preload="auto"
+                            style="display: none"
+                        ></audio>
+                        <audio
+                            id="gaitanAudioEl"
+                            preload="auto"
+                            style="display: none"
+                        ></audio>
 
                         <div
                             id="gaitanCard"
@@ -2529,7 +2537,7 @@
                     if (myName) {
                         sbUpsertTapper(myName, myDepto, myMuni);
                     }
-                    if ($("panelLeader").style.display !== "none") {
+                    if ($("panelLeader") && $("panelLeader").style.display !== "none") {
                         renderLB(false);
                     }
                     if (!$("panelTappers").classList.contains("hidden")) {
@@ -3794,14 +3802,7 @@
                             }
                         }
 
-                        var lIdx = Math.floor(
-                            Math.random() * LEADERBOARD.length,
-                        );
-                        if (LEADERBOARD[lIdx])
-                            LEADERBOARD[lIdx].score +=
-                                Math.floor(Math.random() * 25) + 10;
-
-                        if ($("panelLeader").style.display !== "none") {
+                        if ($("panelLeader") && $("panelLeader").style.display !== "none") {
                             renderLB(false);
                         }
 
@@ -3969,25 +3970,33 @@
                 (function () {
                     var KEY = "Cepeda2026SoberaniaColombiaPazVida";
                     function decrypt(encUrl) {
-                        return fetch(encUrl).then(function (r) {
-                            if (!r.ok) throw new Error("HTTP " + r.status);
-                            return r.arrayBuffer();
-                        }).then(function (buf) {
-                            var data = new Uint8Array(buf);
-                            for (var i = 0; i < data.length; i++) {
-                                data[i] ^= KEY.charCodeAt(i % KEY.length);
-                            }
-                            return URL.createObjectURL(new Blob([data], { type: "audio/mpeg" }));
-                        });
+                        return fetch(encUrl)
+                            .then(function (r) {
+                                if (!r.ok) throw new Error("HTTP " + r.status);
+                                return r.arrayBuffer();
+                            })
+                            .then(function (buf) {
+                                var data = new Uint8Array(buf);
+                                for (var i = 0; i < data.length; i++) {
+                                    data[i] ^= KEY.charCodeAt(i % KEY.length);
+                                }
+                                return URL.createObjectURL(
+                                    new Blob([data], { type: "audio/mpeg" }),
+                                );
+                            });
                     }
-                    decrypt("himno.enc").then(function (url) {
-                        var a = document.getElementById("himnoAudio");
-                        if (a) a.src = url;
-                    }).catch(function () {});
-                    decrypt("gaitan.enc").then(function (url) {
-                        var a = document.getElementById("gaitanAudioEl");
-                        if (a) a.src = url;
-                    }).catch(function () {});
+                    decrypt("himno.enc")
+                        .then(function (url) {
+                            var a = document.getElementById("himnoAudio");
+                            if (a) a.src = url;
+                        })
+                        .catch(function () {});
+                    decrypt("gaitan.enc")
+                        .then(function (url) {
+                            var a = document.getElementById("gaitanAudioEl");
+                            if (a) a.src = url;
+                        })
+                        .catch(function () {});
                 })();
 
                 /* === AUDIO SIMPLIFICADO: HTML5 <audio> basico === */
