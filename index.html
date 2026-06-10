@@ -2290,11 +2290,16 @@
                             .limit(50);
                         if (r.data && r.data.length) {
                             var existingIds = {};
+                            var existingKeys = {};
                             for (var i = 0; i < muro.length; i++) {
                                 existingIds[muro[i].id] = 1;
+                                var k = (muro[i].name + '|' + muro[i].muni + '|' + (muro[i].desc || '').substring(0,30)).toLowerCase();
+                                existingKeys[k] = 1;
                             }
                             r.data.forEach(function (row) {
                                 if (existingIds[row.id]) return;
+                                var k = (row.name + '|' + (row.municipality || '') + '|' + (row.description || '').substring(0,30)).toLowerCase();
+                                if (existingKeys[k]) return;
                                 muro.push({
                                     id: row.id,
                                     name: row.name,
@@ -2354,9 +2359,12 @@
                             function (payload) {
                                 var r = payload.new;
                                 if (!r) return;
-                                // Deduplicar por id (en caso de que sbInsMuro aún no haya refrescado)
+                                // Deduplicar por id y por nombre+muni
                                 for (var i = 0; i < muro.length; i++) {
                                     if (muro[i].id === r.id) return;
+                                    var ek = (muro[i].name + '|' + muro[i].muni + '|' + (muro[i].desc || '').substring(0,30)).toLowerCase();
+                                    var rk = (r.name + '|' + (r.municipality || '') + '|' + (r.description || '').substring(0,30)).toLowerCase();
+                                    if (ek === rk) return;
                                 }
                                 var newEntry = {
                                     id: r.id,
