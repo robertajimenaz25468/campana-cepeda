@@ -890,12 +890,12 @@
                             Siguiente Hito...
                         </div>
 
-                        <!-- Boost x5 button -->
+                        <!-- Boost x50 button -->
                         <button
                             id="boostBtn"
                             class="w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                         >
-                            ⚡ BOOST x5 LISTO
+                            ⚡ BOOST x50 LISTO
                         </button>
                     </div>
                 </div>
@@ -1328,7 +1328,7 @@
 
                 var EDAY = new Date("2026-06-21T00:00:00-05:00").getTime();
                 var MS = [100, 500, 1000, 2500, 5000, 10000];
-                var BOOST_PTS = 200; // Puntos para desbloquear boost x5
+                var BOOST_PTS = 200; // Puntos para desbloquear boost x50
 
                 /* ═══════════════════════════════════════════════════════════
              SECURITY & VALIDATION MODULE
@@ -2164,7 +2164,7 @@
                 var boostEndTime = 0;
                 var boostPointsUsed = 0;
                 var BOOST_MAX_PTS = 1000;
-                var BOOST_MULTIPLIER = 5;
+                var BOOST_MULTIPLIER = 50;
                 var BOOST_DURATION = 60000; // 60 segundos
                 var remoteT = {};
                 var remoteH = null;
@@ -2566,7 +2566,7 @@
                     tapWindow.taps++;
                     saveTapWindow(tapWindow);
 
-                    // ─── BOOST x5 ───
+                    // ─── BOOST x50 ───
                     var multiplier = 1;
                     if (boostActive && boostPointsUsed < BOOST_MAX_PTS) {
                         multiplier = BOOST_MULTIPLIER;
@@ -2846,7 +2846,7 @@
                             "🔒 Sello horario agotado — espera el restablecimiento";
                     } else {
                         var ptsToBoost = BOOST_PTS - (hearts % BOOST_PTS);
-                        $("ptxt").textContent = ptsToBoost + " pts para BOOST x5";
+                        $("ptxt").textContent = ptsToBoost + " pts para BOOST x50";
                     }
                     if (pct >= 90) {
                         var remaining = TAP_LIMIT - tapWindow.taps;
@@ -3137,7 +3137,7 @@
                     boostEndTime = Date.now() + BOOST_DURATION;
                     boostPointsUsed = 0;
                     updateBoostUI();
-                    toast("⚡ ¡BOOST x5 ACTIVADO! 60 segundos · hasta 1000 puntos");
+                    toast("⚡ ¡BOOST x50 ACTIVADO! 60 segundos · hasta 1000 puntos");
                     // Auto-desactivar al terminar
                     setTimeout(function () {
                         if (boostActive) deactivateBoost();
@@ -3147,7 +3147,7 @@
                 function deactivateBoost() {
                     boostActive = false;
                     updateBoostUI();
-                    toast("⏰ Boost x5 terminado. Sigue sumando para el proximo!");
+                    toast("⏰ Boost x50 terminado. Sigue sumando para el proximo!");
                 }
 
                 function updateBoostUI() {
@@ -3156,10 +3156,10 @@
                     if (boostActive) {
                         var left = Math.max(0, Math.ceil((boostEndTime - Date.now()) / 1000));
                         var used = boostPointsUsed;
-                        el.textContent = "⚡ x5 ACTIVO " + left + "s | " + used + "/" + BOOST_MAX_PTS;
+                        el.textContent = "⚡ x50 ACTIVO " + left + "s | " + used + "/" + BOOST_MAX_PTS;
                         el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_15px_rgba(52,211,153,0.4)] animate-pulse cursor-default";
                     } else {
-                        el.textContent = "⚡ BOOST x5 LISTO";
+                        el.textContent = "⚡ BOOST x50 LISTO";
                         el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer";
                     }
                 }
