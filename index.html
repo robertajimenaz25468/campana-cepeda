@@ -2537,7 +2537,10 @@
                     if (myName) {
                         sbUpsertTapper(myName, myDepto, myMuni);
                     }
-                    if ($("panelLeader") && $("panelLeader").style.display !== "none") {
+                    if (
+                        $("panelLeader") &&
+                        $("panelLeader").style.display !== "none"
+                    ) {
                         renderLB(false);
                     }
                     if (!$("panelTappers").classList.contains("hidden")) {
@@ -3804,7 +3807,10 @@
                             }
                         }
 
-                        if ($("panelLeader") && $("panelLeader").style.display !== "none") {
+                        if (
+                            $("panelLeader") &&
+                            $("panelLeader").style.display !== "none"
+                        ) {
                             renderLB(false);
                         }
 
@@ -4302,6 +4308,12 @@
                 /* === SYSTEM INIT === */
                 async function init() {
                     // seedMuro disabled - real data only
+                    // Limpiar muro cacheado viejo del localStorage
+                    if (!g("cp_m_reset")) {
+                        s("cp_m", "[]");
+                        s("cp_m_reset", "1");
+                        muro = [];
+                    }
 
                     // ─── ANTI-DDOS: Record form load time for anti-bot ───
                     formLoadTime = Date.now();
