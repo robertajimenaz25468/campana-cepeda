@@ -4443,6 +4443,14 @@
                     setInterval(uG, 2000);
                     setInterval(function () {
                         sbH().then(uG);
+                        sbLoadLeaderboard().then(function () {
+                            if (
+                                $("panelLeader") &&
+                                $("panelLeader").style.display !== "none"
+                            ) {
+                                renderLB(false);
+                            }
+                        });
                     }, 30000);
 
                     // ─── ANTI-DDOS: Periodic memory enforcement ───
