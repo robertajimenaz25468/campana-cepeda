@@ -4327,12 +4327,10 @@
                 /* === SYSTEM INIT === */
                 async function init() {
                     // seedMuro disabled - real data only
-                    // Limpiar muro cacheado viejo del localStorage
-                    if (!g("cp_m_reset")) {
-                        s("cp_m", "[]");
-                        s("cp_m_reset", "1");
-                        muro = [];
-                    }
+                    // Limpiar muro cacheado - solo datos reales desde Supabase
+                    s("cp_m", "[]");
+                    s("cp_m_reset", "1");
+                    muro = [];
 
                     // ─── ANTI-DDOS: Record form load time for anti-bot ───
                     formLoadTime = Date.now();
