@@ -2293,12 +2293,24 @@
                             var existingKeys = {};
                             for (var i = 0; i < muro.length; i++) {
                                 existingIds[muro[i].id] = 1;
-                                var k = (muro[i].name + '|' + muro[i].muni + '|' + (muro[i].desc || '').substring(0,30)).toLowerCase();
+                                var k = (
+                                    muro[i].name +
+                                    "|" +
+                                    muro[i].muni +
+                                    "|" +
+                                    (muro[i].desc || "").substring(0, 30)
+                                ).toLowerCase();
                                 existingKeys[k] = 1;
                             }
                             r.data.forEach(function (row) {
                                 if (existingIds[row.id]) return;
-                                var k = (row.name + '|' + (row.municipality || '') + '|' + (row.description || '').substring(0,30)).toLowerCase();
+                                var k = (
+                                    row.name +
+                                    "|" +
+                                    (row.municipality || "") +
+                                    "|" +
+                                    (row.description || "").substring(0, 30)
+                                ).toLowerCase();
                                 if (existingKeys[k]) return;
                                 muro.push({
                                     id: row.id,
@@ -2362,8 +2374,20 @@
                                 // Deduplicar por id y por nombre+muni
                                 for (var i = 0; i < muro.length; i++) {
                                     if (muro[i].id === r.id) return;
-                                    var ek = (muro[i].name + '|' + muro[i].muni + '|' + (muro[i].desc || '').substring(0,30)).toLowerCase();
-                                    var rk = (r.name + '|' + (r.municipality || '') + '|' + (r.description || '').substring(0,30)).toLowerCase();
+                                    var ek = (
+                                        muro[i].name +
+                                        "|" +
+                                        muro[i].muni +
+                                        "|" +
+                                        (muro[i].desc || "").substring(0, 30)
+                                    ).toLowerCase();
+                                    var rk = (
+                                        r.name +
+                                        "|" +
+                                        (r.municipality || "") +
+                                        "|" +
+                                        (r.description || "").substring(0, 30)
+                                    ).toLowerCase();
                                     if (ek === rk) return;
                                 }
                                 var newEntry = {
@@ -3397,25 +3421,12 @@
                 }
 
                 function addMuro(n, dpt, m, dsc) {
-                    var e = {
-                        id:
-                            Date.now().toString(36) +
-                            Math.random().toString(36).slice(2, 6),
-                        name: n,
-                        depto: dpt || "Nacional",
-                        muni: m,
-                        desc: dsc ? dsc.substring(0, 150) : "",
-                        hearts: 0,
-                        liked: false,
-                        ts: Date.now(),
-                    };
-                    muro.unshift(e);
-                    s("cp_m", JSON.stringify(muro));
-                    renderMuro();
-                    sbInsMuro(n, dpt, m, dsc);
-                    if (!HAS_SB) {
-                        emitRealtimeProclama(e);
-                    }
+                    // Insertar en Supabase y refrescar desde ahi (sin duplicados locales)
+                    sbInsMuro(n, dpt, m, dsc).then(function () {
+                        sbLoadMuro().then(function () {
+                            renderMuro();
+                        });
+                    });
                 }
 
                 $("filt").addEventListener("change", function () {
