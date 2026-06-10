@@ -4619,16 +4619,8 @@
                     // runSimulationLoop disabled - real data only
 
                     $("hBtn").addEventListener("click", tapH);
-                    var bb = $("boostBtn");
-                    if (bb) {
-                        bb.addEventListener("click", function () {
-                            if (!boostActive) activateBoost();
-                        });
-                    }
-                    // Boost UI update interval
-                    setInterval(function () {
-                        if (boostActive) updateBoostUI();
-                    }, 1000);
+                    // Boost: activacion automatica, sin boton manipulable
+                    setInterval(updateBoostUI, 1000);
                     $("msOverlay").addEventListener("click", function () {
                         this.classList.remove("show");
                     });
