@@ -90,7 +90,15 @@
         </script>
 
         <link rel="stylesheet" href="styles.css?v=20260609a" />
-    </head>
+            <style>
+            @keyframes boostShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+            .boost-shake{animation:boostShake .5s ease-in-out}
+            .boost-glow{animation:boostPulse 2s ease-in-out infinite}
+            @keyframes boostPulse{0%,100%{box-shadow:0 0 30px rgba(245,158,11,.5),0 0 60px rgba(197,155,39,.25)}50%{box-shadow:0 0 50px rgba(245,158,11,.8),0 0 90px rgba(197,155,39,.45)}}
+            .boost-active{animation:boostActivePulse 1s ease-in-out infinite}
+            @keyframes boostActivePulse{0%,100%{box-shadow:0 0 30px rgba(52,211,153,.5)}50%{box-shadow:0 0 50px rgba(52,211,153,.8)}}
+        </style>
+</head>
     <body class="font-sans text-stone-200 min-h-screen overflow-x-hidden">
         <div id="ambientProclamasLayer" aria-hidden="true"></div>
         <div id="proclamasSky" aria-hidden="true"></div>
@@ -889,6 +897,14 @@
                         >
                             Siguiente Hito...
                         </div>
+
+                        <!-- Boost x50 -->
+                        <button
+                            id="boostBtn"
+                            class="boost-glow w-full md:max-w-md mx-auto bg-gradient-to-r from-amber-500 via-colombia-gold to-amber-400 text-stone-950 font-cinzel font-black text-[11px] p-3 rounded-xl uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(245,158,11,0.5),0_0_60px_rgba(197,155,39,0.25)] hover:shadow-[0_0_45px_rgba(245,158,11,0.7),0_0_80px_rgba(197,155,39,0.4)] hover:scale-[1.03] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
+                        >
+                            <span class="text-lg">⚡</span> BOOST x50 <span class="text-lg">⚡</span>
+                        </button>
 
                         <!-- Boost x50 button -->
                         <button
@@ -4619,7 +4635,28 @@
                     // runSimulationLoop disabled - real data only
 
                     $("hBtn").addEventListener("click", tapH);
-                    // Boost: activacion automatica, sin boton manipulable
+                    // Boost button click
+                    var bb = $("boostBtn");
+                    if (bb) {
+                        bb.addEventListener("click", function () {
+                            if (boostActive) return;
+                            var ptsToBoost = BOOST_PTS - (hearts % BOOST_PTS);
+                            if (ptsToBoost <= 0) {
+                                activateBoost();
+                            } else {
+                                // Elegant shake + message
+                                bb.classList.add("boost-shake");
+                                $("ptxt").textContent = "⚡ Faltan " + ptsToBoost + " pts para BOOST x50";
+                                $("ptxt").style.color = "#f59e0b";
+                                $("ptxt").style.fontWeight = "bold";
+                                setTimeout(function () {
+                                    bb.classList.remove("boost-shake");
+                                    $("ptxt").style.color = "";
+                                    $("ptxt").style.fontWeight = "";
+                                }, 2000);
+                            }
+                        });
+                    }
                     setInterval(updateBoostUI, 1000);
                     $("msOverlay").addEventListener("click", function () {
                         this.classList.remove("show");
