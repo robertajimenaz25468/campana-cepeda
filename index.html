@@ -829,7 +829,7 @@
                                 class="text-colombia-gold font-cinzel"
                                 >0</b
                             >
-                            Firmas</span
+                            Puntos</span
                         >
                     </div>
 
@@ -4331,6 +4331,12 @@
                     s("cp_m", "[]");
                     s("cp_m_reset", "1");
                     muro = [];
+                    // Resetear contador local una sola vez
+                    if (!g("cp_h_reset")) {
+                        s("cp_h", "0");
+                        s("cp_h_reset", "1");
+                        hearts = 0;
+                    }
 
                     // ─── ANTI-DDOS: Record form load time for anti-bot ───
                     formLoadTime = Date.now();
