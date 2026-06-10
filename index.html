@@ -285,9 +285,22 @@
                         </div>
 
                         <!-- CAPTCHA matematico -->
-                        <div id="captchaBox" class="w-full md:max-w-md mx-auto bg-black/40 border border-colombia-gold/20 rounded-xl p-3 flex items-center justify-between gap-3">
-                            <span id="captchaQuestion" class="font-cinzel text-xs font-bold text-colombia-goldLight tracking-wider">Cargando...</span>
-                            <input id="captchaAnswer" type="number" placeholder="?" autocomplete="off" class="w-16 bg-black/60 text-center text-xs font-cinzel font-bold text-white border border-colombia-gold/40 rounded-lg px-2 py-1.5 focus:outline-none focus:border-colombia-gold">
+                        <div
+                            id="captchaBox"
+                            class="w-full md:max-w-md mx-auto bg-black/40 border border-colombia-gold/20 rounded-xl p-3 flex items-center justify-between gap-3"
+                        >
+                            <span
+                                id="captchaQuestion"
+                                class="font-cinzel text-xs font-bold text-colombia-goldLight tracking-wider"
+                                >Cargando...</span
+                            >
+                            <input
+                                id="captchaAnswer"
+                                type="number"
+                                placeholder="?"
+                                autocomplete="off"
+                                class="w-16 bg-black/60 text-center text-xs font-cinzel font-bold text-white border border-colombia-gold/40 rounded-lg px-2 py-1.5 focus:outline-none focus:border-colombia-gold"
+                            />
                         </div>
 
                         <!-- Confirm button -->
@@ -876,6 +889,14 @@
                         >
                             Siguiente Hito...
                         </div>
+
+                        <!-- Boost x5 button -->
+                        <button
+                            id="boostBtn"
+                            class="w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                        >
+                            ⚡ BOOST x5 LISTO
+                        </button>
                     </div>
                 </div>
             </section>
@@ -1307,7 +1328,7 @@
 
                 var EDAY = new Date("2026-06-21T00:00:00-05:00").getTime();
                 var MS = [100, 500, 1000, 2500, 5000, 10000];
-                var TAGS_PER = 200;
+                var BOOST_PTS = 200; // Puntos para desbloquear boost x5
 
                 /* ═══════════════════════════════════════════════════════════
              SECURITY & VALIDATION MODULE
@@ -1668,7 +1689,7 @@
              ═══════════════════════════════════════════════════════════ */
                 var TAP_LIMIT = 5000; // Max taps per hour
                 var COOLDOWN_MS = 3600000; // 1 hour cooldown in milliseconds
-                var MIN_TAP_INTERVAL = 300; // Min ms between taps (anti-spaghetti)
+                var MIN_TAP_INTERVAL = 100; // Min ms between taps (rapido)
                 var BATCH_INTERVAL = 5000; // Batch writes to Supabase every 5s
                 var MAX_FORM_TIME = 5; // Min seconds to fill form (anti-bot)
                 var MAX_MURO_ITEMS = 80; // Max items in muro (prevent memory bloat)
@@ -1919,12 +1940,12 @@
                     } catch (e) {}
                 }
 
-                async function sbIncMuni(muni) {
+                async function sbIncMuni(muni, amount) {
                     if (!HAS_SB) return;
                     try {
                         await DB.rpc("upsert_municipality_score", {
                             muni: muni,
-                            add_score: 1,
+                            add_score: amount || 1,
                         });
                     } catch (e) {}
                 }
@@ -2139,6 +2160,12 @@
                 var seen = JSON.parse(g("cp_ms", "[]"));
                 var myTags = JSON.parse(g("cp_tg", "[]"));
                 var unlocks = parseInt(g("cp_tu", "0"), 10);
+                var boostActive = false;
+                var boostEndTime = 0;
+                var boostPointsUsed = 0;
+                var BOOST_MAX_PTS = 1000;
+                var BOOST_MULTIPLIER = 5;
+                var BOOST_DURATION = 60000; // 60 segundos
                 var remoteT = {};
                 var remoteH = null;
 
@@ -2539,8 +2566,19 @@
                     tapWindow.taps++;
                     saveTapWindow(tapWindow);
 
+                    // ─── BOOST x5 ───
+                    var multiplier = 1;
+                    if (boostActive && boostPointsUsed < BOOST_MAX_PTS) {
+                        multiplier = BOOST_MULTIPLIER;
+                        boostPointsUsed++;
+                        updateBoostUI();
+                        if (boostPointsUsed >= BOOST_MAX_PTS) {
+                            deactivateBoost();
+                        }
+                    }
+
                     // ─── Normal tap logic ───
-                    hearts++;
+                    hearts += multiplier;
                     s("cp_h", hearts);
                     if (navigator.vibrate) navigator.vibrate([20]);
                     playSubwayRewardChime();
@@ -2549,7 +2587,7 @@
                     chkMs();
                     uG();
                     chkTag();
-                    queueSupabaseInc(1);
+                    queueSupabaseInc(multiplier);
                     updateTrendChart(true);
 
                     // ─── APPROACHING LIMIT WARNING ───
@@ -2567,7 +2605,7 @@
                     // Increment the user's own municipality in real DB
                     var myMuni = g("cp_sealed_muni", "");
                     if (myMuni) {
-                        sbIncMuni(myMuni);
+                        sbIncMuni(myMuni, multiplier);
                     }
                     // Track user as top tapper
                     var myName = g("cp_sealed_name", "");
@@ -2806,7 +2844,11 @@
                             "linear-gradient(to right, #961E1E, #C59B27)";
                         $("ptxt").textContent =
                             "🔒 Sello horario agotado — espera el restablecimiento";
-                    } else if (pct >= 90) {
+                    } else {
+                        var ptsToBoost = BOOST_PTS - (hearts % BOOST_PTS);
+                        $("ptxt").textContent = ptsToBoost + " pts para BOOST x5";
+                    }
+                    if (pct >= 90) {
                         var remaining = TAP_LIMIT - tapWindow.taps;
                         $("pfill").style.background =
                             "linear-gradient(to right, #961E1E, #C59B27)";
@@ -3082,14 +3124,43 @@
                 }
 
                 function chkTag() {
-                    var ex = Math.floor(hearts / TAGS_PER);
-                    if (ex > unlocks) {
+                    var ex = Math.floor(hearts / BOOST_PTS);
+                    if (ex > unlocks && !boostActive) {
                         unlocks = ex;
                         s("cp_tu", unlocks);
-                        $("tagModal").classList.add("show");
-                        $("tagInput").value = "";
-                        $("tagErr").classList.add("hidden");
-                        $("tagInput").focus();
+                        activateBoost();
+                    }
+                }
+
+                function activateBoost() {
+                    boostActive = true;
+                    boostEndTime = Date.now() + BOOST_DURATION;
+                    boostPointsUsed = 0;
+                    updateBoostUI();
+                    toast("⚡ ¡BOOST x5 ACTIVADO! 60 segundos · hasta 1000 puntos");
+                    // Auto-desactivar al terminar
+                    setTimeout(function () {
+                        if (boostActive) deactivateBoost();
+                    }, BOOST_DURATION);
+                }
+
+                function deactivateBoost() {
+                    boostActive = false;
+                    updateBoostUI();
+                    toast("⏰ Boost x5 terminado. Sigue sumando para el proximo!");
+                }
+
+                function updateBoostUI() {
+                    var el = document.getElementById("boostBtn");
+                    if (!el) return;
+                    if (boostActive) {
+                        var left = Math.max(0, Math.ceil((boostEndTime - Date.now()) / 1000));
+                        var used = boostPointsUsed;
+                        el.textContent = "⚡ x5 ACTIVO " + left + "s | " + used + "/" + BOOST_MAX_PTS;
+                        el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_15px_rgba(52,211,153,0.4)] animate-pulse cursor-default";
+                    } else {
+                        el.textContent = "⚡ BOOST x5 LISTO";
+                        el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all cursor-pointer";
                     }
                 }
 
@@ -3126,16 +3197,8 @@
                     );
                 }
 
-                $("tagSave").addEventListener("click", sbmtTag);
-                $("tagCancel").addEventListener("click", function () {
-                    $("tagModal").classList.remove("show");
-                });
-                $("tagInput").addEventListener("keydown", function (e) {
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-                        sbmtTag();
-                    }
-                });
+                // Tag modal deprecated - replaced by boost system
+                $("tagModal") && ($("tagModal").style.display = "none");
 
                 /* === STREAMING_CHUNK: Setting up Leaders listing and lazy-load controllers... === */
                 /* === LAZY LOAD LEADERBOARD IMPLEMENTATION === */
@@ -3544,7 +3607,7 @@
                     var b = Math.floor(Math.random() * 10) + 1;
                     _captchaResult = a + b;
                     var q = document.getElementById("captchaQuestion");
-                    if (q) q.textContent = '¿Cuánto es ' + a + ' + ' + b + '?';
+                    if (q) q.textContent = "¿Cuánto es " + a + " + " + b + "?";
                 }
                 generateCaptcha();
 
@@ -4556,6 +4619,16 @@
                     // runSimulationLoop disabled - real data only
 
                     $("hBtn").addEventListener("click", tapH);
+                    var bb = $("boostBtn");
+                    if (bb) {
+                        bb.addEventListener("click", function () {
+                            if (!boostActive) activateBoost();
+                        });
+                    }
+                    // Boost UI update interval
+                    setInterval(function () {
+                        if (boostActive) updateBoostUI();
+                    }, 1000);
                     $("msOverlay").addEventListener("click", function () {
                         this.classList.remove("show");
                     });
