@@ -31,3 +31,8 @@ package-lock.json
 
 co.mp3
 index.original.html
+
+# Audio sin cifrar (no desplegar)
+*.mp3
+*.m4a
+*.wav
