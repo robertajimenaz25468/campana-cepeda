@@ -3144,7 +3144,6 @@
                     boostEndTime = Date.now() + BOOST_DURATION;
                     boostPointsUsed = 0;
                     updateBoostUI();
-                    toast("⚡ ¡BOOST x50 ACTIVADO! 30 segundos · hasta 1000 puntos");
                     // Auto-desactivar al terminar
                     setTimeout(function () {
                         if (boostActive) deactivateBoost();
@@ -3154,7 +3153,7 @@
                 function deactivateBoost() {
                     boostActive = false;
                     updateBoostUI();
-                    toast("⏰ Boost x50 terminado. Sigue sumando para el proximo!");
+
                 }
 
                 function updateBoostUI() {
