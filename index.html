@@ -284,6 +284,12 @@
                             />
                         </div>
 
+                        <!-- CAPTCHA matematico -->
+                        <div id="captchaBox" class="w-full md:max-w-md mx-auto bg-black/40 border border-colombia-gold/20 rounded-xl p-3 flex items-center justify-between gap-3">
+                            <span id="captchaQuestion" class="font-cinzel text-xs font-bold text-colombia-goldLight tracking-wider">Cargando...</span>
+                            <input id="captchaAnswer" type="number" placeholder="?" autocomplete="off" class="w-16 bg-black/60 text-center text-xs font-cinzel font-bold text-white border border-colombia-gold/40 rounded-lg px-2 py-1.5 focus:outline-none focus:border-colombia-gold">
+                        </div>
+
                         <!-- Confirm button -->
                         <button
                             id="gateSubmit"
@@ -3531,13 +3537,32 @@
                 });
 
                 // Action: Submit Commitment on Gate Screen
+                // CAPTCHA matematico
+                var _captchaResult = 0;
+                function generateCaptcha() {
+                    var a = Math.floor(Math.random() * 10) + 1;
+                    var b = Math.floor(Math.random() * 10) + 1;
+                    _captchaResult = a + b;
+                    var q = document.getElementById("captchaQuestion");
+                    if (q) q.textContent = '¿Cuánto es ' + a + ' + ' + b + '?';
+                }
+                generateCaptcha();
+
                 $("gateSubmit").addEventListener("click", function () {
-                    // ─── ANTI-BOT: HONEYPOT — must remain empty ───
+                    // --- ANTI-BOT: HONEYPOT ---
                     var hpWeb = $("cp_website_hp");
                     var hpPhone = $("cp_phone_hp");
                     if ((hpWeb && hpWeb.value) || (hpPhone && hpPhone.value)) {
-                        // Silently reject — bots won't know why
                         console.warn("[bot] honeypot triggered");
+                        return;
+                    }
+
+                    // --- CAPTCHA ---
+                    var ci = document.getElementById("captchaAnswer");
+                    if (!ci || parseInt(ci.value) !== _captchaResult) {
+                        toast("⚠️ Verifica el captcha");
+                        if (ci) ci.value = "";
+                        generateCaptcha();
                         return;
                     }
 
