@@ -2175,7 +2175,7 @@
                 var boostPointsUsed = 0;
                 var BOOST_MAX_PTS = 100;
                 var BOOST_MULTIPLIER = 50;
-                var BOOST_DURATION = 60000; // 60 segundos
+                var BOOST_DURATION = 30000; // 30 segundos
                 var remoteT = {};
                 var remoteH = null;
 
@@ -2578,13 +2578,10 @@
 
                     // ─── BOOST x50 ───
                     var multiplier = 1;
-                    if (boostActive && boostPointsUsed < BOOST_MAX_PTS) {
+                    if (boostActive) {
                         multiplier = BOOST_MULTIPLIER;
                         boostPointsUsed++;
                         updateBoostUI();
-                        if (boostPointsUsed >= BOOST_MAX_PTS) {
-                            deactivateBoost();
-                        }
                     }
 
                     // ─── Normal tap logic ───
@@ -3147,7 +3144,7 @@
                     boostEndTime = Date.now() + BOOST_DURATION;
                     boostPointsUsed = 0;
                     updateBoostUI();
-                    toast("⚡ ¡BOOST x50 ACTIVADO! 60 segundos · hasta 1000 puntos");
+                    toast("⚡ ¡BOOST x50 ACTIVADO! 30 segundos · hasta 1000 puntos");
                     // Auto-desactivar al terminar
                     setTimeout(function () {
                         if (boostActive) deactivateBoost();
