@@ -3421,12 +3421,8 @@
                 }
 
                 function addMuro(n, dpt, m, dsc) {
-                    // Insertar en Supabase y refrescar desde ahi (sin duplicados locales)
-                    sbInsMuro(n, dpt, m, dsc).then(function () {
-                        sbLoadMuro().then(function () {
-                            renderMuro();
-                        });
-                    });
+                    // Insertar en Supabase; el canal realtime se encarga de mostrarlo
+                    sbInsMuro(n, dpt, m, dsc);
                 }
 
                 $("filt").addEventListener("change", function () {
