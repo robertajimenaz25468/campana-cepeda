@@ -289,7 +289,7 @@
                             id="gateSubmit"
                             class="w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-xs p-4 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2"
                         >
-                            Sellar Compromiso & Firma de Honor
+                            FIRMA DE HONOR
                             <i class="fa-solid fa-signature text-sm"></i>
                         </button>
 
@@ -4012,26 +4012,38 @@
 
                     function notifyProclamasActive(active) {
                         _proclamasActive = active;
-                        if (active) { playIfSilent(); }
-                        else { stop(); }
+                        if (active) {
+                            playIfSilent();
+                        } else {
+                            stop();
+                        }
                     }
 
                     function playIfSilent() {
                         var a = getAudio();
                         if (!a) return;
-                        if (window.GaitanAudio && window.GaitanAudio.isPlaying()) return;
+                        if (
+                            window.GaitanAudio &&
+                            window.GaitanAudio.isPlaying()
+                        )
+                            return;
                         a.load();
                         a.currentTime = 0;
                         a.loop = true;
                         a.volume = 0.9;
                         var p = a.play();
-                        if (p && p.catch) { p.catch(function () {}); }
+                        if (p && p.catch) {
+                            p.catch(function () {});
+                        }
                     }
 
                     function stop() {
                         var a = getAudio();
                         if (!a) return;
-                        try { a.pause(); a.currentTime = 0; } catch (e) {}
+                        try {
+                            a.pause();
+                            a.currentTime = 0;
+                        } catch (e) {}
                         a.loop = false;
                     }
 
