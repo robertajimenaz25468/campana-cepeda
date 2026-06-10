@@ -3687,6 +3687,8 @@
                 ];
 
                 function runSimulationLoop() {
+                    // DISABLED: solo datos reales
+                    return;
                     setInterval(function () {
                         var deptoKeys = Object.keys(DEPTOS);
                         var randomDepto =
@@ -4299,7 +4301,7 @@
 
                 /* === SYSTEM INIT === */
                 async function init() {
-                    if (!muro.length) seedMuro();
+                    // seedMuro disabled - real data only
 
                     // ─── ANTI-DDOS: Record form load time for anti-bot ───
                     formLoadTime = Date.now();
@@ -4495,7 +4497,7 @@
                     uScore();
                     renderMuro();
                     renderTicker();
-                    runSimulationLoop();
+                    // runSimulationLoop disabled - real data only
 
                     $("hBtn").addEventListener("click", tapH);
                     $("msOverlay").addEventListener("click", function () {
