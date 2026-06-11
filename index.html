@@ -62,6 +62,7 @@
      Permite al cliente poblar los selects ANTES de la primera llamada a Supabase.
      Si Supabase esta disponible, la lista se actualiza via RPC. -->
         <script src="co_data.js?v=20260609a"></script>
+        <script src="dashboard.js?v=20260610a" defer></script>
 
         <script>
             tailwind.config = {
@@ -234,44 +235,46 @@
 
                         <!-- The Form organized beautifully: Grid for PC and single-col for Mobile -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Full Name Field -->
+                            <!-- Name Field (single name, not full name) -->
                             <div class="flex flex-col gap-1.5 md:col-span-2">
                                 <label
                                     class="text-[9px] font-cinzel uppercase tracking-[0.15em] text-colombia-gold/90 font-black"
-                                    >Nombre de Honor Completo</label
+                                    >Tu Nombre <span class="text-red-400">*</span></label
                                 >
                                 <input
                                     type="text"
                                     id="gName"
-                                    placeholder="Ej: Patricia Bermúdez Mendoza"
-                                    maxlength="30"
+                                    placeholder="Ej: Patricia"
+                                    maxlength="25"
                                     autocomplete="off"
-                                    class="w-full bg-black/60 text-stone-200 text-xs rounded-xl border border-colombia-gold/20 p-3.5 outline-none focus:border-colombia-gold/60 focus:bg-black/85"
+                                    class="w-full bg-black/60 text-stone-200 text-xs rounded-xl border border-colombia-gold/20 p-3.5 outline-none focus:border-colombia-gold/60 focus:bg-black/85 transition-all duration-300"
                                 />
+                                <span id="gNameMsg" class="gate-field-msg" aria-live="polite"></span>
                             </div>
 
                             <!-- Department dropdown -->
                             <div class="flex flex-col gap-1.5">
                                 <label
                                     class="text-[9px] font-cinzel uppercase tracking-[0.15em] text-colombia-gold/90 font-black"
-                                    >Departamento</label
+                                    >Departamento <span class="text-red-400">*</span></label
                                 >
                                 <select
                                     id="gDepto"
-                                    class="w-full bg-black/60 text-stone-200 text-xs rounded-xl border border-colombia-gold/20 p-3.5 outline-none focus:border-colombia-gold/60 focus:bg-black/85 cursor-pointer"
+                                    class="w-full bg-black/60 text-stone-200 text-xs rounded-xl border border-colombia-gold/20 p-3.5 outline-none focus:border-colombia-gold/60 focus:bg-black/85 cursor-pointer transition-all duration-300"
                                 >
                                     <option value="">
                                         Selecciona Departamento...
                                     </option>
                                     <!-- populated dynamically -->
                                 </select>
+                                <span id="gDeptoMsg" class="gate-field-msg" aria-live="polite"></span>
                             </div>
 
                             <!-- Municipality (server-side validated against DANE list) -->
                             <div class="flex flex-col gap-1.5">
                                 <label
                                     class="text-[9px] font-cinzel uppercase tracking-[0.15em] text-colombia-gold/90 font-black"
-                                    >Municipio / Territorio</label
+                                    >Municipio / Territorio <span class="text-red-400">*</span></label
                                 >
                                 <select
                                     id="gMuni"
@@ -282,6 +285,7 @@
                                         Primero selecciona departamento...
                                     </option>
                                 </select>
+                                <span id="gMuniMsg" class="gate-field-msg" aria-live="polite"></span>
                             </div>
 
                             <!-- Manifesto Description Field -->
@@ -289,7 +293,7 @@
                                 <div class="flex justify-between items-center">
                                     <label
                                         class="text-[9px] font-cinzel uppercase tracking-[0.15em] text-colombia-gold/90 font-black"
-                                        >Tu Manifiesto de Campaña</label
+                                        >Tu Manifiesto de Campaña <span class="text-red-400">*</span></label
                                     >
                                     <span
                                         class="text-[8px] text-stone-500 font-mono"
@@ -302,8 +306,9 @@
                                     placeholder="¿Por qué apoyas esta causa? Escribe tu mensaje soberano de hasta 150 caracteres..."
                                     maxlength="150"
                                     rows="3"
-                                    class="w-full bg-black/60 text-stone-200 text-xs rounded-xl border border-colombia-gold/20 p-3.5 outline-none focus:border-colombia-gold/60 focus:bg-black/85 resize-none"
+                                    class="w-full bg-black/60 text-stone-200 text-xs rounded-xl border border-colombia-gold/20 p-3.5 outline-none focus:border-colombia-gold/60 focus:bg-black/85 resize-none transition-all duration-300"
                                 ></textarea>
+                                <span id="gDescMsg" class="gate-field-msg" aria-live="polite"></span>
                             </div>
                         </div>
 
@@ -351,7 +356,8 @@
                         <!-- Confirm button -->
                         <button
                             id="gateSubmit"
-                            class="w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-xs p-4 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 flex items-center justify-center gap-2"
+                            disabled
+                            class="w-full md:max-w-md mx-auto bg-gradient-to-r from-colombia-gold to-colombia-goldLight text-stone-950 font-cinzel font-black text-xs p-4 rounded-xl uppercase tracking-widest shadow-[0_0_20px_rgba(197,155,39,0.3)] hover:brightness-110 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:filter disabled:grayscale disabled:shadow-none"
                         >
                             FIRMA DE HONOR
                             <i class="fa-solid fa-signature text-sm"></i>
@@ -561,8 +567,19 @@
             </div>
         </div>
 
-        <!-- ALL MAIN DASHBOARD CONTENT — hidden until gate is completed -->
-        <div id="appContent" style="display:none">
+        <div id="dashboardMount"></div>
+
+        <!-- SOVEREIGN NOTIFICATION NOTARY TOAST -->
+        <div
+            class="toast fixed bottom-24 left-1/2 -translate-x-1/2 bg-colombia-darkBg/95 border border-colombia-gold/40 text-stone-100 px-6 py-3 rounded-xl shadow-xl font-cinzel text-[9px] uppercase tracking-wider flex items-center gap-2 pointer-events-none opacity-0 duration-300 z-[2000]"
+            id="toast"
+        >
+            <i class="fa-solid fa-stamp text-colombia-gold text-xs"></i>
+            <span id="toastMsg">Sello procesado</span>
+        </div>
+
+        <script type="text/template" id="appTemplate">
+        <!-- ALL MAIN DASHBOARD CONTENT — injected after verification -->
 
         <!-- ═══ TOP SOVEREIGN HEADER — VOLCÁN DE PROCLAMAS ═══
        Concepto: en lugar de una cinta horizontal que scrollea, los tags emergen
@@ -1145,15 +1162,6 @@
         <!-- DUST SPARK CONTAINER -->
         <div class="hearts-layer" id="hLayer"></div>
 
-        <!-- SOVEREIGN NOTIFICATION NOTARY TOAST -->
-        <div
-            class="toast fixed bottom-24 left-1/2 -translate-x-1/2 bg-colombia-darkBg/95 border border-colombia-gold/40 text-stone-100 px-6 py-3 rounded-xl shadow-xl font-cinzel text-[9px] uppercase tracking-wider flex items-center gap-2 pointer-events-none opacity-0 duration-300 z-[2000]"
-            id="toast"
-        >
-            <i class="fa-solid fa-stamp text-colombia-gold text-xs"></i>
-            <span id="toastMsg">Sello procesado</span>
-        </div>
-
         <!-- ═══ ANTI-DDOS COOLDOWN OVERLAY ═══ -->
         <div id="cooldownOverlay">
             <div class="text-center max-w-sm px-6">
@@ -1359,7 +1367,7 @@
             </div>
         </div>
 
-        </div><!-- end #appContent -->
+        </script>
 
         <!-- MAIN ENGINE SCRIPT -->
         <script>
@@ -2206,6 +2214,40 @@
                     return t.replace(/^#+/, "").trim();
                 }
 
+                window.CP = {
+                    DB: DB,
+                    HAS_SB: HAS_SB,
+                    $: $,
+                    g: g,
+                    s: s,
+                    toast: toast,
+                    SEC: SEC,
+                    esc: esc,
+                    srand: srand,
+                    norm: norm,
+                    CO_DEPTO_BY_CODE: CO_DEPTO_BY_CODE,
+                    CO_MUNI_BY_CODE: CO_MUNI_BY_CODE,
+                    DK: DK,
+                    DEPTOS: DEPTOS,
+                    EDAY: EDAY,
+                    MS: MS,
+                    BOOST_PTS: BOOST_PTS,
+                    TAP_LIMIT: TAP_LIMIT,
+                    COOLDOWN_MS: COOLDOWN_MS,
+                    MIN_TAP_INTERVAL: MIN_TAP_INTERVAL,
+                    getTapWindow: getTapWindow,
+                    saveTapWindow: saveTapWindow,
+                    findDeptoCodeByName: findDeptoCodeByName,
+                    findMuniCodeByName: findMuniCodeByName,
+                    findDeptoByMuniName: findDeptoByMuniName,
+                    playSubwayRewardChime: playSubwayRewardChime,
+                    queueSupabaseInc: queueSupabaseInc,
+                    flushSupabaseBatch: flushSupabaseBatch,
+                    supaQueue: supaQueue,
+                    CONSTITUTIONAL_QUOTES: CONSTITUTIONAL_QUOTES,
+                    SEEDS: SEEDS
+                };
+
                 var hearts = parseInt(g("cp_h", "0"), 10) || 0;
                 var muro = JSON.parse(g("cp_m", "[]"));
                 var seen = JSON.parse(g("cp_ms", "[]"));
@@ -2270,9 +2312,153 @@
                     $("trendDelta").textContent = sign + delta.toFixed(1) + "%";
                 }
 
-                /* === SOUND FEEDBACK: disabled (audio backend removed) === */
+                /* === SOUND FEEDBACK: Sovereign Victory Chime (Web Audio API) ===
+                   Layered reward sound engineered for addictive satisfaction:
+                   - Sub-bass thump (55 Hz) for physical weight
+                   - Ascending C-major arpeggio: C5 -> E5 -> G5 -> D6 for "winning" sensation
+                   - Triangle shimmer layer for sparkling polish
+                   - Noise transient for crisp attack
+                   - Stereo width via detuned harmonics
+                   Total duration ~500 ms. Lazy-initialized AudioContext. */
                 function playSubwayRewardChime() {
-                    /* no-op: audio backend removed */
+                    try {
+                        var AC = window.AudioContext || window.webkitAudioContext;
+                        if (!playSubwayRewardChime._ctx) {
+                            playSubwayRewardChime._ctx = new AC();
+                        }
+                        var ctx = playSubwayRewardChime._ctx;
+                        if (ctx.state === "suspended") ctx.resume();
+
+                        var now = ctx.currentTime;
+
+                        /* Master output with soft clip to prevent distortion on rapid taps */
+                        var master = ctx.createGain();
+                        master.gain.setValueAtTime(0.8, now);
+                        master.connect(ctx.destination);
+
+                        /* ── Layer 1: Sub-bass thump (physical weight) ── */
+                        (function () {
+                            var osc = ctx.createOscillator();
+                            var gain = ctx.createGain();
+                            osc.type = "sine";
+                            osc.frequency.setValueAtTime(55, now);
+                            osc.frequency.exponentialRampToValueAtTime(41, now + 0.08);
+                            gain.gain.setValueAtTime(0.5, now);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+                            osc.connect(gain);
+                            gain.connect(master);
+                            osc.start(now);
+                            osc.stop(now + 0.1);
+                        })();
+
+                        /* ── Layer 2: Attack transient (noise burst for crisp click) ── */
+                        (function () {
+                            var bufferSize = ctx.sampleRate * 0.015;
+                            var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                            var data = buffer.getChannelData(0);
+                            for (var i = 0; i < bufferSize; i++) {
+                                data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufferSize, 4);
+                            }
+                            var src = ctx.createBufferSource();
+                            var gain = ctx.createGain();
+                            var filter = ctx.createBiquadFilter();
+                            filter.type = "highpass";
+                            filter.frequency.setValueAtTime(3000, now);
+                            gain.gain.setValueAtTime(0.25, now);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+                            src.buffer = buffer;
+                            src.connect(filter);
+                            filter.connect(gain);
+                            gain.connect(master);
+                            src.start(now);
+                            src.stop(now + 0.015);
+                        })();
+
+                        /* ── Layer 3: Ascending C-major arpeggio (the winning feeling) ──
+                           C5 -> E5 -> G5 -> D6 with pitch slides on the final note.
+                           Each note stereo-panned alternately for width. */
+                        var melody = [
+                            { hz: 523.25, at: 0.00, dur: 0.10, pan: -0.35 },
+                            { hz: 659.25, at: 0.07, dur: 0.10, pan: 0.35 },
+                            { hz: 783.99, at: 0.14, dur: 0.12, pan: -0.25 },
+                            { hz: 1046.5, at: 0.22, dur: 0.22, pan: 0.0, slideTo: 1174.66 },
+                        ];
+                        melody.forEach(function (n) {
+                            var osc = ctx.createOscillator();
+                            var gain = ctx.createGain();
+                            var panner = ctx.createStereoPanner
+                                ? ctx.createStereoPanner()
+                                : null;
+                            osc.type = "sine";
+                            osc.frequency.setValueAtTime(n.hz, now + n.at);
+                            if (n.slideTo) {
+                                osc.frequency.exponentialRampToValueAtTime(
+                                    n.slideTo,
+                                    now + n.at + n.dur,
+                                );
+                            }
+                            gain.gain.setValueAtTime(0, now);
+                            gain.gain.setValueAtTime(0.16, now + n.at + 0.004);
+                            gain.gain.setValueAtTime(0.14, now + n.at + n.dur * 0.5);
+                            gain.gain.exponentialRampToValueAtTime(
+                                0.001,
+                                now + n.at + n.dur + 0.01,
+                            );
+                            osc.connect(gain);
+                            if (panner) {
+                                panner.pan.setValueAtTime(n.pan, now);
+                                gain.connect(panner);
+                                panner.connect(master);
+                            } else {
+                                gain.connect(master);
+                            }
+                            osc.start(now + n.at);
+                            osc.stop(now + n.at + n.dur + 0.02);
+                        });
+
+                        /* ── Layer 4: Harmonic overtone shimmer (triangle wave, upper octave) ── */
+                        (function () {
+                            var osc = ctx.createOscillator();
+                            var gain = ctx.createGain();
+                            osc.type = "triangle";
+                            osc.frequency.setValueAtTime(1568, now + 0.1);
+                            osc.frequency.exponentialRampToValueAtTime(
+                                2093,
+                                now + 0.40,
+                            );
+                            gain.gain.setValueAtTime(0, now);
+                            gain.gain.setValueAtTime(0.055, now + 0.14);
+                            gain.gain.setValueAtTime(0.04, now + 0.28);
+                            gain.gain.exponentialRampToValueAtTime(
+                                0.001,
+                                now + 0.48,
+                            );
+                            osc.connect(gain);
+                            gain.connect(master);
+                            osc.start(now + 0.1);
+                            osc.stop(now + 0.5);
+                        })();
+
+                        /* ── Layer 5: Soft release tail (reverb-like decay at C6) ── */
+                        (function () {
+                            var osc = ctx.createOscillator();
+                            var gain = ctx.createGain();
+                            osc.type = "sine";
+                            osc.frequency.setValueAtTime(1046.5, now + 0.25);
+                            gain.gain.setValueAtTime(0.0, now);
+                            gain.gain.setValueAtTime(0.07, now + 0.28);
+                            gain.gain.exponentialRampToValueAtTime(
+                                0.001,
+                                now + 0.65,
+                            );
+                            osc.connect(gain);
+                            gain.connect(master);
+                            osc.start(now + 0.25);
+                            osc.stop(now + 0.66);
+                        })();
+                    } catch (e) {
+                        /* Silently fail -- audio is non-critical */
+                    }
                 }
 
                 /* === SUPABASE API SYNC LAYER === */
@@ -2316,19 +2502,57 @@
                     } catch (e) {}
                 }
                 async function sbInsMuro(n, dpt, m, d) {
-                    if (!HAS_SB) return;
+                    if (!HAS_SB) return null;
                     try {
-                        await DB.from("supporters").insert({
-                            name: n,
-                            department: dpt || "",
-                            municipality: m,
-                            description: d || "",
-                        });
+                        var r = await DB.from("supporters")
+                            .insert({
+                                name: n,
+                                department: dpt || "",
+                                municipality: m,
+                                description: d || "",
+                            })
+                            .select("id")
+                            .single();
                         await DB.rpc("upsert_municipality_score", {
                             muni: m,
                             add_score: 20,
                         });
-                    } catch (e) {}
+                        return r.data ? r.data.id : null;
+                    } catch (e) {
+                        return null;
+                    }
+                }
+                async function verifySupporter() {
+                    var isLocalhost = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+                    if (isLocalhost) {
+                        return g("cp_sealed", "false") === "true";
+                    }
+                    var supporterId = g("cp_supporter_id", "");
+                    if (!supporterId || !HAS_SB) {
+                        return g("cp_sealed", "false") === "true";
+                    }
+                    try {
+                        var r = await DB.from("supporters")
+                            .select("id")
+                            .eq("id", supporterId)
+                            .limit(1);
+                        return r.data && r.data.length > 0;
+                    } catch (e) {
+                        return g("cp_sealed", "false") === "true";
+                    }
+                }
+                function injectDashboard() {
+                    var template = document.getElementById("appTemplate");
+                    if (!template) return;
+                    var mount = document.getElementById("dashboardMount");
+                    if (!mount) return;
+                    mount.innerHTML = template.innerHTML;
+                    template.remove();
+                    setTimeout(function () {
+                        if (typeof window.dashboardInit === "function") {
+                            window.dashboardInit();
+                        }
+                    }, 50);
                 }
                 async function sbLk(id) {
                     if (!HAS_SB) return;
@@ -3605,12 +3829,8 @@
                 function evaluateGateAccess() {
                     var isSealed = g("cp_sealed", "false") === "true";
                     if (isSealed) {
-                        // Mark gate as passed for this session
-                        sessionStorage.setItem("cp_gate_passed", "1");
-
-                        // Immediately reveal main dashboard behind the gate
-                        var app = $("appContent");
-                        if (app) app.style.display = "";
+                        // Inject dashboard immediately behind the gate
+                        injectDashboard();
 
                         // Setup the Fast-track Welcome Back view
                         $("gateFormContainer").classList.add("hidden");
@@ -3630,10 +3850,6 @@
                             depto.toUpperCase() + " - " + muni.toUpperCase();
                         $("savedDescDisplay").textContent = '"' + desc + '"';
                     } else {
-                        // Ensure main dashboard is hidden for non-sealed users
-                        var app = $("appContent");
-                        if (app) app.style.display = "none";
-
                         // Normal registration view
                         $("gateFormContainer").classList.remove("hidden");
                         $("gateWelcomeBack").classList.add("hidden");
@@ -3766,6 +3982,16 @@
                     // Add to Muro wall immediately (sanitized values)
                     addMuro(n, dpt, m, d);
 
+                    // Capture supporter ID from Supabase for future verification
+                    sbInsMuro(n, dpt, m, d).then(function (supporterId) {
+                        if (supporterId) {
+                            s("cp_supporter_id", supporterId.toString());
+                        }
+                    });
+
+                    // Inject dashboard before exiting gate
+                    injectDashboard();
+
                     // Audio & Reward points
                     playSubwayRewardChime();
                     addPts(20);
@@ -3826,11 +4052,7 @@
                     setTimeout(function () {
                         gate.style.display = "none";
                     }, 700);
-                    // Mark gate as passed for this session (prevents anti-devtools watcher from re-hiding)
                     sessionStorage.setItem("cp_gate_passed", "1");
-                    // Reveal main dashboard (was hidden until gate completed)
-                    var app = $("appContent");
-                    if (app) app.style.display = "";
                     // El Himno sonara via Gaitan.onSeal() si aplica
                     toast("🇨🇴 Bienvenidos al Tablero del Compromiso Soberano");
                 }
@@ -4491,42 +4713,6 @@
 
                 /* === SYSTEM INIT === */
                 async function init() {
-                    // ─── ANTI-DEVTOOLS: enforce gate requirement ───
-                    // Watcher that re-hides appContent if someone tries to
-                    // reveal it via devtools without completing the gate.
-                    // Uses a session flag so editing users (who temporarily
-                    // set cp_sealed=false) are not locked out.
-                    (function enforceAppContentGate() {
-                        var app = $("appContent");
-                        if (!app) return;
-                        // Mark gate as passed once for this session
-                        var gatePassed = function () {
-                            return sessionStorage.getItem("cp_gate_passed") === "1";
-                        };
-                        var check = function () {
-                            if (!gatePassed()) {
-                                var visible = app.style.display !== "none";
-                                if (visible) {
-                                    app.style.display = "none";
-                                }
-                            }
-                        };
-                        // Check on style changes (devtools inline style manipulation)
-                        if (window.MutationObserver) {
-                            var obs = new MutationObserver(function (muts) {
-                                for (var i = 0; i < muts.length; i++) {
-                                    if (muts[i].attributeName === "style") {
-                                        check();
-                                        return;
-                                    }
-                                }
-                            });
-                            obs.observe(app, { attributes: true, attributeFilter: ["style"] });
-                        }
-                        // Periodic fallback (every 2s)
-                        setInterval(check, 2000);
-                    })();
-
                     // seedMuro disabled - real data only
                     // Limpiar muro cacheado - solo datos reales desde Supabase
                     s("cp_m", "[]");
@@ -4598,37 +4784,6 @@
                         });
                     }
 
-                    // Fill filter dropdown (safe DOM construction)
-                    var ds = $("filt");
-                    while (ds.firstChild) ds.removeChild(ds.firstChild);
-                    ds.appendChild(
-                        SEC.el("option", {
-                            value: "",
-                            text: "Filtro Territorial",
-                        }),
-                    );
-                    if (deptoSource) {
-                        deptoSource
-                            .slice()
-                            .sort(function (a, b) {
-                                return a.name.localeCompare(b.name, "es");
-                            })
-                            .forEach(function (d) {
-                                ds.appendChild(
-                                    SEC.el("option", {
-                                        value: "d:" + d.code,
-                                        text: d.name,
-                                    }),
-                                );
-                            });
-                    } else {
-                        DK.forEach(function (k) {
-                            ds.appendChild(
-                                SEC.el("option", { value: k, text: k }),
-                            );
-                        });
-                    }
-
                     // ─── Wire gDepto change → populate gMuni select (defensa en profundidad) ───
                     var gMuniSelect = $("gMuni");
                     if (gMuniSelect && !gMuniSelect._wired) {
@@ -4678,8 +4833,45 @@
                         GaitanAudio.bind();
                     }
 
+                    // ─── SUPABASE VERIFICATION: check for existing supporter record ───
+                    // This is the unforgeable gate — localStorage alone is not enough.
+                    var supabaseVerified = await verifySupporter();
+                    if (supabaseVerified) {
+                        s("cp_sealed", "true");
+                        injectDashboard();
+                        evaluateGateAccess();
+                        return;
+                    }
+
                     // Evaluate if Gate overlay needs to show Welcome Back or Registration
                     evaluateGateAccess();
+                }
+
+                /* === DASHBOARD INIT ===
+                   Called AFTER template injection by injectDashboard().
+                   All dashboard DOM elements exist at this point. */
+                async function dashboardInit() {
+                    // Restore state from localStorage (already cleared in init)
+                    muro = JSON.parse(g("cp_m", "[]"));
+
+                    // Fill filter dropdown — now that dashboard DOM exists
+                    var deptoSource =
+                        typeof CO_DATA !== "undefined" && CO_DATA && CO_DATA.deptos
+                            ? CO_DATA.deptos
+                            : null;
+                    var filtDs = $("filt");
+                    if (filtDs) {
+                        while (filtDs.firstChild) filtDs.removeChild(filtDs.firstChild);
+                        filtDs.appendChild(SEC.el("option", { value: "", text: "Filtro Territorial" }));
+                        var src = deptoSource || DK.map(function (k) { return { name: k, code: k }; });
+                        src.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "es"); })
+                            .forEach(function (d) {
+                                filtDs.appendChild(SEC.el("option", {
+                                    value: deptoSource ? "d:" + d.code : d.name,
+                                    text: d.name
+                                }));
+                            });
+                    }
 
                     await sbH();
                     await sbT();
@@ -4808,6 +5000,7 @@
                         }, 1200);
                     }
                 }
+                window.dashboardInit = dashboardInit;
 
                 window.onload = function () {
                     init();
