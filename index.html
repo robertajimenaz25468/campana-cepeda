@@ -90,16 +90,63 @@
         </script>
 
         <link rel="stylesheet" href="styles.css?v=20260609a" />
-            <style>
-            @keyframes boostShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-            .boost-shake{animation:boostShake .5s ease-in-out}
-            .boost-glow{animation:boostPulse 2s ease-in-out infinite}
-            @keyframes boostPulse{0%,100%{box-shadow:0 0 30px rgba(245,158,11,.5),0 0 60px rgba(197,155,39,.25)}50%{box-shadow:0 0 50px rgba(245,158,11,.8),0 0 90px rgba(197,155,39,.45)}}
-            .boost-active{animation:boostActivePulse 1s ease-in-out infinite}
-            @keyframes boostActivePulse{0%,100%{box-shadow:0 0 30px rgba(52,211,153,.5)}50%{box-shadow:0 0 50px rgba(52,211,153,.8)}}
+        <style>
+            @keyframes boostShake {
+                0%,
+                100% {
+                    transform: translateX(0);
+                }
+                20% {
+                    transform: translateX(-6px);
+                }
+                40% {
+                    transform: translateX(6px);
+                }
+                60% {
+                    transform: translateX(-4px);
+                }
+                80% {
+                    transform: translateX(4px);
+                }
+            }
+            .boost-shake {
+                animation: boostShake 0.5s ease-in-out;
+            }
+            .boost-glow {
+                animation: boostPulse 2s ease-in-out infinite;
+            }
+            @keyframes boostPulse {
+                0%,
+                100% {
+                    box-shadow:
+                        0 0 30px rgba(245, 158, 11, 0.5),
+                        0 0 60px rgba(197, 155, 39, 0.25);
+                }
+                50% {
+                    box-shadow:
+                        0 0 50px rgba(245, 158, 11, 0.8),
+                        0 0 90px rgba(197, 155, 39, 0.45);
+                }
+            }
+            .boost-active {
+                animation: boostActivePulse 1s ease-in-out infinite;
+            }
+            @keyframes boostActivePulse {
+                0%,
+                100% {
+                    box-shadow: 0 0 30px rgba(52, 211, 153, 0.5);
+                }
+                50% {
+                    box-shadow: 0 0 50px rgba(52, 211, 153, 0.8);
+                }
+            }
         </style>
-        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-</head>
+        <script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+            async
+            defer
+        ></script>
+    </head>
     <body class="font-sans text-stone-200 min-h-screen overflow-x-hidden">
         <div id="ambientProclamasLayer" aria-hidden="true"></div>
         <div id="proclamasSky" aria-hidden="true"></div>
@@ -294,8 +341,12 @@
                         </div>
 
                         <!-- Cloudflare Turnstile -->
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAADiF4EXpmYcMEAUX" data-theme="dark" style="display:flex;justify-content:center;"></div>
-
+                        <div
+                            class="cf-turnstile"
+                            data-sitekey="0x4AAAAAADiF4EXpmYcMEAUX"
+                            data-theme="dark"
+                            style="display: flex; justify-content: center"
+                        ></div>
 
                         <!-- Confirm button -->
                         <button
@@ -509,6 +560,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- ALL MAIN DASHBOARD CONTENT — hidden until gate is completed -->
+        <div id="appContent" style="display:none">
 
         <!-- ═══ TOP SOVEREIGN HEADER — VOLCÁN DE PROCLAMAS ═══
        Concepto: en lugar de una cinta horizontal que scrollea, los tags emergen
@@ -889,10 +943,9 @@
                             id="boostBtn"
                             class="boost-glow w-full md:max-w-md mx-auto bg-gradient-to-r from-amber-500 via-colombia-gold to-amber-400 text-stone-950 font-cinzel font-black text-[11px] p-3 rounded-xl uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(245,158,11,0.5),0_0_60px_rgba(197,155,39,0.25)] hover:shadow-[0_0_45px_rgba(245,158,11,0.7),0_0_80px_rgba(197,155,39,0.4)] hover:scale-[1.03] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2"
                         >
-                            <span class="text-lg">⚡</span> BOOST x50 <span class="text-lg">⚡</span>
+                            <span class="text-lg">⚡</span> BOOST x50
+                            <span class="text-lg">⚡</span>
                         </button>
-
-
                     </div>
                 </div>
             </section>
@@ -1305,6 +1358,8 @@
                 </div>
             </div>
         </div>
+
+        </div><!-- end #appContent -->
 
         <!-- MAIN ENGINE SCRIPT -->
         <script>
@@ -2839,7 +2894,8 @@
                             "🔒 Sello horario agotado — espera el restablecimiento";
                     } else {
                         var ptsToBoost = BOOST_PTS - (hearts % BOOST_PTS);
-                        $("ptxt").textContent = ptsToBoost + " pts para BOOST x50";
+                        $("ptxt").textContent =
+                            ptsToBoost + " pts para BOOST x50";
                     }
                     if (pct >= 90) {
                         var remaining = TAP_LIMIT - tapWindow.taps;
@@ -3139,20 +3195,31 @@
                 function deactivateBoost() {
                     boostActive = false;
                     updateBoostUI();
-
                 }
 
                 function updateBoostUI() {
                     var el = document.getElementById("boostBtn");
                     if (!el) return;
                     if (boostActive) {
-                        var left = Math.max(0, Math.ceil((boostEndTime - Date.now()) / 1000));
+                        var left = Math.max(
+                            0,
+                            Math.ceil((boostEndTime - Date.now()) / 1000),
+                        );
                         var used = boostPointsUsed;
-                        el.textContent = "⚡ x50 ACTIVO " + left + "s | " + used + "/" + BOOST_MAX_PTS;
-                        el.className = "w-full md:max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_15px_rgba(52,211,153,0.4)] animate-pulse cursor-default";
+                        el.textContent =
+                            "⚡ x50 ACTIVO " +
+                            left +
+                            "s | " +
+                            used +
+                            "/" +
+                            BOOST_MAX_PTS;
+                        el.className =
+                            "w-full md:max-w-md mx-auto bg-gradient-to-r from-emerald-600 to-emerald-400 text-white font-cinzel font-black text-[10px] p-2.5 rounded-xl uppercase tracking-widest shadow-[0_0_15px_rgba(52,211,153,0.4)] animate-pulse cursor-default";
                     } else {
-                        el.innerHTML = '<span class="text-lg">⚡</span> BOOST x50 <span class="text-lg">⚡</span>';
-                        el.className = "boost-glow w-full md:max-w-md mx-auto bg-gradient-to-r from-amber-500 via-colombia-gold to-amber-400 text-stone-950 font-cinzel font-black text-[11px] p-3 rounded-xl uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(245,158,11,0.5),0_0_60px_rgba(197,155,39,0.25)] hover:shadow-[0_0_45px_rgba(245,158,11,0.7),0_0_80px_rgba(197,155,39,0.4)] hover:scale-[1.03] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2";
+                        el.innerHTML =
+                            '<span class="text-lg">⚡</span> BOOST x50 <span class="text-lg">⚡</span>';
+                        el.className =
+                            "boost-glow w-full md:max-w-md mx-auto bg-gradient-to-r from-amber-500 via-colombia-gold to-amber-400 text-stone-950 font-cinzel font-black text-[11px] p-3 rounded-xl uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(245,158,11,0.5),0_0_60px_rgba(197,155,39,0.25)] hover:shadow-[0_0_45px_rgba(245,158,11,0.7),0_0_80px_rgba(197,155,39,0.4)] hover:scale-[1.03] active:scale-95 transition-all duration-200 flex items-center justify-center gap-2";
                     }
                 }
 
@@ -3538,6 +3605,13 @@
                 function evaluateGateAccess() {
                     var isSealed = g("cp_sealed", "false") === "true";
                     if (isSealed) {
+                        // Mark gate as passed for this session
+                        sessionStorage.setItem("cp_gate_passed", "1");
+
+                        // Immediately reveal main dashboard behind the gate
+                        var app = $("appContent");
+                        if (app) app.style.display = "";
+
                         // Setup the Fast-track Welcome Back view
                         $("gateFormContainer").classList.add("hidden");
                         $("gateWelcomeBack").classList.remove("hidden");
@@ -3556,6 +3630,10 @@
                             depto.toUpperCase() + " - " + muni.toUpperCase();
                         $("savedDescDisplay").textContent = '"' + desc + '"';
                     } else {
+                        // Ensure main dashboard is hidden for non-sealed users
+                        var app = $("appContent");
+                        if (app) app.style.display = "none";
+
                         // Normal registration view
                         $("gateFormContainer").classList.remove("hidden");
                         $("gateWelcomeBack").classList.add("hidden");
@@ -3613,13 +3691,19 @@
                     }
 
                     // --- Cloudflare Turnstile ---
-                    var turnstileToken = document.querySelector('[name="cf-turnstile-response"]');
-                    if (!turnstileToken || !turnstileToken.value) {
-                        toast("⚠️ Verifica que no eres un robot");
-                        return;
+                    // Bypass for local development (Turnstile rejects localhost)
+                    var isLocalhost =
+                        location.hostname === "localhost" ||
+                        location.hostname === "127.0.0.1";
+                    if (!isLocalhost) {
+                        var turnstileToken = document.querySelector(
+                            '[name="cf-turnstile-response"]',
+                        );
+                        if (!turnstileToken || !turnstileToken.value) {
+                            toast("⚠️ Verifica que no eres un robot");
+                            return;
+                        }
                     }
-
-
 
                     // ─── ANTI-BOT: Validate form fill time ───
                     if (!validateFormTiming()) return;
@@ -3742,6 +3826,11 @@
                     setTimeout(function () {
                         gate.style.display = "none";
                     }, 700);
+                    // Mark gate as passed for this session (prevents anti-devtools watcher from re-hiding)
+                    sessionStorage.setItem("cp_gate_passed", "1");
+                    // Reveal main dashboard (was hidden until gate completed)
+                    var app = $("appContent");
+                    if (app) app.style.display = "";
                     // El Himno sonara via Gaitan.onSeal() si aplica
                     toast("🇨🇴 Bienvenidos al Tablero del Compromiso Soberano");
                 }
@@ -4402,6 +4491,42 @@
 
                 /* === SYSTEM INIT === */
                 async function init() {
+                    // ─── ANTI-DEVTOOLS: enforce gate requirement ───
+                    // Watcher that re-hides appContent if someone tries to
+                    // reveal it via devtools without completing the gate.
+                    // Uses a session flag so editing users (who temporarily
+                    // set cp_sealed=false) are not locked out.
+                    (function enforceAppContentGate() {
+                        var app = $("appContent");
+                        if (!app) return;
+                        // Mark gate as passed once for this session
+                        var gatePassed = function () {
+                            return sessionStorage.getItem("cp_gate_passed") === "1";
+                        };
+                        var check = function () {
+                            if (!gatePassed()) {
+                                var visible = app.style.display !== "none";
+                                if (visible) {
+                                    app.style.display = "none";
+                                }
+                            }
+                        };
+                        // Check on style changes (devtools inline style manipulation)
+                        if (window.MutationObserver) {
+                            var obs = new MutationObserver(function (muts) {
+                                for (var i = 0; i < muts.length; i++) {
+                                    if (muts[i].attributeName === "style") {
+                                        check();
+                                        return;
+                                    }
+                                }
+                            });
+                            obs.observe(app, { attributes: true, attributeFilter: ["style"] });
+                        }
+                        // Periodic fallback (every 2s)
+                        setInterval(check, 2000);
+                    })();
+
                     // seedMuro disabled - real data only
                     // Limpiar muro cacheado - solo datos reales desde Supabase
                     s("cp_m", "[]");
@@ -4622,7 +4747,10 @@
                             } else {
                                 // Elegant shake + message
                                 bb.classList.add("boost-shake");
-                                $("ptxt").textContent = "⚡ Faltan " + ptsToBoost + " pts para BOOST x50";
+                                $("ptxt").textContent =
+                                    "⚡ Faltan " +
+                                    ptsToBoost +
+                                    " pts para BOOST x50";
                                 $("ptxt").style.color = "#f59e0b";
                                 $("ptxt").style.fontWeight = "bold";
                                 setTimeout(function () {
