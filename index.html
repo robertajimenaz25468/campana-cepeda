@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>Ivan Cepeda 2026 - Campania no oficial</title>
+<title>Ivan Cepeda 2026 - Campaña no oficial</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 <meta name="theme-color" content="#000000" />
-<meta name="description" content="Ivan Cepeda 2026 - Campania no oficial. Documental Vivo del Silencio a la Esperanza." />
-<meta property="og:title" content="Ivan Cepeda 2026 - Campania no oficial" />
+<meta name="description" content="Ivan Cepeda 2026 - Campaña no oficial. Documental Vivo del Silencio a la Esperanza." />
+<meta property="og:title" content="Ivan Cepeda 2026 - Campaña no oficial" />
 <meta property="og:description" content="Recorre la historia de Colombia, firma tu acta, y presume tu diploma." />
 <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/5/51/Ivan_Cepeda_campa%C3%B1a.jpg" />
 
@@ -1056,55 +1056,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   transition:color .35s ease;
 }
 .acta-field-icon:focus-within i{color:var(--gold)}
-.legal-brief{
-  margin:0 0 .95rem;
-}
-.legal-lbl{
-  display:inline-flex;align-items:center;gap:.38rem;
-  background:rgba(197,155,39,.06);border:1px solid rgba(197,155,39,.12);
-  border-radius:.45rem;padding:.38rem .68rem;
-  color:rgba(197,155,39,.55);font-family:'Cinzel',serif;
-  font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;
-  cursor:pointer;transition:all .3s ease;
-  user-select:none;-webkit-user-select:none;
-}
-.legal-lbl:hover{
-  background:rgba(197,155,39,.12);border-color:rgba(197,155,39,.28);
-  color:rgba(197,155,39,.76);
-}
-.legal-lbl i{font-size:.52rem;color:rgba(197,155,39,.42);transition:color .3s ease}
-.legal-lbl:hover i{color:rgba(197,155,39,.65)}
-/* ─── Legal modal ─── */
-.legal-modal-overlay{
-  position:fixed;inset:0;z-index:99980;display:flex;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
-  opacity:0;pointer-events:none;transition:opacity .35s ease;
-}
-.legal-modal-overlay.open{opacity:1;pointer-events:auto}
-.legal-modal{
-  width:min(520px,92vw);max-height:78vh;overflow-y:auto;
-  background:linear-gradient(160deg,rgba(12,10,5,.98),rgba(8,7,3,.99));
-  border:1px solid rgba(197,155,39,.22);border-radius:1rem;
-  padding:1.5rem 1.4rem;box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 60px rgba(197,155,39,.06);
-  color:rgba(255,255,255,.72);font-family:'Lora','Cormorant Garamond',serif;
-  font-size:.76rem;line-height:1.6;
-  transform:translateY(18px);transition:transform .35s cubic-bezier(.22,1,.36,1);
-}
-.legal-modal-overlay.open .legal-modal{transform:translateY(0)}
-.legal-modal h4{
-  font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.14em;
-  color:rgba(243,210,108,.9);text-transform:uppercase;margin:0 0 1rem;
-}
-.legal-modal p,.legal-modal li{margin:.4rem 0}
-.legal-modal ul{padding-left:1.1rem;margin:.5rem 0}
-.legal-modal-close{
-  display:block;margin:1.2rem auto 0;background:rgba(197,155,39,.12);
-  border:1px solid rgba(197,155,39,.18);border-radius:.5rem;
-  padding:.45rem 1.4rem;color:rgba(197,155,39,.7);
-  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;
-  text-transform:uppercase;cursor:pointer;transition:all .3s ease;
-}
-.legal-modal-close:hover{background:rgba(197,155,39,.22);color:rgba(243,210,108,.9);border-color:rgba(197,155,39,.35)}
 .legal-consent{
   display:flex;align-items:flex-start;gap:.6rem;margin:.1rem 0 .85rem;
   color:rgba(255,255,255,.68);font-family:'Lora','Cormorant Garamond',serif;
@@ -1417,21 +1368,37 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   .doc-ctrl-btn{padding:.4rem .8rem;font-size:.55rem}
   .acta-panel{padding:1.5rem;border-radius:1rem}
   /* ─── CAPÍTULO 6 MOBILE: evitar overflow, form en una columna ─── */
-  #chapter-6{padding:0 !important;overflow-y:auto !important;overflow-x:hidden !important}
-  #chapter-6 .chapter-content{max-height:none !important;overflow-y:visible !important;padding:.5rem .4rem 1.5rem !important;width:100% !important;max-width:100vw !important}
-  #chapter-6 .acta-panel{max-width:100% !important;width:calc(100% - .5rem) !important;margin:0 auto !important}
-  #chapter-6 .acta-row{flex-direction:column !important;gap:.55rem !important;margin-bottom:.55rem !important}
+  #chapter-6{padding:.35rem 0 .75rem !important;overflow-y:auto !important;overflow-x:hidden !important;align-items:flex-start !important;justify-content:flex-start !important}
+  #chapter-6 .chapter-content{max-height:none !important;overflow-y:visible !important;padding:.62rem .5rem 1rem !important;width:100% !important;max-width:100vw !important}
+  #chapter-6 .chapter-title{font-size:clamp(.95rem,4.7vw,1.35rem) !important;line-height:1 !important;margin:0 0 .28rem !important;letter-spacing:.03em !important;white-space:nowrap !important;position:relative !important;z-index:4 !important}
+  #chapter-6 .chapter-title br{display:none !important}
+  #chapter-6 .gold-line{width:min(230px,76vw) !important;margin:.12rem auto .42rem !important}
+  #chapter-6 .acta-panel{max-width:100% !important;width:calc(100% - .85rem) !important;margin:.55rem auto 0 !important;border-radius:.85rem !important;box-shadow:0 20px 50px rgba(0,0,0,.62),0 0 0 1px rgba(197,155,39,.05) inset !important}
+  #chapter-6 .acta-corner{width:22px !important;height:22px !important;opacity:.42 !important}
+  #chapter-6 .acta-corner--tl{top:10px !important;left:10px !important}
+  #chapter-6 .acta-corner--tr{top:10px !important;right:10px !important}
+  #chapter-6 .acta-corner--bl{bottom:10px !important;left:10px !important}
+  #chapter-6 .acta-corner--br{bottom:10px !important;right:10px !important}
+  #chapter-6 .acta-row{flex-direction:column !important;gap:.38rem !important;margin-bottom:.38rem !important}
   #chapter-6 .acta-row .acta-field{flex:1 1 auto !important;min-width:0 !important}
-  #chapter-6 .acta-inner{padding:.8rem .7rem .6rem !important}
-  #chapter-6 .acta-input{font-size:.85rem !important;padding:.6rem .75rem !important}
-  #chapter-6 .acta-input::placeholder{font-size:.75rem !important}
-  #chapter-6 .acta-field-icon .acta-input{padding-left:2.2rem !important}
-  #chapter-6 .acta-field-icon i{left:.65rem !important;font-size:.7rem !important}
-  #chapter-6 .acta-label{font-size:.58rem !important;letter-spacing:.14em !important}
-  #chapter-6 .acta-header-title{font-size:.68rem !important;letter-spacing:.16em !important}
-  #chapter-6 .acta-preamble{font-size:.75rem !important;margin-bottom:1rem !important}
-  #chapter-6 .acta-submit{font-size:.72rem !important;padding:.75rem !important}
-  #chapter-6 .acta-header{margin-bottom:1rem !important}
+  #chapter-6 .acta-field{margin-bottom:.42rem !important}
+  #chapter-6 .acta-inner{padding:.62rem .62rem .55rem !important}
+  #chapter-6 .acta-input{font-size:.78rem !important;padding:.5rem .68rem !important;border-radius:.55rem !important}
+  #chapter-6 .acta-input::placeholder{font-size:.68rem !important}
+  #chapter-6 .acta-field-icon .acta-input{padding-left:2rem !important}
+  #chapter-6 .acta-field-icon i{left:.6rem !important;font-size:.62rem !important}
+  #chapter-6 .acta-label{font-size:.5rem !important;letter-spacing:.12em !important;margin-bottom:.2rem !important}
+  #chapter-6 .acta-header-title{font-size:.56rem !important;line-height:1.3 !important;letter-spacing:.13em !important;margin-bottom:.25rem !important}
+  #chapter-6 .acta-header-divider::before,#chapter-6 .acta-header-divider::after{width:22px !important;opacity:.55 !important}
+  #chapter-6 .acta-preamble{font-size:.64rem !important;line-height:1.35 !important;margin-bottom:.48rem !important}
+  #chapter-6 .legal-brief{margin:0 0 .45rem !important}
+  #chapter-6 .legal-lbl{font-size:.45rem !important;padding:.25rem .42rem !important;border-radius:.34rem !important;letter-spacing:.1em !important}
+  #chapter-6 .legal-consent{font-size:.56rem !important;line-height:1.22 !important;gap:.42rem !important;margin:0 0 .42rem !important}
+  #chapter-6 .legal-consent input{transform:scale(.82) !important;margin-top:.02rem !important}
+  #chapter-6 #fNameMsg,#chapter-6 #fDeptoMsg,#chapter-6 #fMuniMsg{min-height:0 !important;margin-top:0 !important;font-size:0 !important}
+  #chapter-6 .acta-turnstile{margin:0 0 .38rem !important;transform:scale(.9) !important;transform-origin:center !important}
+  #chapter-6 .acta-submit{font-size:.62rem !important;padding:.58rem !important;border-radius:.55rem !important;letter-spacing:.14em !important;margin-top:.05rem !important}
+  #chapter-6 .acta-header{margin-bottom:.46rem !important}
   #chapter-6 .acta-seal{width:45px !important;height:45px !important}
   /* ─── DIPLOMA MOBILE (inside chapter 6) ─── */
   #diplomaCard{max-width:100vw !important;width:100% !important;height:auto !important;aspect-ratio:auto !important;margin:0 !important;border-radius:2px !important;min-height:auto !important}
@@ -1650,9 +1617,9 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
       <div class="aurora-blob aurora-blob--blue" style="--o:0.07;"></div>
     </div>
     <div class="particle-layer" style="position:fixed;inset:0;" id="particles6"></div>
-    <div class="chapter-content" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:.8rem .6rem 1rem;width:100%;max-width:100vw;">
-      <h2 class="chapter-title" style="font-size:clamp(2rem,6.5vw,4rem);margin-bottom:.5rem;line-height:1.05;" data-reveal>Tu Momento<br/>en la Historia</h2>
-      <div class="gold-line" id="line-6" style="margin:.5rem auto;"></div>
+    <div class="chapter-content" style="display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:1rem .6rem .9rem;width:100%;max-width:100vw;">
+      <h2 class="chapter-title" style="font-size:clamp(1.5rem,5.4vw,3rem);margin-bottom:.25rem;line-height:1;" data-reveal>Tu Momento <br/>en la Historia</h2>
+      <div class="gold-line" id="line-6" style="margin:.25rem auto .45rem;"></div>
 
       <div class="acta-panel" id="actaPanel">
         <!-- Corner brackets -->
@@ -1668,25 +1635,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
           </div>
           <!-- Preamble -->
           <p class="acta-preamble">Por la Vida, la Paz y la Soberanía de Colombia, expreso de forma libre y simbólica mi apoyo al diálogo nacional.</p>
-          <div class="legal-brief" role="note" aria-label="Aviso legal y tratamiento de datos">
-            <button type="button" class="legal-lbl" onclick="document.getElementById('legalModal').classList.add('open')" aria-label="Abrir aviso legal">
-              <i class="fa-solid fa-scale-balanced"></i> Aviso legal y constitucional
-            </button>
-          </div>
-          <!-- Modal overlay rendered here but positioned fixed -->
-          <div class="legal-modal-overlay" id="legalModal" onclick="this.classList.remove('open')" role="dialog" aria-modal="true" aria-label="Aviso legal y constitucional">
-            <div class="legal-modal" onclick="event.stopPropagation()">
-              <h4>⚖️ Aviso legal y constitucional</h4>
-              <p>Este espacio es una expresión ciudadana, editorial y simbólica amparada por la libertad de expresión, la participación política y el habeas data. No es una plataforma oficial, electoral, contractual, notarial ni estatal.</p>
-              <ul>
-                <li>La firma de honor no constituye firma digital o electrónica certificada, contrato, poder, juramento, donación, afiliación a partido, inscripción electoral, petición oficial ni mecanismo formal de participación ciudadana.</li>
-                <li>El acta y el diploma son piezas simbólicas y conmemorativas. No sustituyen trámites ante Registraduría, CNE, campaña oficial, partido político o entidad pública.</li>
-                <li>Los datos suministrados se usan para generar el diploma, mostrar participación simbólica, estadísticas agregadas y medidas antiabuso. No se solicita correo, teléfono, cédula, dirección ni documento de identidad.</li>
-                <li>No se autoriza el uso de esta información para persecución, discriminación, perfilamiento dañino, acoso, venta de bases de datos o fines ajenos a este espacio ciudadano.</li>
-              </ul>
-              <button type="button" class="legal-modal-close" onclick="document.getElementById('legalModal').classList.remove('open')">Cerrar</button>
-            </div>
-          </div>
           <!-- Form -->
           <form id="actaForm" autocomplete="off">
             <div class="acta-field acta-field-icon" style="margin-bottom:.85rem;">
