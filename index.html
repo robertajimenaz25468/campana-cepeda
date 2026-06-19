@@ -44,17 +44,14 @@ tailwind.config = {
 </script>
 
 <style>
-/* ═══════════════════════════════════════════════════════════════════
-   DOCUMENTAL VIVO v3 — Full-Screen Cinematic Transitions
-   Zero scroll. One viewport. Wheel/touch → animated transitions.
-   ═══════════════════════════════════════════════════════════════════ */
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root{
   --gold:#C59B27;--gold-light:#F3D26C;--gold-bright:#FFD700;
   --bg-deep:#000;--text-primary:#e7e5e4;--text-secondary:#a8a29e;--text-dim:#57534e;
   --blue-co:#113166;--red-co:#961E1E;--yellow-co:#FCD116;
-  /* Reveal stagger timing */
+
   --reveal-stagger:100ms;
   --reveal-duration:0.9s;
   --reveal-ease:cubic-bezier(0.22,1,0.36,1);
@@ -68,7 +65,6 @@ body{
 html.has-saved-signer #chapter-6 #actaPanel{display:none!important;opacity:0!important;pointer-events:none!important}
 html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 
-/* ─── PRELOADER ─── */
 #preloader{
   position:fixed;inset:0;z-index:99999;overflow:hidden;
   background:
@@ -116,16 +112,13 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   60%{transform:scale(.9) rotate(2deg);opacity:.9}
 }
 
-/* ─── FILM GRAIN ─── */
 #filmGrain{
   position:fixed;inset:0;z-index:9997;pointer-events:none;
   opacity:.04;mix-blend-mode:overlay;
 }
 
-/* ─── VIEWPORT ─── */
 #documentalViewport{position:fixed;inset:0;overflow:hidden;z-index:1}
 
-/* ─── CHAPTER VI: scroll fix — internal scroll for form ─── */
 #chapter-6{overflow-y:auto;overflow-x:hidden;align-items:flex-start;padding-top:clamp(.6rem,3vh,1.2rem);padding-bottom:clamp(1rem,4vh,2rem);-webkit-overflow-scrolling:touch}
 #chapter-6{scrollbar-width:none;-ms-overflow-style:none}
 #chapter-6::-webkit-scrollbar{width:0;height:0;display:none}
@@ -137,7 +130,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   #chapter-6{padding-top:.3rem;padding-bottom:.8rem}
 }
 
-/* ─── CHAPTERS (all fixed, only one visible) ─── */
 .documental-chapter{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
@@ -147,8 +139,34 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   will-change:opacity,transform;
 }
 .documental-chapter.active{opacity:1;pointer-events:auto;z-index:2}
+.documental-chapter:not(.active){
+  visibility:hidden;
+}
+.documental-chapter.active{
+  visibility:visible;
+}
+#chapter-6:not(.active){
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;z-index:1!important;
+}
+#chapter-6:not(.active) *{
+  visibility:hidden!important;pointer-events:none!important;
+}
+#chapter-6{
+  isolation:isolate;background:#020202;
+}
+#chapter-6::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 48% 0%,rgba(252,209,22,.16) 0,transparent 32%),
+    radial-gradient(circle at 12% 88%,rgba(17,49,102,.18) 0,transparent 42%),
+    radial-gradient(circle at 92% 82%,rgba(150,30,30,.18) 0,transparent 38%),
+    linear-gradient(180deg,#030303 0%,#060504 54%,#050202 100%);
+}
+#chapter-6 .chapter-content{
+  position:relative;z-index:2;
+}
 
-/* ─── CHAPTER BG + KEN BURNS ─── */
+
 .chapter-bg{
   position:absolute;inset:0;z-index:0;
   background-size:cover;background-position:center;
@@ -164,7 +182,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   background:radial-gradient(ellipse at center,rgba(0,0,0,.45) 0%,rgba(0,0,0,.93) 65%,rgba(0,0,0,.98) 100%);
 }
 
-/* ─── PROLOGUE DUAL BACKGROUND CROSSFADE ─── */
 .prologue-bg-1,.prologue-bg-2{
   position:absolute;inset:0;z-index:0;
   background-size:cover;background-position:center;
@@ -183,7 +200,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   0%,38%{opacity:0}50%,88%{opacity:1}100%{opacity:0}
 }
 
-/* ─── AURORA ─── */
 .aurora-container{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
 .aurora-blob{
   position:absolute;border-radius:50%;filter:blur(140px);opacity:0;
@@ -195,7 +211,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 @keyframes auroraEmerge{0%{opacity:0;transform:scale(.3)}100%{opacity:var(--o,.28);transform:scale(1)}}
 @keyframes auroraDrift{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(6%,-4%) scale(1.06)}50%{transform:translate(-4%,5%) scale(.94)}75%{transform:translate(-5%,-3%) scale(1.04)}}
 
-/* ─── STARFIELD ─── */
 .starfield{position:absolute;inset:0;z-index:0;pointer-events:none}
 .star{
   position:absolute;background:var(--gold);border-radius:50%;
@@ -203,7 +218,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 }
 @keyframes starTwinkle{0%,100%{opacity:.1;transform:scale(1)}50%{opacity:.7;transform:scale(1.8)}}
 
-/* ─── TITLE ANIMATIONS ─── */
 @keyframes titleShine{
   0%,100%{background-position:0% 50%}
   50%{background-position:200% 50%}
@@ -214,12 +228,11 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   100%{opacity:1;transform:translateY(0) scale(1);filter:drop-shadow(0 0 18px rgba(197,155,39,.25)) blur(0)}
 }
 
-/* ─── CONTENT ─── */
 .chapter-content{position:relative;z-index:2;max-width:880px;width:100%;text-align:center}
 .chapter-title{
   font-family:'Cinzel',serif;font-weight:900;font-size:clamp(2.8rem,9vw,6rem);
   line-height:.88;letter-spacing:-.01em;margin-bottom:1.5rem;
-  /* Animated golden gradient text — deeper gold, more contrast */
+
   background:linear-gradient(135deg,#FFE484 0%,#FFD700 15%,#C59B27 35%,#F3D26C 50%,#D4A017 65%,#F3D26C 80%,#FFD700 100%);
   background-size:200% auto;
   -webkit-background-clip:text;background-clip:text;
@@ -269,7 +282,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 }
 .chapter-body p:last-child{margin-bottom:0}
 .chapter-body b{font-weight:700;color:#fff;text-shadow:0 0 20px rgba(197,155,39,.25),0 1px 3px rgba(0,0,0,.4);font-style:italic;letter-spacing:.01em}
-/* Drop cap — first letter of first paragraph in each chapter-body */
+
 .chapter-body > p:first-of-type::first-letter{
   font-family:'Cinzel',serif;font-weight:900;font-size:3.4em;float:left;
   line-height:.75;padding:.08em .12em .08em 0;
@@ -292,7 +305,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   position:relative;
   text-shadow:0 0 20px rgba(197,155,39,.3),0 0 40px rgba(197,155,39,.1);
 }
-/* Atribución del prólogo: blanco humo, sin glow dorado */
+
 #prologueAttr{
   color:rgba(255,255,255,.5) !important;
   text-shadow:none !important;
@@ -312,14 +325,13 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   opacity:1;letter-spacing:.28em;
 }
 
-/* ─── DATA-REVEAL: start hidden, revealed on chapter enter ─── */
 [data-reveal]{
   opacity:0;
   transform:translateY(20px);
   transition:opacity var(--reveal-duration) var(--reveal-ease),transform var(--reveal-duration) var(--reveal-ease);
 }
 [data-reveal].revealed{opacity:1;transform:translateY(0)}
-/* Direction variants — applied only to non-body, non-subtitle, non-quote, non-title */
+
 [data-reveal="up"]{transform:translateY(30px)}
 [data-reveal="up"].revealed{transform:translateY(0)}
 [data-reveal="left"]{transform:translateX(-20px)}
@@ -329,7 +341,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 [data-reveal="scale"]{transform:scale(.9)}
 [data-reveal="scale"].revealed{transform:scale(1)}
 
-/* ─── TYPEWRITER ─── */
 .typewriter-cursor{
   display:inline-block;width:3.5px;height:1.1em;background:var(--gold);
   margin-left:2px;vertical-align:text-bottom;
@@ -338,7 +349,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 }
 @keyframes cursorBlink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* ─── GOLD LINE ─── */
 .gold-line{
   width:0;height:2px;
   background:linear-gradient(90deg,transparent,var(--gold),var(--gold-light),var(--gold),transparent);
@@ -358,7 +368,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   100%{transform:translateX(100%)}
 }
 
-/* ─── PROPUESTAS — Horizontal Swipe Cards ─── */
 #chapter-5{
   padding:clamp(1rem,3vw,2rem);
   background:
@@ -403,7 +412,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   margin:0 auto;
   flex:0 0 auto!important;
   cursor:grab;-webkit-user-select:none;user-select:none;
-  touch-action:pan-y; /* let vertical scroll through if needed */
+  touch-action:pan-y;
   border:1px solid rgba(255,255,255,.22);
   border-radius:clamp(24px,4vw,38px);
   background:
@@ -498,7 +507,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   font-size:115%;text-shadow:0 0 20px rgba(197,155,39,.3);
 }
 
-/* ─── Swipe hint motion ─── */
 .prop-swipe-hint{
   position:absolute;bottom:clamp(1rem,4vh,2.5rem);right:clamp(1rem,5vw,2.5rem);
   z-index:5;pointer-events:none;
@@ -533,7 +541,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   .prop-swipe-hint{bottom:3.5rem;right:1.2rem}
 }
 
-/* ─── CONTROLS ─── */
 #docControls{
   position:fixed;bottom:2rem;right:2rem;z-index:9999;
   display:flex;flex-direction:column;gap:.75rem;align-items:flex-end;
@@ -549,7 +556,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 .doc-ctrl-btn:hover{background:rgba(197,155,39,.12);border-color:var(--gold);box-shadow:0 0 25px rgba(197,155,39,.2)}
 .doc-ctrl-btn i{margin-right:.4rem}
 
-/* ─── DOTS ─── */
 #chapterDotsDoc{
   position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);
   z-index:9998;display:flex;flex-direction:column;align-items:center;gap:.85rem;
@@ -565,7 +571,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   border-color:var(--gold-light);transform:scale(1.7);
 }
 
-/* ─── PROGRESS ─── */
 #chapterProgress{
   position:fixed;top:0;left:0;height:2px;
   background:linear-gradient(90deg,var(--gold),var(--gold-light),var(--gold));
@@ -573,7 +578,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   box-shadow:0 0 8px rgba(197,155,39,.5);
 }
 
-/* ─── SCROLL HINT ─── */
 .scroll-hint{
   position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
   z-index:3;display:flex;flex-direction:column;align-items:center;gap:.5rem;
@@ -594,7 +598,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 @keyframes hintOut{to{opacity:0}}
 @keyframes hintBounce{0%,100%{opacity:.2;transform:translateY(0)}50%{opacity:.7;transform:translateY(4px)}}
 
-/* ─── PARTICLES ─── */
 .particle-layer{position:absolute;inset:0;z-index:1;pointer-events:none}
 .particle-dust{
   position:absolute;width:2px;height:2px;background:rgba(255,255,255,.5);border-radius:50%;
@@ -609,7 +612,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 }
 @keyframes emberRise{0%{transform:translateY(0) translateX(0) scale(.5);opacity:0}15%{opacity:1;transform:scale(1)}100%{transform:translateY(-110vh) translateX(var(--drift)) scale(.3);opacity:0}}
 
-/* ─── CHAPTER IV: DIALOGO 2-COLUMN ─── */
 .dialogo-grid{
   display:flex;flex-direction:column;align-items:center;gap:clamp(1rem,3vw,2rem);
   width:100%;max-width:1100px;margin:0 auto;
@@ -630,7 +632,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   .dialogo-grid{gap:clamp(2rem,4vw,4rem)}
 }
 
-/* ─── MAPA ─── */
 #mapaSVG{width:100%;max-width:580px;height:auto;filter:drop-shadow(0 0 20px rgba(197,155,39,.15))}
 #mapaContainer{min-height:340px;display:flex;align-items:center;justify-content:center}
 .department-path{fill:#000000;fill-opacity:1;stroke:#c59b27;stroke-width:2;stroke-linejoin:round;transition:all .35s cubic-bezier(.16,1,.3,1);cursor:pointer}
@@ -643,7 +644,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   50%{text-shadow:0 0 65px rgba(255,255,255,.5),0 0 130px rgba(255,255,255,.2)}
 }
 .floating-names{position:absolute;inset:0;pointer-events:none;z-index:1}
-/* ─── SIGNATURE TICKER ─── */
+
 .signature-ticker-wrap{
   width:100%;max-width:500px;overflow:hidden;position:relative;
   background:linear-gradient(90deg,transparent,rgba(197,155,39,.06) 20%,rgba(197,155,39,.06) 80%,transparent);
@@ -665,7 +666,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 }
 .signature-ticker-wrap::before{left:0;background:linear-gradient(90deg,rgba(0,0,0,.95),transparent)}
 .signature-ticker-wrap::after{right:0;background:linear-gradient(270deg,rgba(0,0,0,.95),transparent)}
-/* ─── MAP PULSE DOTS ─── */
+
 #mapaPulseDots{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
 .map-pulse-dot{
   position:absolute;width:6px;height:6px;border-radius:50%;
@@ -686,7 +687,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   0%,100%{opacity:0;transform:scale(.8)}
   50%{opacity:.6;transform:scale(1.8)}
 }
-/* ─── COUNTER RING ─── */
+
 .live-counter-wrap{
   position:relative;display:inline-flex;align-items:center;justify-content:center;
 }
@@ -704,7 +705,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 .floating-name{position:absolute;font-family:'Cinzel',serif;font-size:0.78rem;color:var(--gold-light);opacity:0;animation:nameFloat 5s ease-out forwards;white-space:nowrap;text-shadow:0 0 8px rgba(197,155,39,.4)}
 @keyframes nameFloat{0%{opacity:0;transform:translateY(0) scale(.8)}10%{opacity:.95}80%{opacity:.2}100%{opacity:0;transform:translateY(-100px) scale(1.1)}}
 
-/* Dialogo civic atmosphere */
 #chapter-4{
   padding:clamp(1rem,3vw,2rem);
   background:
@@ -967,7 +967,6 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   #chapter-4 #mapaSVG{max-width:min(350px,88vw)}
 }
 
-/* ─── ACTA ─── */
 .acta-panel{
   position:relative;
   background:linear-gradient(180deg,rgba(12,9,4,.985) 0%,rgba(18,14,8,.97) 50%,rgba(10,7,3,.99) 100%);
@@ -977,13 +976,13 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   box-shadow:0 30px 80px rgba(0,0,0,.7),0 0 0 1px rgba(197,155,39,.06) inset,0 0 80px rgba(197,155,39,.05);
   overflow:visible;
 }
-/* Parchment texture */
+
 .acta-panel::before{
   content:'';position:absolute;inset:0;opacity:.04;
   background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(197,155,39,.5) 3px,rgba(197,155,39,.1) 4px);
   pointer-events:none;border-radius:inherit;z-index:0;
 }
-/* Gold corner brackets */
+
 .acta-panel::after{
   content:'';position:absolute;inset:-1px;border-radius:inherit;
   border:1px solid transparent;
@@ -993,7 +992,7 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
   pointer-events:none;z-index:1;
 }
 .acta-panel>*{position:relative;z-index:2}
-/* Ornamental corner brackets */
+
 .acta-corner{position:absolute;width:32px;height:32px;pointer-events:none;z-index:3;opacity:.6}
 .acta-corner::before,.acta-corner::after{content:'';position:absolute;background:var(--gold)}
 .acta-corner--tl{top:12px;left:12px}
@@ -1008,15 +1007,15 @@ html.has-saved-signer #chapter-6 #diplomaSection{display:block!important}
 .acta-corner--bl::after{bottom:0;left:0;width:1px;height:16px}
 .acta-corner--br::before{bottom:0;right:0;width:16px;height:1px}
 .acta-corner--br::after{bottom:0;right:0;width:1px;height:16px}
-/* Acta inner content */
+
 .acta-inner{padding:1.2rem 1.3rem 1rem}
-/* Acta header */
+
 .acta-header{text-align:center;margin-bottom:1.6rem}
 .acta-header-title{font-family:'Cinzel',serif;font-size:clamp(0.95rem,2.2vw,1.2rem);font-weight:900;color:var(--gold-light);letter-spacing:.22em;text-transform:uppercase;margin-bottom:.6rem;text-shadow:0 0 25px rgba(197,155,39,.3)}
 .acta-header-divider{display:flex;align-items:center;gap:.6rem;justify-content:center}
 .acta-header-divider span{font-size:.45rem;color:var(--gold);opacity:.6}
 .acta-header-divider::before,.acta-header-divider::after{content:'';height:1px;width:35px;background:linear-gradient(90deg,transparent,rgba(197,155,39,.5),transparent)}
-/* Acta preamble */
+
 .acta-preamble{text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1rem,2.2vw,1.15rem);color:rgba(255,255,255,.7);line-height:1.65;margin-bottom:1.5rem;letter-spacing:.01em}
 .acta-input{
   width:100%;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.08);
@@ -1042,10 +1041,10 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   text-shadow:0 0 8px rgba(197,155,39,.12);
 }
 .acta-label .required-star{color:#ef4444;margin-left:2px}
-/* Two-column row */
+
 .acta-row{display:flex;gap:.8rem;margin-bottom:.9rem}
 .acta-row .acta-field{flex:1;min-width:0}
-/* Icon inside inputs */
+
 .acta-field-icon{
   position:relative;
 }
@@ -1082,7 +1081,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .acta-submit:disabled{opacity:.25;cursor:not-allowed;transform:none;box-shadow:none;animation:none;filter:grayscale(.6)}
 @keyframes shimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 
-/* ─── SEAL (Ceremonial Crest) ─── */
 .acta-seal{
   width:60px;height:60px;border-radius:50%;
   background:radial-gradient(circle at 40% 38%,#1a1708,#0a0a0a);
@@ -1098,7 +1096,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .acta-seal--stamped{animation:stampDown .6s cubic-bezier(.36,0,.66,-.56)!important}
 @keyframes stampDown{0%{transform:scale(1.5) rotate(-15deg)}60%{transform:scale(.85) rotate(3deg)}100%{transform:scale(1) rotate(0deg)}}
 
-/* ─── DIPLOMA ─── */
 .diploma-canvas-wrap{position:relative;display:inline-block;border-radius:1rem;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.9),0 0 0 1px rgba(197,155,39,.2),0 0 80px rgba(197,155,39,.1);max-width:92vw;animation:diplomaReveal .8s cubic-bezier(.16,1,.3,1)}
 @keyframes diplomaReveal{0%{opacity:0;transform:scale(.85);filter:blur(12px)}100%{opacity:1;transform:scale(1);filter:blur(0)}}
 .diploma-canvas-wrap::after{content:'🔍 Toca para expandir';position:absolute;bottom:8px;right:10px;font-family:'Cinzel',serif;font-size:.45rem;color:rgba(197,155,39,.7);background:rgba(0,0,0,.7);padding:.25rem .6rem;border-radius:99px;letter-spacing:.08em;pointer-events:none;z-index:2}
@@ -1115,7 +1112,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .diploma-btn--enter:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 14px 45px rgba(197,155,39,.6)}
 @keyframes rotateHint{0%,100%{transform:rotate(0deg)}50%{transform:rotate(90deg)}}
 
-/* ─── DIPLOMA ACTION BUTTONS ─── */
 .diploma-btn-h{
   display:flex;align-items:center;gap:.45rem;padding:.6rem 1.2rem;border-radius:99px;
   font-family:'Cinzel',serif;font-size:clamp(.55rem,1.2vw,.68rem);font-weight:700;
@@ -1128,7 +1124,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .diploma-btn-h--secondary{background:rgba(197,155,39,.12);color:#C59B27;border:1.5px solid rgba(197,155,39,.3);flex:1}
 .diploma-btn-h--secondary:hover{background:rgba(197,155,39,.2);border-color:#C59B27;transform:translateY(-2px)}
 
-/* ─── DIPLOMA: Clases del pergamino ─── */
 .font-gothic{font-family:'UnifrakturMaguntia',serif}
 .font-academic{font-family:'Cormorant Garamond',serif}
 .font-signature{font-family:'Great Vibes',cursive}
@@ -1139,11 +1134,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     radial-gradient(circle at 10% 10%,rgba(180,150,100,.05) 0%,transparent 50%),
     radial-gradient(circle at 90% 90%,rgba(180,150,100,.05) 0%,transparent 50%);
 }
-/* ═══════════════════════════════════════════════════════════════════
-   DIPLOMA CINEMATIC EFFECTS — Glow, Shimmer, Particles, Reveal
-   ═══════════════════════════════════════════════════════════════════ */
 
-/* ─── Diploma card ambient golden glow ─── */
 @keyframes diplomaGlow{
   0%,100%{box-shadow:0 30px 80px rgba(0,0,0,.75),0 0 0 2px rgba(197,155,39,.25),0 0 60px rgba(197,155,39,.06),inset 0 0 0 1px rgba(197,155,39,.02)}
   50%{box-shadow:0 40px 100px rgba(0,0,0,.8),0 0 0 2px rgba(197,155,39,.45),0 0 100px rgba(197,155,39,.14),inset 0 0 0 1px rgba(197,155,39,.06)}
@@ -1152,7 +1143,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   animation:diplomaGlow 5s ease-in-out infinite;
 }
 
-/* ─── Parchment light sweep (desktop only) ─── */
 @keyframes parchmentShine{
   0%{opacity:0;transform:translateX(-100%) translateY(-100%) rotate(45deg)}
   8%{opacity:.12}
@@ -1167,7 +1157,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   border-radius:inherit;
 }
 
-/* ─── Border shimmer sweep ─── */
 @keyframes borderShimmer{
   0%{background-position:-200% 0}
   100%{background-position:200% 0}
@@ -1185,7 +1174,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   -webkit-mask-composite:destination-out;mask-composite:exclude;
 }
 
-/* ─── SVG corner ornament pulse ─── */
 @keyframes cornerPulse{
   0%,100%{opacity:.65;filter:drop-shadow(0 0 1px rgba(212,175,55,.2))}
   50%{opacity:1;filter:drop-shadow(0 0 6px rgba(212,175,55,.55))}
@@ -1197,7 +1185,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .diploma-corner-svg:nth-child(3){animation-delay:1.5s}
 .diploma-corner-svg:nth-child(4){animation-delay:2.25s}
 
-/* ─── Heraldic divider diamond glow ─── */
 @keyframes diamondPulse{
   0%,100%{box-shadow:0 0 2px rgba(192,168,112,.3);border-color:rgba(192,168,112,.6)}
   50%{box-shadow:0 0 10px rgba(192,168,112,.7),0 0 20px rgba(212,175,55,.3);border-color:rgba(212,175,55,.9)}
@@ -1206,18 +1193,15 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   animation:diamondPulse 2.5s ease-in-out infinite;
 }
 
-/* ─── Gothic title: black ─── */
 .diploma-gothic-title{
   color:#1a1a1a;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.08));
 }
 
-/* ─── Signature name ─── */
 .diploma-signature-name{
   opacity:1;text-shadow:0 0 1px rgba(134,106,47,.3);
 }
 
-/* ─── Diploma element reveal (data-reveal compatible) ─── */
 #diplomaCard [data-reveal]{
   opacity:0;transform:translateY(18px);
   transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1);
@@ -1230,7 +1214,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 #diplomaCard [data-reveal="scale"]{transform:scale(.88)}
 #diplomaCard [data-reveal="scale"].revealed{transform:scale(1)}
 
-/* ─── Diploma card entrance ─── */
 @keyframes diplomaCardEnter{
   0%{opacity:0;transform:scale(.82);filter:blur(10px)}
   50%{filter:blur(0)}
@@ -1240,7 +1223,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   animation:diplomaCardEnter .9s cubic-bezier(.16,1,.3,1) forwards;
 }
 
-/* ─── Button entrance stagger ─── */
 @keyframes buttonSlideUp{
   0%{opacity:0;transform:translateY(30px)}
   100%{opacity:1;transform:translateY(0)}
@@ -1250,12 +1232,10 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   animation:buttonSlideUp .7s cubic-bezier(.16,1,.3,1) forwards;
 }
 
-/* ─── Diploma particles container ─── */
 #diplomaParticleLayer{
   position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;
 }
 
-/* ─── Ambient gold aura behind diploma ─── */
 .diploma-aura{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   width:min(600px,80vw);height:min(500px,60vh);
@@ -1268,7 +1248,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   50%{transform:translate(-50%,-50%) scale(1.15);opacity:1}
 }
 
-/* ─── Chapter 6: prevent overflow ─── */
 #chapter-6{overflow-y:auto !important;overflow-x:hidden !important}
 #chapter-6{scrollbar-width:none !important;-ms-overflow-style:none !important}
 #chapter-6::-webkit-scrollbar{width:0 !important;height:0 !important;display:none !important}
@@ -1277,7 +1256,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .print-container{box-shadow:0 30px 80px rgba(0,0,0,.8),0 0 0 2px rgba(197,155,39,.3)}
 
 @media(max-width:620px){
-  /* ─── DIPLOMA SMALL SCREEN TEXT BOOST ─── */
+
   #diplomaCard .font-cinzel{font-size:0.65rem !important}
   #diplomaCard h1.font-gothic{font-size:1.6rem !important;line-height:1.1 !important}
   #diplomaCard p.font-signature{font-size:1.5rem !important}
@@ -1285,7 +1264,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   #diplomaCard .font-sans{font-size:0.55rem !important}
 }
 
-/* ─── PRINT: Solo el diploma, A4 landscape, máxima calidad ─── */
 @media print {
   @page { margin: 0; size: A4 landscape; }
   html, body {
@@ -1294,7 +1272,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  /* Oculta TODO excepto el diploma dentro de chapter 6 */
+
   body > *:not(#documentalViewport),
   #documentalViewport > *:not(#chapter-6),
   #chapter-6 > *:not(.chapter-content),
@@ -1336,7 +1314,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   }
 }
 
-/* ─── TOAST ─── */
 #docToast{
   position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);
   background:rgba(0,0,0,.95);border:1px solid rgba(197,155,39,.4);
@@ -1347,7 +1324,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 }
 #docToast.show{transform:translateX(-50%) translateY(0)}
 
-/* ─── REDUCED MOTION ─── */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .documental-chapter{transition:none!important}
@@ -1359,7 +1335,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   .chapter-title{-webkit-text-fill-color:var(--gold);color:var(--gold);animation:none;filter:none;text-shadow:0 0 30px rgba(197,155,39,.3)}
 }
 
-/* ─── MOBILE ─── */
 @media(max-width:768px){
   .documental-chapter{padding:1rem}
   #chapterDotsDoc{right:.3rem;gap:.6rem}
@@ -1367,46 +1342,46 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
   #docControls{bottom:1rem;right:.5rem;gap:.5rem}
   .doc-ctrl-btn{padding:.4rem .8rem;font-size:.55rem}
   .acta-panel{padding:1.5rem;border-radius:1rem}
-  /* ─── CAPÍTULO 6 MOBILE: evitar overflow, form en una columna ─── */
+
   #chapter-6{padding:.35rem 0 .75rem !important;overflow-y:auto !important;overflow-x:hidden !important;align-items:flex-start !important;justify-content:flex-start !important}
   #chapter-6 .chapter-content{max-height:none !important;overflow-y:visible !important;padding:.62rem .5rem 1rem !important;width:100% !important;max-width:100vw !important}
-  #chapter-6 .chapter-title{font-size:clamp(.95rem,4.7vw,1.35rem) !important;line-height:1 !important;margin:0 0 .28rem !important;letter-spacing:.03em !important;white-space:nowrap !important;position:relative !important;z-index:4 !important}
-  #chapter-6 .chapter-title br{display:none !important}
-  #chapter-6 .gold-line{width:min(230px,76vw) !important;margin:.12rem auto .42rem !important}
-  #chapter-6 .acta-panel{max-width:100% !important;width:calc(100% - .85rem) !important;margin:.55rem auto 0 !important;border-radius:.85rem !important;box-shadow:0 20px 50px rgba(0,0,0,.62),0 0 0 1px rgba(197,155,39,.05) inset !important}
+  #chapter-6 .chapter-title{font-size:clamp(1.05rem,5.4vw,1.65rem) !important;line-height:1.02 !important;margin:0 0 .2rem !important;letter-spacing:.02em !important;white-space:normal !important;position:relative !important;z-index:4 !important;opacity:1 !important;transform:none !important;clip-path:none !important;-webkit-clip-path:none !important;color:var(--gold-light) !important;-webkit-text-fill-color:var(--gold-light) !important;text-shadow:0 0 18px rgba(197,155,39,.38) !important}
+  #chapter-6 .chapter-title br{display:block !important}
+  #chapter-6 .gold-line{width:min(230px,76vw) !important;margin:.18rem auto .32rem !important}
+  #chapter-6 .acta-panel{max-width:100% !important;width:calc(100% - .65rem) !important;margin:.25rem auto 0 !important;border-radius:.9rem !important;box-shadow:0 20px 50px rgba(0,0,0,.62),0 0 0 1px rgba(197,155,39,.05) inset !important}
   #chapter-6 .acta-corner{width:22px !important;height:22px !important;opacity:.42 !important}
   #chapter-6 .acta-corner--tl{top:10px !important;left:10px !important}
   #chapter-6 .acta-corner--tr{top:10px !important;right:10px !important}
   #chapter-6 .acta-corner--bl{bottom:10px !important;left:10px !important}
   #chapter-6 .acta-corner--br{bottom:10px !important;right:10px !important}
-  #chapter-6 .acta-row{flex-direction:column !important;gap:.38rem !important;margin-bottom:.38rem !important}
+  #chapter-6 .acta-row{flex-direction:column !important;gap:.5rem !important;margin-bottom:.5rem !important}
   #chapter-6 .acta-row .acta-field{flex:1 1 auto !important;min-width:0 !important}
-  #chapter-6 .acta-field{margin-bottom:.42rem !important}
-  #chapter-6 .acta-inner{padding:.62rem .62rem .55rem !important}
-  #chapter-6 .acta-input{font-size:.78rem !important;padding:.5rem .68rem !important;border-radius:.55rem !important}
-  #chapter-6 .acta-input::placeholder{font-size:.68rem !important}
-  #chapter-6 .acta-field-icon .acta-input{padding-left:2rem !important}
-  #chapter-6 .acta-field-icon i{left:.6rem !important;font-size:.62rem !important}
-  #chapter-6 .acta-label{font-size:.5rem !important;letter-spacing:.12em !important;margin-bottom:.2rem !important}
-  #chapter-6 .acta-header-title{font-size:.56rem !important;line-height:1.3 !important;letter-spacing:.13em !important;margin-bottom:.25rem !important}
+  #chapter-6 .acta-field{margin-bottom:.55rem !important}
+  #chapter-6 .acta-inner{padding:.78rem .85rem .7rem !important}
+  #chapter-6 .acta-input{font-size:.94rem !important;padding:.7rem .82rem !important;border-radius:.62rem !important}
+  #chapter-6 .acta-input::placeholder{font-size:.86rem !important}
+  #chapter-6 .acta-field-icon .acta-input{padding-left:2.35rem !important}
+  #chapter-6 .acta-field-icon i{left:.72rem !important;font-size:.78rem !important}
+  #chapter-6 .acta-label{font-size:.66rem !important;letter-spacing:.1em !important;margin-bottom:.28rem !important}
+  #chapter-6 .acta-header-title{font-size:.66rem !important;line-height:1.35 !important;letter-spacing:.13em !important;margin-bottom:.3rem !important}
   #chapter-6 .acta-header-divider::before,#chapter-6 .acta-header-divider::after{width:22px !important;opacity:.55 !important}
-  #chapter-6 .acta-preamble{font-size:.64rem !important;line-height:1.35 !important;margin-bottom:.48rem !important}
-  #chapter-6 .legal-brief{margin:0 0 .45rem !important}
-  #chapter-6 .legal-lbl{font-size:.45rem !important;padding:.25rem .42rem !important;border-radius:.34rem !important;letter-spacing:.1em !important}
-  #chapter-6 .legal-consent{font-size:.56rem !important;line-height:1.22 !important;gap:.42rem !important;margin:0 0 .42rem !important}
-  #chapter-6 .legal-consent input{transform:scale(.82) !important;margin-top:.02rem !important}
+  #chapter-6 .acta-preamble{font-size:.76rem !important;line-height:1.45 !important;margin-bottom:.58rem !important}
+  #chapter-6 .legal-brief{margin:0 0 .58rem !important}
+  #chapter-6 .legal-lbl{font-size:.52rem !important;padding:.32rem .55rem !important;border-radius:.42rem !important;letter-spacing:.1em !important}
+  #chapter-6 .legal-consent{font-size:.74rem !important;line-height:1.28 !important;gap:.5rem !important;margin:0 0 .55rem !important}
+  #chapter-6 .legal-consent input{transform:scale(1) !important;margin-top:.08rem !important}
   #chapter-6 #fNameMsg,#chapter-6 #fDeptoMsg,#chapter-6 #fMuniMsg{min-height:0 !important;margin-top:0 !important;font-size:0 !important}
-  #chapter-6 .acta-turnstile{margin:0 0 .38rem !important;transform:scale(.9) !important;transform-origin:center !important}
-  #chapter-6 .acta-submit{font-size:.62rem !important;padding:.58rem !important;border-radius:.55rem !important;letter-spacing:.14em !important;margin-top:.05rem !important}
-  #chapter-6 .acta-header{margin-bottom:.46rem !important}
+  #chapter-6 .acta-turnstile{margin:0 0 .5rem !important;transform:scale(.96) !important;transform-origin:center !important}
+  #chapter-6 .acta-submit{font-size:.78rem !important;padding:.72rem !important;border-radius:.62rem !important;letter-spacing:.12em !important;margin-top:.05rem !important}
+  #chapter-6 .acta-header{margin-bottom:.58rem !important}
   #chapter-6 .acta-seal{width:45px !important;height:45px !important}
-  /* ─── DIPLOMA MOBILE (inside chapter 6) ─── */
+
   #diplomaCard{max-width:100vw !important;width:100% !important;height:auto !important;aspect-ratio:auto !important;margin:0 !important;border-radius:2px !important;min-height:auto !important}
   #diplomaCard .relative.z-10{padding-left:0.15rem !important;padding-right:0.15rem !important;padding-top:0 !important;padding-bottom:0 !important}
   #diplomaCard .absolute.inset-2{border-width:1px !important}
   #diplomaCard .absolute.inset-\[0\.35rem\]{display:none !important}
   #diplomaCard svg.absolute{width:1.5rem !important;height:1.5rem !important}
-  /* Diplomas actions: sticky at bottom on mobile so they're always reachable */
+
   #diplomaSection .diploma-actions{position:sticky;bottom:0;z-index:10;background:linear-gradient(transparent,rgba(8,11,18,.95) 30%,rgba(8,11,18,.98) 60%);padding:1rem 0.5rem 0.75rem !important;margin-top:0.25rem !important}
   .diploma-actions{flex-direction:row !important;flex-wrap:wrap !important;max-width:100% !important;gap:0.4rem !important;justify-content:center !important}
   .diploma-btn-h{font-size:0.65rem !important;padding:0.55rem 0.9rem !important;min-height:42px !important;flex:1 1 auto !important;min-width:0 !important;max-width:none !important}
@@ -1418,32 +1393,22 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 </head>
 <body>
 
-<!-- PRELOADER -->
 <div id="preloader"><div class="preloader-seal"><i class="fa-solid fa-feather-pointed"></i></div></div>
 
-<!-- FILM GRAIN -->
 <canvas id="filmGrain" aria-hidden="true"></canvas>
 
-<!-- PROGRESS BAR -->
 <div id="chapterProgress" style="width:0%"></div>
 
-<!-- CONTROLS -->
 <div id="docControls" style="display:none;"></div>
 
-<!-- CHAPTER DOTS -->
 <div id="chapterDotsDoc"></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-   VIEWPORT — all chapters live here, only one visible at a time
-   ═══════════════════════════════════════════════════════════════ -->
 <div id="documentalViewport">
 
-  <!-- ═══ CAMPAIGN LOGO ═══ -->
   <div id="campaignLogo" style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:100;text-align:center;pointer-events:none;">
     <span style="font-family:Cinzel,serif;font-size:clamp(8px,1.8vw,10px);font-weight:900;color:#C59B27;letter-spacing:.18em;text-transform:uppercase;text-shadow:0 0 25px rgba(0,0,0,.95);">Cepeda 2026</span>
   </div>
 
-  <!-- CAPÍTULO 0: PRÓLOGO -->
   <section class="documental-chapter active" id="chapter-0" data-chapter="0">
     <div class="prologue-bg-1" style="background-image:url('https://minutobucket.s3.us-east-2.amazonaws.com/images/Iv%C3%A1n%20Cepeda%20como%20l%C3%ADder%20juvenil_20260528_201529.webp');" data-fallback="assets/images/cepeda-lider-juvenil.webp"></div>
     <div class="prologue-bg-2" style="background-image:url('https://minutobucket.s3.us-east-2.amazonaws.com/images/Iv%C3%A1n%20Cepeda%20ni%C3%B1o%20y%20su%20padre%20Manuel%20Cepeda_20260528_201147.webp');" data-fallback="assets/images/cepeda-nino-padre.webp"></div>
@@ -1465,7 +1430,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     <div class="scroll-hint"><span>Continúa</span><div class="hint-arrows"><i class="fa-solid fa-chevron-down"></i><i class="fa-solid fa-chevron-down"></i></div></div>
   </section>
 
-  <!-- CAPÍTULO 1: LA HERIDA -->
   <section class="documental-chapter" id="chapter-1" data-chapter="1">
     <div class="chapter-bg vignette-heavy" id="bg-1" style="background-image:url('https://minutobucket.s3.us-east-2.amazonaws.com/images/Iv%C3%A1n%20Cepeda%20joven%20junto%20a%20Manuel%20Cepeda_20260528_202027.webp');" data-fallback="assets/images/cepeda-joven-manuel.webp"></div>
     <div class="particle-layer" id="particles1"></div>
@@ -1482,7 +1446,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     <div class="scroll-hint"><span>Continúa</span><div class="hint-arrows"><i class="fa-solid fa-chevron-down"></i><i class="fa-solid fa-chevron-down"></i></div></div>
   </section>
 
-  <!-- CAPÍTULO 2: LA TIERRA -->
   <section class="documental-chapter" id="chapter-2" data-chapter="2">
     <div class="chapter-bg" id="bg-2" style="background-image:url('https://images.unsplash.com/photo-1532443603613-61fa154742cd?fm=jpg&amp;q=80&amp;w=3000');" data-fallback="assets/images/colombia-paisaje.jpg"></div>
     <div class="particle-layer" id="particles2"></div>
@@ -1499,7 +1462,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     <div class="scroll-hint"><span>Continúa</span><div class="hint-arrows"><i class="fa-solid fa-chevron-down"></i><i class="fa-solid fa-chevron-down"></i></div></div>
   </section>
 
-  <!-- CAPÍTULO 3: LA LUCHA -->
   <section class="documental-chapter" id="chapter-3" data-chapter="3">
     <div class="chapter-bg" id="bg-3" style="background-image:url('https://ivancepedacastro.com/wp-content/uploads/2019/11/Ivanaaaaa.jpeg');" data-fallback="assets/images/cepeda-retrato.jpg"></div>
     <div class="particle-layer" id="particles3"></div>
@@ -1518,7 +1480,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     <div class="scroll-hint"><span>Continúa</span><div class="hint-arrows"><i class="fa-solid fa-chevron-down"></i><i class="fa-solid fa-chevron-down"></i></div></div>
   </section>
 
-  <!-- CAPÍTULO 4: EL DIÁLOGO — 2-col on desktop -->
   <section class="documental-chapter" id="chapter-4" data-chapter="4">
     <div class="aurora-container">
       <div class="aurora-blob aurora-blob--gold" style="--o:0.22;"></div>
@@ -1528,7 +1489,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     <div class="particle-layer" id="particles4"></div>
     <div class="floating-names" id="floatingNames"></div>
     <div class="chapter-content dialogo-grid">
-      <!-- Left column: title, counter, ticker, text -->
+
       <div class="dialogo-col--left">
         <h2 class="chapter-title" data-reveal>El Diálogo</h2>
         <div class="gold-line" id="line-4"></div>
@@ -1537,7 +1498,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
           <div class="live-counter" id="liveCounter" style="margin-top:.5rem;">0</div>
         </div>
         <p class="chapter-subtitle" style="margin-top:0.15rem;" data-reveal>Actas firmadas en toda Colombia</p>
-        <!-- Live signature ticker -->
+
         <div class="signature-ticker-wrap" id="signatureTickerWrap">
           <div class="signature-ticker" id="signatureTicker"></div>
         </div>
@@ -1546,7 +1507,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
           <p>Esto no es una campaña. <span style="color:#C59B27;font-weight:700;font-style:italic;font-size:115%;text-shadow:0 0 20px rgba(197,155,39,.3);">Es un país que decide dialogar.</span></p>
         </div>
       </div>
-      <!-- Right column: map with live pulse dots -->
+
       <div class="dialogo-col--right">
         <div id="mapaContainer" style="width:100%;max-width:580px;filter:drop-shadow(0 0 20px rgba(197,155,39,.15));min-height:340px;display:flex;align-items:center;justify-content:center;position:relative;">
           <div id="mapaLoading" style="color:var(--text-dim);font-family:'Cinzel',serif;font-size:.65rem;letter-spacing:.15em;">CARGANDO MAPA…</div>
@@ -1557,7 +1518,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
     <div class="scroll-hint"><span>Continúa</span><div class="hint-arrows"><i class="fa-solid fa-chevron-down"></i><i class="fa-solid fa-chevron-down"></i></div></div>
   </section>
 
-  <!-- CAPÍTULO 5: LAS PROPUESTAS — Horizontal Swipe -->
   <section class="documental-chapter" id="chapter-5" data-chapter="5">
     <div class="aurora-container">
       <div class="aurora-blob aurora-blob--gold" style="--o:0.16;"></div>
@@ -1570,7 +1530,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
       <div class="gold-line" id="line-5" style="margin:.8rem auto;"></div>
       <div class="propuestas-carousel" id="propCarousel" style="flex:1;display:flex;align-items:stretch;width:100%;">
         <div class="propuestas-track" id="propTrack">
-          <!-- Card 0: Mi Casa Propia -->
+
           <div class="prop-card--full" data-prop="0">
             <div class="prop-icon-wrap"><i class="fa-solid fa-house-chimney"></i></div>
             <h4>Mi Casa Propia</h4>
@@ -1578,7 +1538,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
             <div class="prop-stat-label">Viviendas Nuevas</div>
             <p class="prop-desc">Un <b>millón de viviendas</b> sin cuota inicial para familias de estratos 1 a 4. Crédito a <b style="color:#C59B27;">0% de interés</b> con el Banco Agrario. <span class="prop-gold-accent">Tener techo propio no puede ser un lujo.</span></p>
           </div>
-          <!-- Card 1: Mano Firme -->
+
           <div class="prop-card--full" data-prop="1">
             <div class="prop-icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
             <h4>Mano Firme</h4>
@@ -1586,7 +1546,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
             <div class="prop-stat-label">Tolerancia al Crimen</div>
             <p class="prop-desc">Diálogo sí, pero contra las mafias: <b>dureza total y sin miedo</b>. Persecución real a las estructuras criminales con toda la <span class="prop-gold-accent">fuerza legítima del Estado.</span></p>
           </div>
-          <!-- Card 2: Educación Gratuita -->
+
           <div class="prop-card--full" data-prop="2">
             <div class="prop-icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
             <h4>Educación Gratuita</h4>
@@ -1594,7 +1554,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
             <div class="prop-stat-label">Cobertura Pública</div>
             <p class="prop-desc"><b>Educación pública gratuita</b> desde la primera infancia hasta la universidad. Reforma del ICETEX con condonación real para <span class="prop-gold-accent">quienes no puedan pagar.</span></p>
           </div>
-          <!-- Card 3: Salud Digna -->
+
           <div class="prop-card--full" data-prop="3">
             <div class="prop-icon-wrap"><i class="fa-solid fa-heart-pulse"></i></div>
             <h4>Salud Digna</h4>
@@ -1603,14 +1563,13 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
             <p class="prop-desc"><b>Salud preventiva y hospitalaria</b> sin barreras. Medicamentos a precios justos. <span class="prop-gold-accent">Cero paseo de la muerte</span> para pacientes crónicos — atención inmediata sin excusas.</p>
           </div>
         </div>
-        <!-- Swipe hint -->
+
         <div class="prop-swipe-hint" id="propSwipeHint"><span>Desliza</span><i class="fa-solid fa-arrow-right"></i></div>
       </div>
     </div>
     <div class="scroll-hint"><span>Continúa</span><div class="hint-arrows"><i class="fa-solid fa-chevron-down"></i><i class="fa-solid fa-chevron-down"></i></div></div>
   </section>
 
-  <!-- CAPÍTULO 6: EL ACTA -->
   <section class="documental-chapter" id="chapter-6" data-chapter="6">
     <div class="aurora-container" style="position:fixed;inset:0;pointer-events:none;">
       <div class="aurora-blob aurora-blob--gold" style="--o:0.12;"></div>
@@ -1622,20 +1581,20 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
       <div class="gold-line" id="line-6" style="margin:.25rem auto .45rem;"></div>
 
       <div class="acta-panel" id="actaPanel">
-        <!-- Corner brackets -->
+
         <div class="acta-corner acta-corner--tl"></div>
         <div class="acta-corner acta-corner--tr"></div>
         <div class="acta-corner acta-corner--bl"></div>
         <div class="acta-corner acta-corner--br"></div>
         <div class="acta-inner">
-          <!-- Ceremonial Header -->
+
           <div class="acta-header">
             <div class="acta-header-title">Acta Simbólica de Compromiso Nacional</div>
             <div class="acta-header-divider"><span>&#9670;</span></div>
           </div>
-          <!-- Preamble -->
+
           <p class="acta-preamble">Por la Vida, la Paz y la Soberanía de Colombia, expreso de forma libre y simbólica mi apoyo al diálogo nacional.</p>
-          <!-- Form -->
+
           <form id="actaForm" autocomplete="off">
             <div class="acta-field acta-field-icon" style="margin-bottom:.85rem;">
               <label class="acta-label" for="fName">Nombre para el diploma <span class="required-star">*</span></label>
@@ -1677,25 +1636,17 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
         </div>
       </div>
 
-      <!-- ═══════════════════════════════════════════════════════════════ -->
-      <!-- DIPLOMA SECTION — visible after signing the acta               -->
-      <!-- ═══════════════════════════════════════════════════════════════ -->
       <div id="diplomaSection" style="display:none;width:100%;position:relative;z-index:2;">
 
-        <!-- ═══ PARTICLE LAYER: gold embers rising ═══ -->
         <div id="diplomaParticleLayer" class="particle-layer" aria-hidden="true" style="position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;"></div>
 
-        <!-- ═══ AMBIENT GOLD AURA behind diploma ═══ -->
         <div class="diploma-aura" aria-hidden="true"></div>
 
-        <!-- DIPLOMA: Pergamino -->
         <div id="diplomaCard" class="diploma-card-glow diploma-border-shimmer print-container relative w-full parchment-bg shadow-2xl rounded-sm border border-[#dfca97]/40 p-[10px] sm:p-10 text-slate-900 overflow-hidden flex-col justify-between" style="display:none;max-width:960px;margin:0 auto;">
 
-          <!-- MARCO ORNAMENTAL INTEGRADO (Pure SVG & CSS) -->
           <div class="absolute inset-2 sm:inset-5 border-[2px] border-[#c0a870] pointer-events-none rounded-sm"></div>
           <div class="absolute inset-[0.35rem] sm:inset-6 border border-[#e5d4a7]/60 pointer-events-none rounded-sm"></div>
 
-          <!-- Esquinas Ornamentadas en SVG -->
           <svg class="diploma-corner-svg absolute top-2 sm:top-5 left-2 sm:left-5 w-8 sm:w-14 h-8 sm:h-14 text-[#c0a870]" viewBox="0 0 100 100" fill="currentColor">
               <rect x="0" y="0" width="8" height="100" />
               <rect x="0" y="0" width="100" height="8" />
@@ -1725,16 +1676,13 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
               <path d="M60,0 Q60,25 100,25" fill="none" stroke="currentColor" stroke-width="3"/>
           </svg>
 
-          <!-- CONTENIDO DEL DIPLOMA -->
           <div class="relative z-10 flex flex-col justify-between h-full py-1 sm:py-2 px-1 sm:px-6 text-center select-none">
 
-            <!-- CABECERA DE LA ORDEN CIVIL -->
             <div>
                 <h2 class="font-cinzel text-[10px] sm:text-[10px] tracking-[0.2em] text-slate-800 font-bold" data-reveal>
                     CONSEJO SUPREMO DE LA COLOMBIANIDAD
                 </h2>
 
-                <!-- Divisor heráldico con diamante pulsante -->
                 <div class="flex items-center justify-center gap-2 mt-1.5" data-reveal>
                     <div class="w-10 sm:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#c0a870] gold-line visible" style="max-width:60px;margin:0"></div>
                     <div class="diploma-diamond w-1.5 h-1.5 rotate-45 border border-[#c0a870] bg-[#fbf9f1]"></div>
@@ -1742,13 +1690,11 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
                 </div>
             </div>
 
-            <!-- CUERPO DECLARATORIO PRINCIPAL -->
             <div class="flex-1 flex flex-col justify-center py-2 sm:py-3 mb-3 sm:mb-5">
                 <p class="font-academic italic text-[13px] sm:text-[13px] leading-relaxed max-w-[680px] mx-auto tracking-wide" style="color:#c8b088;" data-reveal>
                     Donde ruge el jaguar, nace la patria.
                 </p>
 
-                <!-- TÍTULO EN LETRA GÓTICA IMPERIAL -->
                 <h1 class="diploma-gothic-title font-gothic text-3xl sm:text-3.5xl lg:text-4xl my-1 sm:my-2 select-none leading-none tracking-wide" data-reveal="scale">
                     Honor, Soberanía y Patria
                 </h1>
@@ -1757,14 +1703,12 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
                     SE DECLARA EN GLORIA Y MAJESTAD A:
                 </p>
 
-                <!-- NOMBRE DEL EXALTADO (DINÁMICO) -->
                 <div class="my-1 sm:my-1.5 border-b border-[#e5d4a7]/80 w-fit mx-auto px-6 sm:px-10 pb-0.5 relative" data-reveal="scale">
                     <p id="certName" class="diploma-signature-name font-signature text-3xl sm:text-3xl lg:text-4xl text-amber-900 tracking-wide">
                         Tu Nombre Aquí
                     </p>
                 </div>
 
-                <!-- TEXTO DE MÉRITO -->
                 <div class="max-w-[620px] mx-auto mt-1.5 sm:mt-2.5" data-reveal>
                     <p id="certMerit" class="font-academic text-[11px] sm:text-[11px] text-slate-700 leading-relaxed italic">
                         Por alzar su voz con verdad y firmeza, por luchar sin odio y sin miedo, y por defender la vida como el acto más revolucionario de nuestra tierra colombiana.
@@ -1772,11 +1716,9 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
                 </div>
             </div>
 
-            <!-- SECCIÓN DE FIRMAS -->
             <div class="mt-auto pb-2 sm:pb-8" data-reveal>
                 <div class="grid grid-cols-2 items-end gap-5 sm:gap-32 max-w-[550px] mx-auto">
 
-                    <!-- FIRMA 1 -->
                     <div class="text-center">
                         <p id="certSign1" class="diploma-signature-name font-signature text-lg sm:text-lg text-[#866a2f] opacity-90 leading-none mb-0 pb-0">
                             Dios
@@ -1788,7 +1730,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
                         <p class="font-sans text-[6px] sm:text-[5px] text-slate-400">Veeduría Suprema del Universo</p>
                     </div>
 
-                    <!-- FIRMA 2 -->
                     <div class="text-center">
                         <p id="certSign2" class="diploma-signature-name font-signature text-lg sm:text-lg text-[#866a2f] opacity-90 leading-none mb-0 pb-0">
                             Diomedes Díaz
@@ -1806,39 +1747,28 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
           </div>
         </div>
 
-        <!-- Action buttons -->
         <div class="diploma-actions" id="diplomaActions" style="display:none;margin-top:1.25rem;">
           <button class="diploma-btn-h diploma-btn-h--primary diploma-btn-entering" id="btnWhatsApp" style="animation-delay:.5s"><i class="fa-brands fa-whatsapp"></i><span>Compartir</span></button>
           <button class="diploma-btn-h diploma-btn-h--secondary diploma-btn-entering" id="btnDownload" style="animation-delay:.65s"><i class="fa-solid fa-download"></i><span>Descargar</span></button>
         </div>
 
       </div>
-      <!-- /diplomaSection -->
 
     </div>
   </section>
 </div>
 
-<!-- ROTATE HINT: overlay que fuerza orientación vertical en móviles -->
 <div id="rotateHint" style="position:fixed;inset:0;z-index:99990;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity .5s ease;">
   <i class="fa-solid fa-mobile-screen-button" style="color:#C59B27;font-size:3rem;animation:rotateHint 2s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(197,155,39,.4));"></i>
   <span style="font-family:'Cinzel',serif;font-size:clamp(.8rem,2.5vw,1.1rem);color:#F3D26C;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 30px rgba(197,155,39,.2);">Gira tu teléfono</span>
   <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.65rem,1.8vw,.85rem);color:rgba(255,255,255,.35);text-align:center;max-width:280px;line-height:1.5;">La experiencia documental se vive en vertical</p>
 </div>
 
-<!-- TOAST -->
 <div id="docToast"><i class="fa-solid fa-stamp"></i> <span id="docToastMsg"></span></div>
 
-<!-- ═══════════════════════════════════════════════════════════════
-   ENGINE — Full-Screen Cinematic Transition System
-   ═══════════════════════════════════════════════════════════════ -->
 <script>
 (function(){'use strict';
 
-/* ═══════════════════════════════════════════════════════════════════
-   IMAGE FALLBACK — external URLs kept as primary; local copies on error.
-   Downloads of all 5 images live in assets/images/ — run on first load.
-   ═══════════════════════════════════════════════════════════════════ */
 (function() {
   var FAILED_KEY = 'doc-img-failed';
   var knownFailed = {};
@@ -1852,27 +1782,24 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
       if (!match || !fallback) return;
       var url = match[1];
 
-      // Already failed this session → local immediately
       if (knownFailed[url]) {
         el.style.backgroundImage = 'url("' + fallback + '")';
         return;
       }
 
-      // Probe external URL
       var t = new Image();
-      t.onload  = function() { /* external OK — keep it */ };
+      t.onload  = function() {  };
       t.onerror = function() {
         el.style.backgroundImage = 'url("' + fallback + '")';
         knownFailed[url] = true;
         try { sessionStorage.setItem(FAILED_KEY, JSON.stringify(knownFailed)); } catch(e) {}
-        console.warn('🖼️ image fallback → local:', url.substring(0,60) + '…');
+
       };
       t.src = url;
     })(els[i]);
   }
 })();
 
-// ─── SUPABASE ───
 var DB = null;
 try {
   var sc = window.supabase;
@@ -1882,14 +1809,10 @@ try {
 } catch(e) {}
 var HAS_SB = DB && typeof DB.from === 'function';
 
-/* ═══════════════════════════════════════════════════════════════════
-   TRANSITION ENGINE — Zero scroll. Cinematic transitions between screens.
-   ═══════════════════════════════════════════════════════════════════ */
 var TOTAL = 7;
 var currentChapter = 0;
 var isTransitioning = false;
 
-/* ─── AUTO-ADVANCE TIMER ─── */
 var autoAdvanceTimer = null;
 var autoAdvanceActive = true;
 
@@ -1900,7 +1823,7 @@ function startAutoAdvance() {
   autoAdvanceTimer = setTimeout(function() {
     if (!autoAdvanceActive || isTransitioning || currentChapter >= TOTAL - 1) return;
     transitionTo(currentChapter + 1, 1);
-    startAutoAdvance(); // schedule next
+    startAutoAdvance();
   }, AUTO_ADVANCE_SEC * 1000);
 }
 function stopAutoAdvance() {
@@ -1916,10 +1839,8 @@ function hideAllScrollHints() {
 }
 
 function pauseAutoAdvance() {
-  // User took control — stop auto-advance permanently
   autoAdvanceActive = false;
   stopAutoAdvance();
-  // Hide scroll hint since user knows how to navigate
   hideAllScrollHints();
 }
 
@@ -1932,30 +1853,25 @@ function transitionTo(target, direction) {
   var entering = document.getElementById('chapter-' + target);
   if (!leaving || !entering) return;
 
-  // Cancel any active typewriter from previous chapter
   if (_typewriterActive !== null) {
     clearTimeout(_typewriterActive);
     _typewriterActive = null;
   }
 
-  // ─── First time leaving chapter 0: hide scroll-hint forever ───
   if (currentChapter === 0) {
     hideAllScrollHints();
   }
 
-  // Restore partially-typed paragraphs in the leaving chapter immediately
   if (currentChapter >= 1 && currentChapter <= 4) {
     completeChapterBody(document.getElementById('chapter-' + currentChapter));
   }
 
   isTransitioning = true;
 
-  // Disable pointer events on body during transition
   document.body.style.pointerEvents = 'none';
   document.getElementById('docControls').style.pointerEvents = 'auto';
   document.getElementById('chapterDotsDoc').style.pointerEvents = 'auto';
 
-  // ─── Prepare entering ───
   entering.style.transition = 'none';
   entering.style.opacity = '0';
   entering.style.transform = dir === 1
@@ -1964,23 +1880,20 @@ function transitionTo(target, direction) {
   entering.classList.add('active');
   entering.style.zIndex = '3';
   entering.style.pointerEvents = 'none';
-  void entering.offsetHeight; // force reflow
+  void entering.offsetHeight;
 
-  // ─── Exit ───
   leaving.style.transition = 'opacity 0.5s cubic-bezier(0.4,0,0.2,1), transform 0.5s cubic-bezier(0.4,0,0.2,1)';
   leaving.style.opacity = '0';
   leaving.style.transform = dir === 1
     ? 'translateY(-30px) scale(0.96)'
     : 'translateY(30px) scale(0.96)';
 
-  // ─── Enter (150ms overlap for smooth crossfade) ───
   setTimeout(function() {
     entering.style.transition = 'opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1)';
     entering.style.opacity = '1';
     entering.style.transform = 'translateY(0) scale(1)';
   }, 150);
 
-  // ─── Cleanup ───
   setTimeout(function() {
     leaving.classList.remove('active');
     leaving.style.zIndex = '1';
@@ -2000,16 +1913,10 @@ function transitionTo(target, direction) {
   }, 850);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   INPUT HANDLERS — Wheel, Touch, Keyboard (NO scroll!)
-   ═══════════════════════════════════════════════════════════════════ */
-
-// ─── WHEEL (accumulated for smooth deliberate swipes) ───
 var wheelAccum = 0;
 var wheelCooldown = false;
 
 window.addEventListener('wheel', function(e) {
-  // Allow scroll within internally scrollable chapters (acta, diploma on mobile)
   var t = e.target;
   while (t && t !== document.body) {
     if (t.classList.contains('documental-chapter')) {
@@ -2037,7 +1944,6 @@ window.addEventListener('wheel', function(e) {
   }
 }, { passive: false });
 
-// ─── TOUCH ───
 var touchStartY = 0;
 var touchStartTarget = null;
 window.addEventListener('touchstart', function(e) {
@@ -2049,16 +1955,14 @@ window.addEventListener('touchstart', function(e) {
 window.addEventListener('touchend', function(e) {
   if (isTransitioning || _scrollLocked) return;
 
-  // Don't transition if touch was inside the swipe carousel
   var t2 = touchStartTarget;
   while (t2 && t2 !== document.body) {
     if (t2.id === 'propCarousel' || t2.closest && t2.closest('#propCarousel')) {
-      return; // let carousel handle its own swipe
+      return;
     }
     t2 = t2.parentElement;
   }
 
-  // Don't transition if the touch was inside a scrollable chapter
   var t = touchStartTarget;
   while (t && t !== document.body) {
     if (t.classList.contains('documental-chapter')) {
@@ -2068,7 +1972,7 @@ window.addEventListener('touchend', function(e) {
         var atBottom = t.scrollTop + t.clientHeight >= t.scrollHeight - 3;
         var isVerticalScroll = Math.abs(touchStartY - e.changedTouches[0].clientY) > 20;
         if (isVerticalScroll && ((touchStartY > e.changedTouches[0].clientY && !atBottom) || (touchStartY < e.changedTouches[0].clientY && !atTop))) {
-          return; // Let native scroll handle it
+          return;
         }
       }
       break;
@@ -2083,7 +1987,6 @@ window.addEventListener('touchend', function(e) {
   }
 }, { passive: true });
 
-// ─── KEYBOARD ───
 window.addEventListener('keydown', function(e) {
   if (isTransitioning || _scrollLocked) return;
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
@@ -2098,12 +2001,8 @@ window.addEventListener('keydown', function(e) {
   }
 });
 
-// ─── PREVENT BROWSER DEFAULT SCROLL ───
 document.addEventListener('scroll', function(e) { window.scrollTo(0, 0); }, { passive: false });
 
-/* ═══════════════════════════════════════════════════════════════════
-   FILM GRAIN
-   ═══════════════════════════════════════════════════════════════════ */
 (function() {
   var canvas = document.getElementById('filmGrain');
   var ctx = canvas.getContext('2d');
@@ -2119,16 +2018,10 @@ document.addEventListener('scroll', function(e) { window.scrollTo(0, 0); }, { pa
   setInterval(drawGrain, 200);
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
-   PRELOADER
-   ═══════════════════════════════════════════════════════════════════ */
 window.addEventListener('load', function() {
   setTimeout(function() { document.getElementById('preloader').classList.add('hidden'); }, 800);
 });
 
-/* ═══════════════════════════════════════════════════════════════════
-   AUDIO — Gaitán + Himno Nacional (HTML5, en capas, nunca se paran)
-     ═══════════════════════════════════════════════════════════════════ */
   var gaitanAudio = (function() {
     var a = document.createElement('audio'); a.preload='auto'; a.loop=true;
     a.src='assets/audio/gaitan.mp3'; a.volume=0.55;
@@ -2141,7 +2034,6 @@ window.addEventListener('load', function() {
   })();
   var audioMuted = localStorage.getItem('doc-muted') === '1';
 
-  // Track what's currently playing to avoid double-starts
   var gaitanPlaying = false;
   var himnoPlaying = false;
 
@@ -2152,21 +2044,18 @@ window.addEventListener('load', function() {
     if (p && p.catch) p.catch(function(){});
   }
 
-  // Start Gaitán — only once, loops forever
   function startGaitan() {
     if (gaitanPlaying) return;
     gaitanPlaying = true;
     playIfNeeded(gaitanAudio, 0.55);
   }
 
-  // Start Himno — only once, loops forever
   function startHimno() {
     if (himnoPlaying) return;
     himnoPlaying = true;
     playIfNeeded(himnoAudio, 0.10);
   }
 
-  // ─── MUTE TOGGLE ───
   function setMuted(m) {
     audioMuted = m;
     localStorage.setItem('doc-muted', m ? '1' : '0');
@@ -2183,13 +2072,11 @@ window.addEventListener('load', function() {
     }
   }
   setMuted(audioMuted);
-  // ─── Audio triggers per chapter — himno + gaitán ya suenan desde el inicio ───
   function enterChapterAudio(ch) {
     startHimno();
     startGaitan();
   }
 
-  // Disparar audio en la primera interacción del usuario (autoplay policy)
   var _audioPrimed = false;
   function primeAudio() {
     if (_audioPrimed) return;
@@ -2206,13 +2093,9 @@ window.addEventListener('load', function() {
   document.addEventListener('touchstart', primeAudio);
   document.addEventListener('wheel', primeAudio);
 
-  // Legacy helpers (mantenidos por compatibilidad)
   function playAudio(a, vol) { if (audioMuted) return; try { a.volume=Math.min(vol||.5,1); a.currentTime=0; var p=a.play(); if(p&&p.catch)p.catch(function(){}); } catch(e) {} }
   function stopAudio(a) { a.pause(); a.currentTime=0; }
 
-  /* ═══════════════════════════════════════════════════════════════════
-     TOAST
-     ═══════════════════════════════════════════════════════════════════ */
 var toastTimeout;
 function showToast(msg) {
   var t = document.getElementById('docToast');
@@ -2222,9 +2105,6 @@ function showToast(msg) {
   toastTimeout = setTimeout(function() { t.classList.remove('show'); }, 2500);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   DOTS + PROGRESS
-   ═══════════════════════════════════════════════════════════════════ */
 var dotsContainer = document.getElementById('chapterDotsDoc');
 for (var i = 0; i < TOTAL; i++) {
   (function(idx) {
@@ -2244,9 +2124,6 @@ function updateProgress() {
   document.getElementById('chapterProgress').style.width = ((currentChapter) / (TOTAL - 1) * 100) + '%';
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   STARFIELDS
-   ═══════════════════════════════════════════════════════════════════ */
 function createStarfield(containerId, count) {
   var el = document.getElementById(containerId);
   if (!el) return;
@@ -2264,9 +2141,6 @@ function createStarfield(containerId, count) {
 }
 createStarfield('starfield0', 80);
 
-/* ═══════════════════════════════════════════════════════════════════
-   PARTICLES
-   ═══════════════════════════════════════════════════════════════════ */
 function createParticles(containerId, type, count) {
   var el = document.getElementById(containerId);
   if (!el) return;
@@ -2291,13 +2165,6 @@ createParticles('particles5', 'ember', 25);
 createParticles('particles6', 'ember', 15);
 createParticles('particles7', 'ember', 20);
 
-/* ═══════════════════════════════════════════════════════════════════
-   TYPEWRITER — Cinematic type-delete-retype for Prologue only.
-   Body text in chapters 1-4 uses staggered cinematic reveal (preserves HTML).
-   Scroll is blocked for the first 3.2s after entering a chapter.
-   ═══════════════════════════════════════════════════════════════════ */
-
-// ─── Prologue typewriter — simple string approach, robust correction ───
 var prologuePhrase = '"Florecerán todos los árboles"';
 var prologueEl = document.getElementById('prologueText');
 var prologueAttr = document.getElementById('prologueAttr');
@@ -2309,31 +2176,25 @@ function typePrologue() {
   _prologueTyped = true;
 
   var correctText = prologuePhrase;
-  var WRONG_AT = 23; // position in correctText where we "type wrong" (the 'r' in "árboles")
-  var WRONG_CHAR = 't'; // what we type instead
-  var PAUSE_AFTER_WRONG = 250; // brief hesitation before correcting
+  var WRONG_AT = 23;
+  var WRONG_CHAR = 't';
+  var PAUSE_AFTER_WRONG = 250;
   var _cancelled = false;
 
-  // We work with innerText on the text before the cursor
-  // The cursor is a span element, so innerText gives us just the text
   function getTyped() { return prologueEl.innerText; }
   function setTyped(s) {
-    // Preserve only the text before the cursor; innerText handles this
-    // Actually, innerText of the parent includes the cursor's text (empty)
-    // So we clear all text nodes and set the text before cursor
     var kids = [].slice.call(prologueEl.childNodes);
     for (var k = kids.length - 1; k >= 0; k--) {
       if (kids[k].nodeType === 3) { prologueEl.removeChild(kids[k]); }
-      else if (kids[k] === prologueCursor) continue; // don't remove cursor
-      else if (kids[k].nodeType === 1) continue; // keep spans (cursor)
+      else if (kids[k] === prologueCursor) continue;
+      else if (kids[k].nodeType === 1) continue;
     }
-    // Insert text node before cursor
     var tn = document.createTextNode(s);
     prologueEl.insertBefore(tn, prologueCursor);
   }
 
   var i = 0;
-  var phase = 'typing'; // 'typing' | 'wrong_pause' | 'backspace' | 'retype'
+  var phase = 'typing';
   var deleteCount = 0;
 
   function step() {
@@ -2342,7 +2203,6 @@ function typePrologue() {
 
     if (phase === 'typing') {
       if (i >= correctText.length) {
-        // Done — hide cursor, show attribution
         prologueCursor.style.display = 'none';
         if (prologueAttr) prologueAttr.style.opacity = '1';
         var line = document.getElementById('line-0');
@@ -2351,7 +2211,6 @@ function typePrologue() {
       }
 
       if (i === WRONG_AT) {
-        // Type wrong char
         setTyped(typed + WRONG_CHAR);
         i++;
         phase = 'wrong_pause';
@@ -2359,7 +2218,6 @@ function typePrologue() {
         return;
       }
 
-      // Normal typing
       setTyped(typed + correctText.charAt(i));
       i++;
       var delay = 55 + Math.random() * 45;
@@ -2368,23 +2226,19 @@ function typePrologue() {
       setTimeout(step, delay);
     }
     else if (phase === 'wrong_pause') {
-      // Backspace the wrong char (delete 1 char)
       phase = 'backspace';
       deleteCount = 1;
       setTyped(typed.slice(0, -1));
       setTimeout(step, 90);
     }
     else if (phase === 'backspace') {
-      // Now retype correct char
       phase = 'retype';
       var ch = correctText.charAt(WRONG_AT);
       setTyped(typed + ch);
-      // Continue normal typing from WRONG_AT + 1
       i = WRONG_AT + 1;
       setTimeout(step, 150);
     }
     else if (phase === 'retype') {
-      // Transition back to normal typing
       phase = 'typing';
       if (i < correctText.length) {
         setTyped(typed + correctText.charAt(i));
@@ -2392,16 +2246,14 @@ function typePrologue() {
         var d2 = 25 + Math.random() * 30;
         setTimeout(step, d2);
       } else {
-        step(); // finish
+        step();
       }
     }
   }
 
-  // Wait 1s for page to settle before typing
   setTimeout(step, 1000);
 }
 
-// ─── SCROLL LOCK — Block navigation for 3.2s when entering a chapter ───
 var _scrollLocked = false;
 var _scrollLockTimeout = null;
 function lockScroll(duration) {
@@ -2415,41 +2267,28 @@ function lockScroll(duration) {
   }, duration || 3200);
 }
 
-// ─── Body text typewriter — stack-based DOM walker ───
-// Uses a frame stack to recurse into inline elements (b, i, em, strong, span)
-// so their text is typed character-by-character instead of appearing instantly.
-// Block elements (br) are inserted whole.
 var _typewriterActive = null;
-// Inline phrasing elements whose text content should be typed char by char
 var INLINE_ELEMENTS = {b:1,i:1,em:1,strong:1,span:1,u:1,a:1,small:1,code:1,abbr:1,cite:1,label:1,mark:1,q:1,sub:1,sup:1};
 
 function typeBodyParagraph(el, callback, speed) {
   if (!el || el.dataset.typed === '1') { if (callback) callback(); return; }
   el.dataset.typed = '1';
 
-  // Human typing speed: ~35ms base ±15ms variance (~20-30 chars/sec)
   var spd = speed || 35;
 
-  // ─── Save original HTML for restoration on abort ───
   el.dataset.originalHtml = el.innerHTML;
 
-  // ─── Lock height to prevent jitter ───
   var lockedHeight = el.getBoundingClientRect().height;
   el.style.minHeight = lockedHeight + 'px';
 
-  // Save original child nodes for the walker
   var originalNodes = [].slice.call(el.childNodes);
-  // Empty
   while (el.firstChild) el.removeChild(el.firstChild);
 
-  // Reveal immediately
   el.style.opacity = '1';
   el.style.transform = 'translateY(0)';
   el.style.filter = 'blur(0)';
   el.style.transition = 'none';
 
-  // Stack of frames. Each frame: {el: parentElement, nodes: [...childNodes], idx: 0, textIdx: 0}
-  // The "current live text node" typed into is global per step() call.
   var stack = [{el: el, nodes: originalNodes, idx: 0, textIdx: 0}];
   var currentTextNode = null;
   var done = false;
@@ -2469,7 +2308,6 @@ function typeBodyParagraph(el, callback, speed) {
       var node = frame.nodes[frame.idx];
 
       if (node.nodeType === 3) {
-        // ─── Text node — type character by character ───
         var text = node.textContent;
         if (frame.textIdx < text.length) {
           if (!currentTextNode) {
@@ -2487,7 +2325,6 @@ function typeBodyParagraph(el, callback, speed) {
           _typewriterActive = setTimeout(step, delay);
           return;
         } else {
-          // Text node fully typed
           if (currentTextNode) {
             currentTextNode.textContent = text;
             currentTextNode = null;
@@ -2498,12 +2335,10 @@ function typeBodyParagraph(el, callback, speed) {
           return;
         }
       } else if (node.nodeType === 1) {
-        // ─── Element node ───
         var tag = (node.tagName || '').toLowerCase();
         currentTextNode = null;
 
         if (tag === 'br') {
-          // Block break — insert whole immediately
           frame.el.appendChild(node.cloneNode(true));
           frame.idx++;
           frame.textIdx = 0;
@@ -2511,7 +2346,6 @@ function typeBodyParagraph(el, callback, speed) {
         }
 
         if (INLINE_ELEMENTS[tag]) {
-          // Inline element — recurse: create empty wrapper, push frame
           var wrapper = document.createElement(tag);
           for (var ai = 0; ai < node.attributes.length; ai++) {
             var attr = node.attributes[ai];
@@ -2522,16 +2356,14 @@ function typeBodyParagraph(el, callback, speed) {
           if (children.length > 0) {
             stack.push({el: wrapper, nodes: children, idx: 0, textIdx: 0});
             frame = stack[stack.length - 1];
-            continue; // process first child of new frame
+            continue;
           } else {
-            // Empty inline element — just move on
             frame.idx++;
             frame.textIdx = 0;
             continue;
           }
         }
 
-        // Any other element (shouldn't normally appear inside <p>) — insert whole
         frame.el.appendChild(node.cloneNode(true));
         frame.idx++;
         frame.textIdx = 0;
@@ -2542,7 +2374,6 @@ function typeBodyParagraph(el, callback, speed) {
       }
     }
 
-    // ─── Current frame exhausted — pop and continue parent ───
     stack.pop();
     if (stack.length === 0) {
       finish();
@@ -2590,19 +2421,16 @@ function typeChapterBody(chapterEl, doneCallback) {
     }
     typeBodyParagraph(paras[idx], function() {
       idx++;
-      setTimeout(next, 450); // natural pause between paragraphs
+      setTimeout(next, 450);
     });
   }
   next();
 }
 
-// ─── Complete all body paragraphs in a chapter (instantly show full text) ───
-// Always restores original HTML so partially-typed (aborted) paragraphs are fixed.
 function completeChapterBody(chapterEl) {
   if (!chapterEl) return;
   var paras = chapterEl.querySelectorAll('.chapter-body p[data-reveal]');
   paras.forEach(function(p) {
-    // Restore original innerHTML if saved (handles partially-typed paragraphs)
     if (p.dataset.originalHtml) {
       p.innerHTML = p.dataset.originalHtml;
     }
@@ -2616,11 +2444,9 @@ function completeChapterBody(chapterEl) {
   });
 }
 
-// ─── Chapter enter: scroll lock per chapter ───
 var _chaptersWithTypewriter = {};
 function triggerChapterTypewriter(ch) {
   if (_chaptersWithTypewriter[ch]) {
-    // Chapter already visited — ensure body text is complete (in case typewriter was aborted)
     if (ch >= 1 && ch <= 4) {
       completeChapterBody(document.getElementById('chapter-' + ch));
     }
@@ -2631,11 +2457,9 @@ function triggerChapterTypewriter(ch) {
   if (ch === 0) {
     typePrologue();
   } else if (ch >= 1 && ch <= 4) {
-    // Typewriter for body text, scroll locked while typing
     lockScroll(3500);
     var chapterEl = document.getElementById('chapter-' + ch);
     if (chapterEl) {
-      // Wait a beat for the transition to settle, then start typing
       setTimeout(function() {
         typeChapterBody(chapterEl);
       }, 300);
@@ -2645,13 +2469,11 @@ function triggerChapterTypewriter(ch) {
   }
 }
 
-// ─── REVEAL — Staggered cinematic text reveal for ALL chapters ───
 function revealElements(chapterEl, chNum) {
   if (!chapterEl) return;
   var els = chapterEl.querySelectorAll('[data-reveal]');
-  var revealIdx = 0; // count only actually-revealed elements
+  var revealIdx = 0;
   els.forEach(function(el) {
-    // Skip body paragraphs in typewriter chapters (1-4) — typewriter handles them
     if (chNum >= 1 && chNum <= 4 && el.closest('.chapter-body')) return;
 
     var stagger = 100;
@@ -2674,9 +2496,6 @@ function revealElements(chapterEl, chNum) {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   CHAPTER ENTER
-   ═══════════════════════════════════════════════════════════════════ */
 var revealedChapters = {};
 function enterChapter(ch) {
   var line = document.getElementById('line-' + ch);
@@ -2690,25 +2509,22 @@ function enterChapter(ch) {
 
   enterChapterAudio(ch);
 
-  // ─── Campaign logo: hide only on chapter 6 ───
   var logo = document.getElementById('campaignLogo');
   if (logo) {
     logo.style.opacity = (ch === 6) ? '0' : '1';
     logo.style.transition = 'opacity .5s ease';
   }
 
-  // ─── Reset scroll-hint animation — skip if user already saw it ───
   var chapterEl2 = document.getElementById('chapter-' + ch);
   if (chapterEl2 && localStorage.getItem('doc-hint-seen') !== '1') {
     var hint = chapterEl2.querySelector('.scroll-hint');
     if (hint) {
       hint.style.animation = 'none';
-      void hint.offsetHeight; // force reflow
+      void hint.offsetHeight;
       hint.style.animation = '';
     }
   }
 
-  // ─── Typewriter + scroll lock per chapter ───
   triggerChapterTypewriter(ch);
 
   if (ch === 4) {
@@ -2722,9 +2538,8 @@ function enterChapter(ch) {
   if (ch === 5) { initPropuestas(); }
   if (ch === 6) {
     loadDepartments();
-    // Returning user or just signed: show diploma instead of form
     if (window._signerData) {
-      console.log('📜 enterChapter(6) — _signerData presente:', window._signerData.name);
+
       var panel = document.getElementById('actaPanel');
       if (panel) { panel.style.display = 'none'; panel.style.opacity = '0'; }
       var sec = document.getElementById('diplomaSection');
@@ -2736,22 +2551,15 @@ function enterChapter(ch) {
     }
   }
 
-  // ─── Orientation check ───
   setTimeout(checkOrientation, 200);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   HELPER: djb2 hash
-   ═══════════════════════════════════════════════════════════════════ */
 function hashDJB2(str) {
   var h = 5381;
   for (var i = 0; i < str.length; i++) { h = ((h << 5) + h + str.charCodeAt(i)) | 0; }
   return h >>> 0;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   LIVE COUNTER — smart cache, never fake
-   ═══════════════════════════════════════════════════════════════════ */
 var _counterStarted = false;
 var _cachedCount = null;
 try { _cachedCount = parseInt(localStorage.getItem('doc-counter-cache'), 10) || null; } catch(e) {}
@@ -2793,9 +2601,6 @@ function animateCounter(el, target) {
   }, 28);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   FETCH RECENT SIGNERS — Supabase → cache → displays
-   ═══════════════════════════════════════════════════════════════════ */
 var _REFRESH_FAILS = 0;
 function fetchRecentSigners() {
   return new Promise(function(resolve) {
@@ -2830,9 +2635,6 @@ function fetchRecentSigners() {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   POPULATE CHAPTER 4 DISPLAYS with real data
-   ═══════════════════════════════════════════════════════════════════ */
 function populateChapter4Displays(data) {
   if (!data || !data.display || !data.raw) return;
   namePool = data.display.length ? data.display.slice() : [];
@@ -2840,9 +2642,6 @@ function populateChapter4Displays(data) {
   highlightDepartments(data.raw);
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   FLOATING NAMES — real data, spawn only when populated
-   ═══════════════════════════════════════════════════════════════════ */
 var namePool = [];
 var _floatingInterval = null;
 
@@ -2869,9 +2668,6 @@ function spawnFloatingName() {
   setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 5200);
 }
 
-/* ================================================================
-   SIGNATURE TICKER — real data from Supabase
-   ================================================================ */
 var _tickerBuilt = false;
 function buildSignatureTicker(entries) {
   var ticker = document.getElementById('signatureTicker');
@@ -2889,9 +2685,6 @@ function buildSignatureTicker(entries) {
   ticker.innerHTML = items;
 }
 
-/* ================================================================
-   MAP PULSE DOTS — real municipality coordinates + random fallback
-   ================================================================ */
 var _mapDotsInterval = null;
 
 var MUNI_COORDS = {
@@ -2959,9 +2752,6 @@ function stopMapDots() {
   if (_mapDotsInterval) { clearInterval(_mapDotsInterval); _mapDotsInterval = null; }
 }
 
-/* ================================================================
-   DEPARTMENT HIGHLIGHTING — .has-votes based on real signers
-   ================================================================ */
 var DEPT_SVG_IDS = {
   'Amazonas': 'dept-AMAZONAS', 'Antioquia': 'dept-ANTIOQUIA',
   'Arauca': 'dept-ARAUCA', 'Atlántico': 'dept-ATL-NTICO',
@@ -3019,9 +2809,6 @@ function highlightDepartments(rawData) {
   }
 }
 
-/* ================================================================
-   CHAPTER 4 REFRESH — periodic data refresh every 30s
-   ================================================================ */
 var _chapter4Refresh = null;
 function startChapter4Refresh() {
   stopChapter4Refresh();
@@ -3039,9 +2826,6 @@ function stopChapter4Refresh() {
   if (_chapter4Refresh) { clearInterval(_chapter4Refresh); _chapter4Refresh = null; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   DEPARTMENTS
-   ═══════════════════════════════════════════════════════════════════ */
 var DEPTOS = ['Amazonas','Antioquia','Arauca','Atlántico','Bolívar','Boyacá','Caldas','Caquetá','Casanare','Cauca','Cesar','Chocó','Córdoba','Cundinamarca','Guainía','Guaviare','Huila','La Guajira','Magdalena','Meta','Nariño','Norte de Santander','Putumayo','Quindío','Risaralda','San Andrés y Providencia','Santander','Sucre','Tolima','Valle del Cauca','Vaupés','Vichada','Bogotá D.C.'];
 var MUNICIPIOS = {
   'Bogotá D.C.': ['Bogotá D.C.','Usaquén','Chapinero','Santa Fe','San Cristóbal','Usme','Tunjuelito','Bosa','Kennedy','Fontibón','Engativá','Suba'],
@@ -3073,14 +2857,10 @@ document.getElementById('fDepto').addEventListener('change', function() {
   validateForm();
 });
 
-/* ═══════════════════════════════════════════════════════════════════
-   ANTI-DDoS LAYERS
-   ═══════════════════════════════════════════════════════════════════ */
 var _pageLoadTime = Date.now();
 var _formInteractions = 0;
 var _clientFingerprint = null;
 
-/* ─── Capa 1: Browser Fingerprint ─── */
 function getFingerprint() {
   if (_clientFingerprint) return _clientFingerprint;
   var parts = [
@@ -3103,7 +2883,6 @@ function getFingerprint() {
   return _clientFingerprint;
 }
 
-/* ─── Capa 4: Nonce token ─── */
 function generateNonce() {
   var now = Date.now();
   var rand = Math.random().toString(36).substring(2, 10);
@@ -3119,7 +2898,6 @@ function validateNonce(nonce) {
   return expectedCheck === parts[2];
 }
 
-/* ─── Capa 6: Input validation helpers ─── */
 function hasURLorScript(str) {
   var lower = str.toLowerCase();
   return lower.indexOf('http') !== -1 || lower.indexOf('www.') !== -1 ||
@@ -3137,9 +2915,6 @@ function isValidName(str) {
 }
 function isWhitelistedDepto(d) { return DEPTOS.indexOf(d) !== -1; }
 
-/* ═══════════════════════════════════════════════════════════════════
-   FORM VALIDATION
-   ═══════════════════════════════════════════════════════════════════ */
 var fName = document.getElementById('fName');
 var fDepto = document.getElementById('fDepto');
 var fMuni = document.getElementById('fMuni');
@@ -3199,40 +2974,31 @@ setTimeout(initTurnstile, 1200);
 loadDepartments();
 validateForm();
 
-// Track form interaction for bot detection — humans interact, bots don't
 [fName, fDepto, fMuni, fConsent].forEach(function(el) {
   el.addEventListener('focus', function() { _formInteractions++; pauseAutoAdvance(); });
   el.addEventListener('click', function() { _formInteractions++; pauseAutoAdvance(); });
   el.addEventListener('input', function() { _formInteractions++; });
 });
 
-/* ═══════════════════════════════════════════════════════════════════
-   FORM SUBMIT — Full anti-abuse flow (6 layers)
-   ═══════════════════════════════════════════════════════════════════ */
 document.getElementById('actaForm').addEventListener('submit', function(e) {
   e.preventDefault();
 
-  // ─── Step 1-2: Honeypot check × 3 ───
   if (document.getElementById('hp_website').value ||
       document.getElementById('hp_phone').value ||
       document.getElementById('hp_email').value) {
-    // Silent reject — don't tell bots what went wrong
     return;
   }
 
-  // ─── Step 3: Time gate (bots submit instantly) ───
   if (Date.now() - _pageLoadTime < 2000) {
-    console.log('Anti-DDoS: time gate rejected (< 2s)');
+
     return;
   }
 
-  // ─── Step 4: Interaction check ───
   if (_formInteractions < 1) {
-    console.log('Anti-DDoS: no human interaction detected');
+
     return;
   }
 
-  // ─── Step 5: Cooldown check (60s) ───
   var COOLDOWN_MS = 60000;
   var lastSubmit = 0;
   try { lastSubmit = parseInt(localStorage.getItem('doc-last-submit') || '0', 10); } catch(ex) {}
@@ -3242,7 +3008,6 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // ─── Step 5b: Turnstile check ───
   if (!hasTurnstileToken()) {
     _turnstileToken = '';
     validateForm();
@@ -3250,7 +3015,6 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // ─── Step 6: Input validation (hardened) ───
   var rawName = fName.value.trim();
   if (!isValidName(rawName)) {
     showToast('El nombre debe contener solo letras (3-35 caracteres)');
@@ -3274,20 +3038,16 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
     return;
   }
 
-  // ─── Step 7: Sanitize ───
   var cleanName = DOMPurify.sanitize(rawName);
   if (!cleanName || cleanName.length < 3) {
     showToast('Nombre no válido después de verificación');
     return;
   }
 
-  // ─── Step 8: Fingerprint ───
   var fp = getFingerprint();
 
-  // ─── Step 9: Generate nonce ───
   var nonce = generateNonce();
 
-  // ─── Step 10-11: Build data + DB row + save locally (optimistic UI) ───
   var nowISO = new Date().toISOString();
   var data = {
     name: cleanName,
@@ -3296,7 +3056,6 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
     description: 'Por la paz y la soberanía de Colombia, firmo con honor y compromiso.',
     timestamp: nowISO
   };
-  // DB row has created_at instead of timestamp (DB column name)
   var dbRow = {
     name: cleanName,
     department: fDepto.value,
@@ -3310,11 +3069,9 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
   try {
     localStorage.setItem('doc-signer', JSON.stringify(data));
     document.documentElement.classList.add('has-saved-signer');
-    // ─── Step 14: Save cooldown timestamp ───
     localStorage.setItem('doc-last-submit', Date.now().toString());
   } catch(ex) {}
 
-  // ─── Step 12: Show diploma (optimistic — don't wait for Supabase) ───
   var actaPanel = document.getElementById('actaPanel');
   if (actaPanel) {
     actaPanel.style.transition = 'none';
@@ -3332,7 +3089,6 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
   if (_scrollLockTimeout) { clearTimeout(_scrollLockTimeout); _scrollLockTimeout = null; }
   pauseAutoAdvance();
 
-  // ─── Step 13: Pre-check dedup + insert to Supabase (async, non-blocking) ───
   if (HAS_SB) {
     var fiveMinAgo = new Date(Date.now() - 300000).toISOString();
     DB.from('supporters')
@@ -3341,29 +3097,23 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
       .gte('created_at', fiveMinAgo)
       .then(function(check) {
         if (!check.error && check.count > 0) {
-          console.log('Anti-DDoS: duplicate fingerprint rejected (already signed in last 5 min)');
-          return; // Silent — diploma already shown, just don't double-insert
+
+          return;
         }
-        // All checks passed — insert
         return DB.from('supporters').insert([dbRow]).then(function(r) {
-          if (r.error) console.warn('SB insert error:', r.error.message);
+          if (r.error) {};
         });
       }).catch(function(err) {
-        // Fallback: try insert anyway (pre-check may fail, insert still worth trying)
         DB.from('supporters').insert([dbRow]).then(function(r) {
-          if (r.error) console.warn('SB insert error:', r.error.message);
+          if (r.error) {};
         });
       });
   }
 
-  // ─── Step 15: Toast ───
   showToast('¡Acta sellada con honor!');
-  console.log('📜 Acta firmada —', cleanName, '| fp:', fp, '| nonce:', nonce);
+
 });
 
-/* ═══════════════════════════════════════════════════════════════════
-   DIPLOMA PARTICLES — Gold embers rising behind parchment
-   ═══════════════════════════════════════════════════════════════════ */
 var _diplomaParticlesSpawned = false;
 function spawnDiplomaParticles() {
   if (_diplomaParticlesSpawned) return;
@@ -3381,34 +3131,27 @@ function spawnDiplomaParticles() {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   DIPLOMA GENERATOR — Pergamino HTML (SVG + tipografía gótica)
-   ═══════════════════════════════════════════════════════════════════ */
 function generateDiploma(data) {
-  console.log('📜 generateDiploma() invocado — data:', data ? data.name : 'null');
+
   window._diplomaGenerated = true;
 
-  // Show the diploma section
   var diplomaSection = document.getElementById('diplomaSection');
   if (diplomaSection) diplomaSection.style.display = 'block';
 
   var card = document.getElementById('diplomaCard');
-  console.log('📜 card:', card ? 'encontrado' : 'NO ENCONTRADO');
+
   if (card) {
     card.style.display = 'flex';
     card.classList.add('flex');
-    // Cinematic card entrance
     card.classList.add('diploma-entering');
     card.addEventListener('animationend', function handler() {
       card.classList.remove('diploma-entering');
       card.removeEventListener('animationend', handler);
-      // After card enters, reveal content with stagger
       revealElements(card);
-      // Trigger button entrance
       var btns = document.querySelectorAll('.diploma-btn-entering');
       btns.forEach(function(b, i) {
         b.style.animation = 'none';
-        b.offsetHeight; // force reflow
+        b.offsetHeight;
         b.style.animation = '';
       });
     }, { once: true });
@@ -3423,20 +3166,15 @@ function generateDiploma(data) {
   var actionsDiv = document.getElementById('diplomaActions');
   if (actionsDiv) actionsDiv.style.display = 'flex';
 
-  // Spawn diploma particles
   spawnDiplomaParticles();
 
   showToast('¡Diploma generado con honor!');
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   ORIENTATION LOCK — Forzar VERTICAL en capítulos 0-6, libre en 7
-   ═══════════════════════════════════════════════════════════════════ */
 function checkOrientation() {
   var hint = document.getElementById('rotateHint');
   if (!hint) return;
 
-  // Forzar vertical (portrait) en dispositivos móviles — todos los capítulos
   var isLandscape = window.innerWidth > window.innerHeight;
   var isMobile = window.innerWidth < 1024;
 
@@ -3454,13 +3192,10 @@ function checkOrientation() {
 }
 window.addEventListener('resize', function() { setTimeout(checkOrientation, 150); });
 window.addEventListener('orientationchange', function() { setTimeout(checkOrientation, 400); });
-// Check orientation on initial page load
 window.addEventListener('load', function() { setTimeout(checkOrientation, 300); });
-// Esconder hint al tocar la pantalla (el usuario ya entendió)
 document.addEventListener('touchstart', function() {
   var hint = document.getElementById('rotateHint');
   if (hint && hint.style.opacity === '1') {
-    // Solo un recordatorio — no bloquear permanentemente
     clearTimeout(window._rotateHintFade);
     hint.style.opacity = '0.5';
     window._rotateHintFade = setTimeout(function() {
@@ -3469,9 +3204,6 @@ document.addEventListener('touchstart', function() {
   }
 });
 
-/* ═══════════════════════════════════════════════════════════════════
-   DIPLOMA 4K EXPORT - canvas native, matching the live diploma card
-   ═══════════════════════════════════════════════════════════════════ */
 var DIPLOMA_EXPORT_W = 3840;
 var DIPLOMA_EXPORT_H = 1688;
 
@@ -3835,9 +3567,6 @@ function downloadBlob(blob, filename) {
 window._buildDiplomaSvg4K = buildDiplomaSvg4K;
 window._renderDiplomaPng4K = renderDiplomaPng4K;
 
-/* ═══════════════════════════════════════════════════════════════════
-   SHARE / DOWNLOAD
-   ═══════════════════════════════════════════════════════════════════ */
 document.getElementById('btnWhatsApp').addEventListener('click', function() {
   window.open('https://wa.me/?text=' + encodeURIComponent('🇨🇴 Acabo de firmar el Acta de Compromiso Nacional por la Paz, la Vida y la Soberanía de Colombia.\n\nFirma tú también y recibe tu diploma personalizado:\n' + window.location.href), '_blank');
 });
@@ -3856,7 +3585,7 @@ document.getElementById('btnDownload').addEventListener('click', function() {
     downloadBlob(result.blob, 'diploma_' + safeFilePart(data.name).toLowerCase() + '.png');
     showToast('Diploma 4K descargado');
   }).catch(function(err) {
-    console.error('Diploma 4K export failed:', err);
+
     showToast('Error generando PNG 4K');
   }).finally(function() {
     btn.disabled = false;
@@ -3864,9 +3593,6 @@ document.getElementById('btnDownload').addEventListener('click', function() {
   });
 });
 
-/* ═══════════════════════════════════════════════════════════════════
-   RETURNING USER
-   ═══════════════════════════════════════════════════════════════════ */
 (function() {
   try {
     var saved = localStorage.getItem('doc-signer');
@@ -3882,16 +3608,13 @@ document.getElementById('btnDownload').addEventListener('click', function() {
         if (!window._diplomaGenerated) { generateDiploma(window._signerData); }
         spawnDiplomaParticles();
       }
-      console.log('📜 Usuario recurrente — _signerData restaurado de localStorage:', window._signerData.name);
+
     } else {
-      console.log('📜 Usuario nuevo — sin firma previa en localStorage');
+
     }
   } catch(ex) {}
 })();
 
-/* ═══════════════════════════════════════════════════════════════════
-   MAPA SVG — Dynamic loader from external file
-   ═══════════════════════════════════════════════════════════════════ */
 var _mapaLoaded = false;
 function loadMapaSVG() {
   if (_mapaLoaded) return;
@@ -3904,7 +3627,6 @@ function loadMapaSVG() {
     .then(function(r) { if (!r.ok) throw new Error('SVG fetch failed'); return r.text(); })
     .then(function(svgText) {
       if (loading) loading.remove();
-      // Insert SVG as first child, preserving mapaPulseDots
       container.insertAdjacentHTML('afterbegin', svgText);
       var svg = container.querySelector('svg');
       if (svg) {
@@ -3915,14 +3637,11 @@ function loadMapaSVG() {
       }
     })
     .catch(function(err) {
-      console.warn('Mapa SVG load failed, using fallback:', err.message);
+
       if (loading) loading.textContent = 'MAPA INTERACTIVO';
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   PROPUESTAS SWIPE — Horizontal card carousel
-   ═══════════════════════════════════════════════════════════════════ */
 var propCarousel = document.getElementById('propCarousel');
 var propTrack = document.getElementById('propTrack');
 var propCards, propTotal, propCurrent = 0;
@@ -3942,14 +3661,12 @@ function goToProp(idx, animate) {
   var offset = -propCurrent * 100;
   propTrack.style.transition = animate === false ? 'none' : 'transform .55s cubic-bezier(.16,1,.3,1)';
   propTrack.style.transform = 'translateX(' + offset + '%)';
-  // Hide hint once user swipes past first card
   if (propSwipeHint && propCurrent > 0) {
     propSwipeHint.style.opacity = '0';
     propSwipeHint.style.transition = 'opacity .5s ease';
   }
 }
 
-// ─── Touch handlers ───
 if (propCarousel) {
   propCarousel.addEventListener('touchstart', function(e) {
     if (currentChapter !== 5 || isTransitioning || _scrollLocked) return;
@@ -3964,7 +3681,6 @@ if (propCarousel) {
     if (!propDragging || currentChapter !== 5) return;
     var dx = e.touches[0].clientX - propDragStart;
     var offset = propStartTransform + dx;
-    // Rubber band at edges
     if (propCurrent === 0 && dx > 0) offset = propStartTransform + dx * 0.35;
     if (propCurrent === propTotal - 1 && dx < 0) {
       var maxOff = -(propTotal - 1) * propCarousel.offsetWidth;
@@ -3981,14 +3697,13 @@ if (propCarousel) {
     var threshold = propCarousel.offsetWidth * 0.18;
     if (Math.abs(dx) > threshold) {
       goToProp(propCurrent + (dx > 0 ? -1 : 1), true);
-      e.stopPropagation(); // prevent chapter transition on horizontal swipe
+      e.stopPropagation();
       e.preventDefault();
     } else {
       goToProp(propCurrent, true);
     }
   });
 
-  // ─── Mouse drag (desktop) ───
   propCarousel.addEventListener('mousedown', function(e) {
     if (currentChapter !== 5 || isTransitioning || _scrollLocked) return;
     propDragging = true;
@@ -4025,10 +3740,6 @@ if (propCarousel) {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   INIT
-   ═══════════════════════════════════════════════════════════════════ */
-// ─── Hide scroll-hint forever if user has already seen it ───
 if (localStorage.getItem('doc-hint-seen') === '1') {
   hideAllScrollHints();
 }
@@ -4036,9 +3747,6 @@ updateProgress();
 typePrologue();
 startAutoAdvance();
 
-
-console.log('🕊️ Documental Vivo v3 — Full-Screen Cinematic Transitions');
-console.log('🇨🇴 Cepeda Presidente 2026 — Zero scroll · Wheel/Touch/Keys');
 
 })();
 </script>
