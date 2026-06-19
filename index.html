@@ -1110,7 +1110,6 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .diploma-btn--download:hover{background:rgba(197,155,39,.08);border-color:var(--gold);box-shadow:0 10px 30px rgba(197,155,39,.2)}
 .diploma-btn--enter{background:var(--gold);color:#000;box-shadow:0 8px 30px rgba(197,155,39,.4)}
 .diploma-btn--enter:hover{background:var(--gold-light);transform:translateY(-2px);box-shadow:0 14px 45px rgba(197,155,39,.6)}
-@keyframes rotateHint{0%,100%{transform:rotate(0deg)}50%{transform:rotate(90deg)}}
 
 .diploma-btn-h{
   display:flex;align-items:center;gap:.45rem;padding:.6rem 1.2rem;border-radius:99px;
@@ -1749,19 +1748,14 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 
         <div class="diploma-actions" id="diplomaActions" style="display:none;margin-top:1.25rem;">
           <button class="diploma-btn-h diploma-btn-h--primary diploma-btn-entering" id="btnWhatsApp" style="animation-delay:.5s"><i class="fa-brands fa-whatsapp"></i><span>Compartir</span></button>
-          <button class="diploma-btn-h diploma-btn-h--secondary diploma-btn-entering" id="btnDownload" style="animation-delay:.65s"><i class="fa-solid fa-download"></i><span>Descargar</span></button>
+          <button class="diploma-btn-h diploma-btn-h--secondary diploma-btn-entering" id="btnOpenDiploma" style="animation-delay:.62s"><i class="fa-solid fa-up-right-from-square"></i><span>Abrir</span></button>
+          <button class="diploma-btn-h diploma-btn-h--secondary diploma-btn-entering" id="btnDownload" style="animation-delay:.74s"><i class="fa-solid fa-download"></i><span>Descargar</span></button>
         </div>
 
       </div>
 
     </div>
   </section>
-</div>
-
-<div id="rotateHint" style="position:fixed;inset:0;z-index:99990;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity .5s ease;">
-  <i class="fa-solid fa-mobile-screen-button" style="color:#C59B27;font-size:3rem;animation:rotateHint 2s ease-in-out infinite;filter:drop-shadow(0 0 20px rgba(197,155,39,.4));"></i>
-  <span style="font-family:'Cinzel',serif;font-size:clamp(.8rem,2.5vw,1.1rem);color:#F3D26C;letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 30px rgba(197,155,39,.2);">Gira tu teléfono</span>
-  <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(.65rem,1.8vw,.85rem);color:rgba(255,255,255,.35);text-align:center;max-width:280px;line-height:1.5;">La experiencia documental se vive en vertical</p>
 </div>
 
 <div id="docToast"><i class="fa-solid fa-stamp"></i> <span id="docToastMsg"></span></div>
@@ -2551,9 +2545,6 @@ function enterChapter(ch) {
     }
   }
 
-  setTimeout(checkOrientation, 200);
-}
-
 function hashDJB2(str) {
   var h = 5381;
   for (var i = 0; i < str.length; i++) { h = ((h << 5) + h + str.charCodeAt(i)) | 0; }
@@ -3171,39 +3162,6 @@ function generateDiploma(data) {
   showToast('¡Diploma generado con honor!');
 }
 
-function checkOrientation() {
-  var hint = document.getElementById('rotateHint');
-  if (!hint) return;
-
-  var isLandscape = window.innerWidth > window.innerHeight;
-  var isMobile = window.innerWidth < 1024;
-
-  if (isLandscape && isMobile) {
-    hint.style.opacity = '1';
-    hint.style.pointerEvents = 'auto';
-    document.getElementById('documentalViewport').style.pointerEvents = 'none';
-    hint.style.pointerEvents = 'auto';
-    document.getElementById('docControls').style.pointerEvents = 'auto';
-  } else {
-    hint.style.opacity = '0';
-    hint.style.pointerEvents = 'none';
-    document.getElementById('documentalViewport').style.pointerEvents = 'auto';
-  }
-}
-window.addEventListener('resize', function() { setTimeout(checkOrientation, 150); });
-window.addEventListener('orientationchange', function() { setTimeout(checkOrientation, 400); });
-window.addEventListener('load', function() { setTimeout(checkOrientation, 300); });
-document.addEventListener('touchstart', function() {
-  var hint = document.getElementById('rotateHint');
-  if (hint && hint.style.opacity === '1') {
-    clearTimeout(window._rotateHintFade);
-    hint.style.opacity = '0.5';
-    window._rotateHintFade = setTimeout(function() {
-      if (hint) hint.style.opacity = '1';
-    }, 2000);
-  }
-});
-
 var DIPLOMA_EXPORT_W = 3840;
 var DIPLOMA_EXPORT_H = 1688;
 
@@ -3554,14 +3512,153 @@ function renderDiplomaPng4K(data) {
 }
 
 function downloadBlob(blob, filename) {
-  var url = URL.createObjectURL(blob);
+  var file = (window.File && blob) ? new File([blob], filename, {type: blob.type || 'image/png'}) : blob;
+  var url = URL.createObjectURL(file);
   var a = document.createElement('a');
   a.href = url;
   a.download = filename;
+  a.rel = 'noopener';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  setTimeout(function() { URL.revokeObjectURL(url); }, 1200);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 30000);
+}
+
+function getDiplomaDataUrl(result) {
+  if (!result) return '';
+  if (result.dataUrl) return result.dataUrl;
+  if (result.canvas && result.canvas.toDataURL) {
+    try {
+      result.dataUrl = result.canvas.toDataURL('image/png');
+      return result.dataUrl;
+    } catch(ex) {}
+  }
+  return '';
+}
+
+function downloadDataUrl(dataUrl, filename) {
+  var a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = filename;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function downloadDiplomaResult(result, filename) {
+  var dataUrl = getDiplomaDataUrl(result);
+  if (dataUrl) {
+    downloadDataUrl(dataUrl, filename);
+    return;
+  }
+  downloadBlob(result.blob, filename);
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, function(ch) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];
+  });
+}
+
+function getDiplomaExportData() {
+  var certName = document.getElementById('certName');
+  var certMerit = document.getElementById('certMerit');
+  return window._signerData || {
+    name: (certName ? certName.textContent : '') || 'Ciudadano de Honor',
+    description: (certMerit ? certMerit.textContent : '') || ''
+  };
+}
+
+function getDiplomaFilename(data) {
+  return 'diploma_' + safeFilePart(data.name).toLowerCase() + '.png';
+}
+
+function setDiplomaButtonBusy(btn, busy) {
+  if (!btn) return;
+  btn.disabled = !!busy;
+  btn.style.opacity = busy ? '.65' : '';
+}
+
+function rememberDiplomaExport(result) {
+  window._diplomaCanvas = result.canvas;
+  window._diplomaSvg4K = result.svg;
+  window._diplomaBlob4K = result.blob;
+  window._diplomaDataUrl4K = getDiplomaDataUrl(result);
+}
+
+function writeDiplomaPreview(previewWindow, result, filename) {
+  var imageUrl = getDiplomaDataUrl(result);
+  if (!imageUrl) imageUrl = URL.createObjectURL(result.blob);
+  var safeFilename = escapeHtml(filename);
+  var html = '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+    '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    '<title>' + safeFilename + '</title>' +
+    '<style>html,body{margin:0;min-height:100%;background:#070602;color:#f3d26c;font-family:Georgia,serif}' +
+    'body{display:flex;flex-direction:column;align-items:center;gap:18px;padding:18px;box-sizing:border-box}' +
+    '.bar{width:min(100%,1100px);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}' +
+    '.title{font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:#f3d26c}' +
+    'a{border:1px solid rgba(197,155,39,.55);border-radius:999px;color:#f3d26c;text-decoration:none;padding:10px 16px;background:rgba(197,155,39,.12);font-size:12px;letter-spacing:.1em;text-transform:uppercase}' +
+    'img{width:min(100%,1100px);height:auto;box-shadow:0 20px 80px rgba(0,0,0,.65);background:#fff}' +
+    '.meta{font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.08em}</style></head><body>' +
+    '<div class="bar"><div><div class="title">Diploma PNG 4K</div><div class="meta">3840 x 1688 px</div></div>' +
+    '<a href="' + imageUrl + '" download="' + safeFilename + '">Descargar PNG</a></div>' +
+    '<img src="' + imageUrl + '" alt="Diploma 4K"></body></html>';
+
+  previewWindow.document.open();
+  previewWindow.document.write(html);
+  previewWindow.document.close();
+  try { previewWindow.focus(); } catch(ex) {}
+}
+
+function showDiplomaInlinePreview(result, filename) {
+  var imageUrl = getDiplomaDataUrl(result);
+  if (!imageUrl) return false;
+
+  var existing = document.getElementById('diplomaPreviewOverlay');
+  if (existing) existing.remove();
+
+  var overlay = document.createElement('div');
+  overlay.id = 'diplomaPreviewOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(3,3,2,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px;box-sizing:border-box;overflow:auto;';
+
+  var bar = document.createElement('div');
+  bar.style.cssText = 'width:min(100%,1100px);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;';
+
+  var title = document.createElement('div');
+  title.style.cssText = 'font-family:Cinzel,serif;color:#F3D26C;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;';
+  title.textContent = 'Diploma PNG 4K';
+
+  var actions = document.createElement('div');
+  actions.style.cssText = 'display:flex;gap:8px;align-items:center;';
+
+  var closeBtn = document.createElement('button');
+  closeBtn.type = 'button';
+  closeBtn.textContent = 'Cerrar';
+  closeBtn.style.cssText = 'border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.08);color:#fff;padding:10px 14px;font-family:Cinzel,serif;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;';
+
+  var downloadBtn = document.createElement('button');
+  downloadBtn.type = 'button';
+  downloadBtn.textContent = 'Descargar PNG';
+  downloadBtn.style.cssText = 'border:1px solid rgba(197,155,39,.55);border-radius:999px;background:rgba(197,155,39,.16);color:#F3D26C;padding:10px 14px;font-family:Cinzel,serif;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;';
+
+  var img = document.createElement('img');
+  img.src = imageUrl;
+  img.alt = 'Diploma 4K';
+  img.style.cssText = 'width:min(100%,1100px);height:auto;background:#fff;box-shadow:0 22px 90px rgba(0,0,0,.75);';
+
+  closeBtn.addEventListener('click', function() { overlay.remove(); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+  downloadBtn.addEventListener('click', function() { downloadDiplomaResult(result, filename); });
+
+  actions.appendChild(downloadBtn);
+  actions.appendChild(closeBtn);
+  bar.appendChild(title);
+  bar.appendChild(actions);
+  overlay.appendChild(bar);
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+  return true;
 }
 
 window._buildDiplomaSvg4K = buildDiplomaSvg4K;
@@ -3570,26 +3667,58 @@ window._renderDiplomaPng4K = renderDiplomaPng4K;
 document.getElementById('btnWhatsApp').addEventListener('click', function() {
   window.open('https://wa.me/?text=' + encodeURIComponent('🇨🇴 Acabo de firmar el Acta de Compromiso Nacional por la Paz, la Vida y la Soberanía de Colombia.\n\nFirma tú también y recibe tu diploma personalizado:\n' + window.location.href), '_blank');
 });
+
+document.getElementById('btnOpenDiploma').addEventListener('click', function() {
+  var btn = this;
+  var data = getDiplomaExportData();
+  var filename = getDiplomaFilename(data);
+  var previewWindow = window.open('', '_blank');
+  if (previewWindow) {
+    previewWindow.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Generando diploma</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070602;color:#f3d26c;font-family:Georgia,serif;letter-spacing:.12em;text-transform:uppercase}</style></head><body>Generando diploma 4K...</body></html>');
+    previewWindow.document.close();
+  }
+  setDiplomaButtonBusy(btn, true);
+  showToast('Abriendo diploma PNG 4K...');
+  renderDiplomaPng4K(data).then(function(result) {
+    rememberDiplomaExport(result);
+    if (previewWindow) {
+      try {
+        writeDiplomaPreview(previewWindow, result, filename);
+        showToast('Diploma 4K abierto');
+        return;
+      } catch(ex) {
+        try { previewWindow.close(); } catch(closeEx) {}
+      }
+    }
+    if (showDiplomaInlinePreview(result, filename)) {
+      showToast('Diploma 4K abierto');
+      return;
+    }
+    downloadDiplomaResult(result, filename);
+    showToast('El navegador bloqueó la vista; diploma descargado');
+  }).catch(function(err) {
+    if (previewWindow && !previewWindow.closed) { previewWindow.close(); }
+    showToast('Error abriendo PNG 4K');
+  }).finally(function() {
+    setDiplomaButtonBusy(btn, false);
+  });
+});
+
 document.getElementById('btnDownload').addEventListener('click', function() {
   var btn = this;
-  var data = window._signerData || {
-    name: (document.getElementById('certName') || {}).textContent || 'Ciudadano de Honor',
-    description: (document.getElementById('certMerit') || {}).textContent || ''
-  };
-  btn.disabled = true;
-  btn.style.opacity = '.65';
+  var data = getDiplomaExportData();
+  var filename = getDiplomaFilename(data);
+  setDiplomaButtonBusy(btn, true);
   showToast('Generando diploma PNG 4K...');
   renderDiplomaPng4K(data).then(function(result) {
-    window._diplomaCanvas = result.canvas;
-    window._diplomaSvg4K = result.svg;
-    downloadBlob(result.blob, 'diploma_' + safeFilePart(data.name).toLowerCase() + '.png');
+    rememberDiplomaExport(result);
+    downloadDiplomaResult(result, filename);
     showToast('Diploma 4K descargado');
   }).catch(function(err) {
 
     showToast('Error generando PNG 4K');
   }).finally(function() {
-    btn.disabled = false;
-    btn.style.opacity = '';
+    setDiplomaButtonBusy(btn, false);
   });
 });
 
