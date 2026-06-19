@@ -1057,16 +1057,54 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 }
 .acta-field-icon:focus-within i{color:var(--gold)}
 .legal-brief{
-  margin:0 0 .95rem;padding:.75rem .85rem;border:1px solid rgba(197,155,39,.18);
-  border-radius:.75rem;background:rgba(0,0,0,.24);
-  color:rgba(255,255,255,.68);font-family:'Lora','Cormorant Garamond',serif;
-  font-size:.74rem;line-height:1.55;
+  margin:0 0 .95rem;
 }
-.legal-brief b{color:rgba(243,210,108,.9);font-family:'Cinzel',serif;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase}
-.legal-brief details{margin-top:.45rem}
-.legal-brief summary{cursor:pointer;color:rgba(243,210,108,.76);font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase}
-.legal-brief ul{margin:.45rem 0 0;padding-left:1rem}
-.legal-brief li{margin:.24rem 0}
+.legal-lbl{
+  display:inline-flex;align-items:center;gap:.38rem;
+  background:rgba(197,155,39,.06);border:1px solid rgba(197,155,39,.12);
+  border-radius:.45rem;padding:.38rem .68rem;
+  color:rgba(197,155,39,.55);font-family:'Cinzel',serif;
+  font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;
+  cursor:pointer;transition:all .3s ease;
+  user-select:none;-webkit-user-select:none;
+}
+.legal-lbl:hover{
+  background:rgba(197,155,39,.12);border-color:rgba(197,155,39,.28);
+  color:rgba(197,155,39,.76);
+}
+.legal-lbl i{font-size:.52rem;color:rgba(197,155,39,.42);transition:color .3s ease}
+.legal-lbl:hover i{color:rgba(197,155,39,.65)}
+/* ─── Legal modal ─── */
+.legal-modal-overlay{
+  position:fixed;inset:0;z-index:99980;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;transition:opacity .35s ease;
+}
+.legal-modal-overlay.open{opacity:1;pointer-events:auto}
+.legal-modal{
+  width:min(520px,92vw);max-height:78vh;overflow-y:auto;
+  background:linear-gradient(160deg,rgba(12,10,5,.98),rgba(8,7,3,.99));
+  border:1px solid rgba(197,155,39,.22);border-radius:1rem;
+  padding:1.5rem 1.4rem;box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 60px rgba(197,155,39,.06);
+  color:rgba(255,255,255,.72);font-family:'Lora','Cormorant Garamond',serif;
+  font-size:.76rem;line-height:1.6;
+  transform:translateY(18px);transition:transform .35s cubic-bezier(.22,1,.36,1);
+}
+.legal-modal-overlay.open .legal-modal{transform:translateY(0)}
+.legal-modal h4{
+  font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.14em;
+  color:rgba(243,210,108,.9);text-transform:uppercase;margin:0 0 1rem;
+}
+.legal-modal p,.legal-modal li{margin:.4rem 0}
+.legal-modal ul{padding-left:1.1rem;margin:.5rem 0}
+.legal-modal-close{
+  display:block;margin:1.2rem auto 0;background:rgba(197,155,39,.12);
+  border:1px solid rgba(197,155,39,.18);border-radius:.5rem;
+  padding:.45rem 1.4rem;color:rgba(197,155,39,.7);
+  font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer;transition:all .3s ease;
+}
+.legal-modal-close:hover{background:rgba(197,155,39,.22);color:rgba(243,210,108,.9);border-color:rgba(197,155,39,.35)}
 .legal-consent{
   display:flex;align-items:flex-start;gap:.6rem;margin:.1rem 0 .85rem;
   color:rgba(255,255,255,.68);font-family:'Lora','Cormorant Garamond',serif;
@@ -1075,9 +1113,10 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 .legal-consent input{margin-top:.2rem;accent-color:#c59b27;flex:0 0 auto}
 .legal-consent strong{color:rgba(243,210,108,.9);font-weight:700}
 .acta-turnstile{
-  position:absolute;left:-9999px;top:auto;width:1px;height:1px;
-  overflow:hidden;opacity:0;pointer-events:none;
+  display:flex;justify-content:center;align-items:center;
+  min-height:0;margin:0 0 .75rem;overflow:visible;pointer-events:auto;
 }
+.acta-turnstile iframe{pointer-events:auto!important}
 .acta-submit{
   width:100%;position:relative;overflow:hidden;
   background:linear-gradient(135deg,#8B6914 0%,var(--gold) 30%,var(--gold-light) 50%,var(--gold) 70%,#8B6914 100%);
@@ -1630,17 +1669,23 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
           <!-- Preamble -->
           <p class="acta-preamble">Por la Vida, la Paz y la Soberanía de Colombia, expreso de forma libre y simbólica mi apoyo al diálogo nacional.</p>
           <div class="legal-brief" role="note" aria-label="Aviso legal y tratamiento de datos">
-            <b>Aviso legal y constitucional</b>
-            <div>Este espacio es una expresión ciudadana, editorial y simbólica amparada por la libertad de expresión, la participación política y el habeas data. No es una plataforma oficial, electoral, contractual, notarial ni estatal.</div>
-            <details>
-              <summary>Ver alcance y privacidad</summary>
+            <button type="button" class="legal-lbl" onclick="document.getElementById('legalModal').classList.add('open')" aria-label="Abrir aviso legal">
+              <i class="fa-solid fa-scale-balanced"></i> Aviso legal y constitucional
+            </button>
+          </div>
+          <!-- Modal overlay rendered here but positioned fixed -->
+          <div class="legal-modal-overlay" id="legalModal" onclick="this.classList.remove('open')" role="dialog" aria-modal="true" aria-label="Aviso legal y constitucional">
+            <div class="legal-modal" onclick="event.stopPropagation()">
+              <h4>⚖️ Aviso legal y constitucional</h4>
+              <p>Este espacio es una expresión ciudadana, editorial y simbólica amparada por la libertad de expresión, la participación política y el habeas data. No es una plataforma oficial, electoral, contractual, notarial ni estatal.</p>
               <ul>
                 <li>La firma de honor no constituye firma digital o electrónica certificada, contrato, poder, juramento, donación, afiliación a partido, inscripción electoral, petición oficial ni mecanismo formal de participación ciudadana.</li>
                 <li>El acta y el diploma son piezas simbólicas y conmemorativas. No sustituyen trámites ante Registraduría, CNE, campaña oficial, partido político o entidad pública.</li>
                 <li>Los datos suministrados se usan para generar el diploma, mostrar participación simbólica, estadísticas agregadas y medidas antiabuso. No se solicita correo, teléfono, cédula, dirección ni documento de identidad.</li>
                 <li>No se autoriza el uso de esta información para persecución, discriminación, perfilamiento dañino, acoso, venta de bases de datos o fines ajenos a este espacio ciudadano.</li>
               </ul>
-            </details>
+              <button type="button" class="legal-modal-close" onclick="document.getElementById('legalModal').classList.remove('open')">Cerrar</button>
+            </div>
           </div>
           <!-- Form -->
           <form id="actaForm" autocomplete="off">
@@ -1673,7 +1718,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
               <input type="checkbox" id="fConsent"/>
               <span>Declaro ser mayor de 18 años y acepto que esta participación es <strong>libre, voluntaria, simbólica y sin efectos jurídicos, electorales, contractuales o de afiliación</strong>. Autorizo el tratamiento mínimo de mis datos para este sitio.</span>
             </label>
-            <div class="acta-turnstile" id="turnstileWidget" aria-hidden="true"></div>
+            <div class="acta-turnstile" id="turnstileWidget"></div>
             <button type="submit" class="acta-submit" id="actaSubmit" disabled>
               <i class="fa-solid fa-feather-pointed"></i> FIRMA DE HONOR <i class="fa-solid fa-feather-pointed"></i>
             </button>
@@ -2190,10 +2235,10 @@ window.addEventListener('load', function() {
     }
   }
   setMuted(audioMuted);
-  // ─── Audio triggers per chapter — nunca se paran, solo se inician ───
+  // ─── Audio triggers per chapter — himno + gaitán ya suenan desde el inicio ───
   function enterChapterAudio(ch) {
-    startHimno();                  // Himno suena desde el primer momento
-    if (ch >= 2) startGaitan();    // Ch2 La Tierra → Gaitán se suma encima
+    startHimno();
+    startGaitan();
   }
 
   // Disparar audio en la primera interacción del usuario (autoplay policy)
@@ -2202,6 +2247,7 @@ window.addEventListener('load', function() {
     if (_audioPrimed) return;
     _audioPrimed = true;
     startHimno();
+    startGaitan();
     document.removeEventListener('click', primeAudio);
     document.removeEventListener('keydown', primeAudio);
     document.removeEventListener('touchstart', primeAudio);
@@ -3174,7 +3220,7 @@ function initTurnstile() {
     sitekey: TURNSTILE_SITEKEY,
     theme: 'dark',
     size: 'flexible',
-    appearance: 'interaction-only',
+    appearance: 'always',
     language: 'es',
     action: 'acta_firma',
     callback: function(token) {
