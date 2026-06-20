@@ -1596,7 +1596,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
             <div class="acta-field acta-field-icon" style="margin-bottom:.85rem;">
               <label class="acta-label" for="fName">Nombre para el diploma <span class="required-star">*</span></label>
               <i class="fa-solid fa-user-pen"></i>
-              <input class="acta-input" type="text" id="fName" maxlength="35" autocomplete="off" placeholder="Como deseas que aparezca en tu diploma"/>
+              <input class="acta-input" type="text" id="fName" maxlength="20" autocomplete="off" placeholder="Como deseas que aparezca en tu diploma"/>
               <span id="fNameMsg" style="font-size:.6rem;color:#ef4444;display:block;min-height:1.1em;margin-top:.15rem;"></span>
             </div>
             <div class="acta-row">
@@ -1697,7 +1697,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
                 </h1>
 
                 <p class="font-cinzel text-[8px] sm:text-[8px] tracking-[0.25em] text-slate-500 font-bold" data-reveal>
-                    SE DECLARA EN GLORIA Y MAJESTAD A:
+                    SE DECLARA EN CUMBIA, CAFÉ Y CORAZÓN A:
                 </p>
 
                 <div class="my-1 sm:my-1.5 border-b border-[#e5d4a7]/80 w-fit mx-auto px-6 sm:px-10 pb-0.5 relative" data-reveal="scale">
@@ -1735,7 +1735,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
                         <p class="font-cinzel text-[7px] sm:text-[7px] text-slate-500 tracking-wider mt-0.5 uppercase">
                             Canciller de la Orden
                         </p>
-                        <p class="font-sans text-[6px] sm:text-[5px] text-slate-400">Consejo de Honor del Carrizal</p>
+                        <p class="font-sans text-[6px] sm:text-[5px] text-slate-400">Consejo de Honor y Cultura</p>
                     </div>
 
                 </div>
@@ -3008,7 +3008,7 @@ function hasExcessivePunctuation(str) {
   return letters > 0 && punct / (letters + punct) > 0.3;
 }
 function isValidName(str) {
-  return /^[\p{L}\p{M}\s\-'\.]{3,35}$/u.test(str);
+  return /^[\p{L}\p{M}\s\-'\.]{3,20}$/u.test(str);
 }
 function isWhitelistedDepto(d) { return DEPTOS.indexOf(d) !== -1; }
 
@@ -3063,7 +3063,7 @@ function initTurnstile() {
 }
 
 function validateForm() {
-  fSubmit.disabled = !(fName.value.trim().length >= 3 && fName.value.trim().length <= 35 && fDepto.value !== '' && fMuni.value !== '' && !fMuni.disabled && fConsent.checked && hasTurnstileToken());
+  fSubmit.disabled = !(fName.value.trim().length >= 3 && fName.value.trim().length <= 20 && fDepto.value !== '' && fMuni.value !== '' && !fMuni.disabled && fConsent.checked && hasTurnstileToken());
 }
 [fName, fDepto, fMuni, fConsent].forEach(function(el) { el.addEventListener('input', validateForm); el.addEventListener('change', validateForm); });
 window.addEventListener('load', initTurnstile);
@@ -3113,8 +3113,9 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
   }
 
   var rawName = fName.value.trim();
+  rawName = rawName.toLowerCase().replace(/(?:^|[\s\-\'])\S/g, function(ch) { return ch.toUpperCase(); });
   if (!isValidName(rawName)) {
-    showToast('El nombre debe contener solo letras (3-35 caracteres)');
+    showToast('El nombre debe contener solo letras (3-20 caracteres)');
     return;
   }
   if (hasURLorScript(rawName) || hasExcessivePunctuation(rawName)) {
@@ -3268,8 +3269,12 @@ function generateDiploma(data) {
   showToast('¡Diploma generado con honor!');
 }
 
-var DIPLOMA_EXPORT_W = 3840;
-var DIPLOMA_EXPORT_H = 1688;
+var DIPLOMA_EXPORT_W = 1920;
+var DIPLOMA_EXPORT_H = 1080;
+var DIPLOMA_SCENE_W = 3840;
+var DIPLOMA_SCENE_H = 2160;
+var DIPLOMA_CERT_W = 3840;
+var DIPLOMA_CERT_H = 1688;
 
 function xmlEscape(value) {
   return String(value || '').replace(/[&<>"']/g, function(ch) {
@@ -3451,15 +3456,85 @@ function buildDiplomaSvg4K(data) {
     '<line x1="1420" y1="485" x2="1785" y2="485" stroke="url(#gold)" stroke-width="5"/><rect x="1906" y="471" width="28" height="28" transform="rotate(45 1920 485)" fill="#fbf9f1" stroke="#bea66d" stroke-width="5"/><line x1="2055" y1="485" x2="2420" y2="485" stroke="url(#gold)" stroke-width="5"/>' +
     '<text x="1920" y="665" text-anchor="middle" class="academic" font-size="82" font-style="italic" letter-spacing="3" fill="#b69961">Donde ruge el jaguar, nace la patria.</text>' +
     '<text x="1920" y="850" text-anchor="middle" class="gothic" font-size="236" fill="url(#titleGold)" stroke="#6c4a16" stroke-width="2" paint-order="stroke fill">Honor, Soberanía y Patria</text>' +
-    '<text x="1920" y="1010" text-anchor="middle" class="cinzel" font-size="43" font-weight="800" letter-spacing="20" fill="#667085">SE DECLARA EN GLORIA Y MAJESTAD A:</text>' +
+    '<text x="1920" y="1010" text-anchor="middle" class="cinzel" font-size="43" font-weight="800" letter-spacing="20" fill="#667085">SE DECLARA EN CUMBIA, CAFÉ Y CORAZÓN A:</text>' +
     '<text x="1920" y="1218" text-anchor="middle" class="signature" font-size="' + nameSize + '" fill="#7b3f12"' + nameFit + '>' + xmlEscape(name) + '</text>' +
     '<line x1="1280" y1="1280" x2="2560" y2="1280" stroke="#e0c891" stroke-width="5" opacity=".82"/>' +
     svgLines(meritLines, 1920, 1412, {size:64, leading:78, family:'Cormorant Garamond, Georgia, serif', fill:'#4a4033', style:'italic', extra:'class="academic"'}) +
     '<text x="1920" y="1608" text-anchor="middle" class="cinzel" font-size="31" font-weight="700" letter-spacing="11" fill="#8a6b27">FIRMADO DIGITALMENTE - ' + xmlEscape(date.toUpperCase()) + '</text>' +
     '<text x="1225" y="1770" text-anchor="middle" class="signature" font-size="112" fill="#866a2f">Dios</text><line x1="870" y1="1815" x2="1580" y2="1815" stroke="#b9aa8c" stroke-width="4"/><text x="1225" y="1870" text-anchor="middle" class="cinzel" font-size="34" font-weight="700" letter-spacing="7" fill="#667085">GUARDIÁN DE LA ORDEN</text><text x="1225" y="1918" text-anchor="middle" font-family="Montserrat,Arial,sans-serif" font-size="25" fill="#8d8374">Veeduría Suprema del Universo</text>' +
-    '<text x="2615" y="1770" text-anchor="middle" class="signature" font-size="112" fill="#866a2f">Diomedes Díaz</text><line x1="2260" y1="1815" x2="2970" y2="1815" stroke="#b9aa8c" stroke-width="4"/><text x="2615" y="1870" text-anchor="middle" class="cinzel" font-size="34" font-weight="700" letter-spacing="7" fill="#667085">CANCILLER DE LA ORDEN</text><text x="2615" y="1918" text-anchor="middle" font-family="Montserrat,Arial,sans-serif" font-size="25" fill="#8d8374">Consejo de Honor del Carrizal</text>' +
+    '<text x="2615" y="1770" text-anchor="middle" class="signature" font-size="112" fill="#866a2f">Diomedes Díaz</text><line x1="2260" y1="1815" x2="2970" y2="1815" stroke="#b9aa8c" stroke-width="4"/><text x="2615" y="1870" text-anchor="middle" class="cinzel" font-size="34" font-weight="700" letter-spacing="7" fill="#667085">CANCILLER DE LA ORDEN</text><text x="2615" y="1918" text-anchor="middle" font-family="Montserrat,Arial,sans-serif" font-size="25" fill="#8d8374">Consejo de Honor y Cultura</text>' +
     '<text x="1920" y="2010" text-anchor="middle" class="cinzel" font-size="24" font-weight="700" letter-spacing="8" fill="#a08a55" opacity=".75">DOCUMENTAL VIVO - ACTA DE COMPROMISO NACIONAL</text>' +
   '</svg>';
+}
+
+function drawDiplomaSceneBackdrop(ctx, w, h) {
+  ctx.save();
+  ctx.fillStyle = '#020200';
+  ctx.fillRect(0, 0, w, h);
+
+  var centerGlow = ctx.createRadialGradient(w * 0.5, h * 0.38, 0, w * 0.5, h * 0.38, h * 0.62);
+  centerGlow.addColorStop(0, 'rgba(197,155,39,0.16)');
+  centerGlow.addColorStop(0.35, 'rgba(82,68,14,0.14)');
+  centerGlow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = centerGlow;
+  ctx.fillRect(0, 0, w, h);
+
+  var flagWash = ctx.createLinearGradient(0, 0, w, h);
+  flagWash.addColorStop(0, 'rgba(245,205,54,0.22)');
+  flagWash.addColorStop(0.16, 'rgba(245,205,54,0.08)');
+  flagWash.addColorStop(0.52, 'rgba(16,42,86,0.07)');
+  flagWash.addColorStop(0.78, 'rgba(121,13,18,0.10)');
+  flagWash.addColorStop(1, 'rgba(121,13,18,0.16)');
+  ctx.fillStyle = flagWash;
+  ctx.fillRect(0, 0, w, h);
+
+  ctx.strokeStyle = 'rgba(197,155,39,0.85)';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(0, 27);
+  ctx.lineTo(w, 27);
+  ctx.stroke();
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  ctx.shadowColor = 'rgba(197,155,39,0.40)';
+  ctx.shadowBlur = 42;
+  ctx.font = '700 34px Cinzel, Georgia, serif';
+  ctx.fillStyle = '#C59B27';
+  drawTrackedText(ctx, 'CEPEDA 2026', w / 2, 112, 5);
+
+  var titleGold = ctx.createLinearGradient(0, 240, 0, 590);
+  titleGold.addColorStop(0, '#fff2a3');
+  titleGold.addColorStop(0.52, '#ffd92f');
+  titleGold.addColorStop(1, '#b07a12');
+  ctx.fillStyle = titleGold;
+  ctx.font = '800 160px Cinzel, Georgia, serif';
+  ctx.fillText('TU MOMENTO', w / 2, 390);
+  ctx.fillText('EN LA HISTORIA', w / 2, 585);
+  ctx.shadowBlur = 0;
+
+  var lineGrad = ctx.createLinearGradient(w * 0.18, 0, w * 0.82, 0);
+  lineGrad.addColorStop(0, 'rgba(197,155,39,0)');
+  lineGrad.addColorStop(0.16, 'rgba(197,155,39,0.95)');
+  lineGrad.addColorStop(0.62, 'rgba(255,235,132,1)');
+  lineGrad.addColorStop(1, 'rgba(197,155,39,0)');
+  ctx.strokeStyle = lineGrad;
+  ctx.lineWidth = 7;
+  ctx.beginPath();
+  ctx.moveTo(w * 0.18, 760);
+  ctx.lineTo(w * 0.82, 760);
+  ctx.stroke();
+
+  ctx.fillStyle = 'rgba(197,155,39,0.55)';
+  for (var i = 0; i < 90; i++) {
+    var px = (i * 421) % w;
+    var py = 80 + ((i * 233) % (h - 140));
+    var size = 2 + (i % 4);
+    ctx.globalAlpha = 0.12 + ((i % 5) * 0.045);
+    ctx.fillRect(px, py, size, size);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
 }
 
 function renderDiplomaPng4K(data) {
@@ -3473,8 +3548,28 @@ function renderDiplomaPng4K(data) {
         canvas.width = DIPLOMA_EXPORT_W;
         canvas.height = DIPLOMA_EXPORT_H;
         var ctx = canvas.getContext('2d');
-        var w = canvas.width;
-        var h = canvas.height;
+        ctx.save();
+        ctx.scale(canvas.width / DIPLOMA_SCENE_W, canvas.height / DIPLOMA_SCENE_H);
+        drawDiplomaSceneBackdrop(ctx, DIPLOMA_SCENE_W, DIPLOMA_SCENE_H);
+
+        var certW = 2886;
+        var certH = 1272;
+        var certX = (DIPLOMA_SCENE_W - certW) / 2;
+        var certY = 810;
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.72)';
+        ctx.shadowBlur = 86;
+        ctx.shadowOffsetY = 34;
+        ctx.fillStyle = 'rgba(251,249,241,0.98)';
+        drawRoundRect(ctx, certX, certY, certW, certH, 10);
+        ctx.fill();
+        ctx.restore();
+
+        ctx.save();
+        ctx.translate(certX, certY);
+        ctx.scale(certW / DIPLOMA_CERT_W, certH / DIPLOMA_CERT_H);
+        var w = DIPLOMA_CERT_W;
+        var h = DIPLOMA_CERT_H;
 
         ctx.fillStyle = '#fbf9f1';
         ctx.fillRect(0, 0, w, h);
@@ -3519,7 +3614,7 @@ function renderDiplomaPng4K(data) {
 
         ctx.font = '700 40px Cinzel, Georgia, serif';
         ctx.fillStyle = '#1e293b';
-        drawTrackedText(ctx, 'CONSEJO SUPREMO DE LA COLOMBIANIDAD', w / 2, 308, 10);
+        drawTrackedText(ctx, 'CONSEJO SUPREMO DE LA COLOMBIANIDAD', w / 2, 308, 3.8);
 
         ctx.strokeStyle = '#c0a870';
         ctx.lineWidth = 4;
@@ -3555,7 +3650,7 @@ function renderDiplomaPng4K(data) {
 
         ctx.font = '700 32px Cinzel, Georgia, serif';
         ctx.fillStyle = '#64748b';
-        drawTrackedText(ctx, 'SE DECLARA EN GLORIA Y MAJESTAD A:', w / 2, 748, 9);
+        drawTrackedText(ctx, 'SE DECLARA EN CUMBIA, CAFÉ Y CORAZÓN A:', w / 2, 748, 9);
 
         drawCenteredFitText(ctx, name, w / 2, 906, 1900, 144, 88, '"Great Vibes", "Brush Script MT", cursive', '#78350f');
         ctx.strokeStyle = 'rgba(229,212,167,0.78)';
@@ -3595,7 +3690,7 @@ function renderDiplomaPng4K(data) {
         ctx.font = '24px Montserrat, Arial, sans-serif';
         ctx.fillStyle = '#9ca3af';
         ctx.fillText('Veeduría Suprema del Universo', 1225, 1426);
-        ctx.fillText('Consejo de Honor del Carrizal', 2615, 1426);
+        ctx.fillText('Consejo de Honor y Cultura', 2615, 1426);
 
         ctx.fillStyle = 'rgba(184,134,11,0.55)';
         for (var i = 0; i < 42; i++) {
@@ -3605,9 +3700,11 @@ function renderDiplomaPng4K(data) {
           ctx.fillRect(px, py, 5 + (i % 3), 5 + (i % 3));
         }
         ctx.globalAlpha = 1;
+        ctx.restore();
+        ctx.restore();
 
         canvas.toBlob(function(pngBlob) {
-          if (!pngBlob) reject(new Error('No se pudo generar el PNG 4K'));
+          if (!pngBlob) reject(new Error('No se pudo generar el PNG HD'));
           else resolve({ blob:pngBlob, canvas:canvas, svg:null });
         }, 'image/png');
       } catch (err) {
@@ -3689,9 +3786,9 @@ function writeDiplomaPreview(previewWindow, result, filename) {
     'a{border:1px solid rgba(197,155,39,.55);border-radius:999px;color:#f3d26c;text-decoration:none;padding:10px 16px;background:rgba(197,155,39,.12);font-size:12px;letter-spacing:.1em;text-transform:uppercase}' +
     'img{width:min(100%,1100px);height:auto;box-shadow:0 20px 80px rgba(0,0,0,.65);background:#fff}' +
     '.meta{font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.08em}</style></head><body>' +
-    '<div class="bar"><div><div class="title">Diploma PNG 4K</div><div class="meta">3840 x 1688 px</div></div>' +
+    '<div class="bar"><div><div class="title">Diploma PNG HD</div><div class="meta">1920 x 1080 px</div></div>' +
     '<a href="' + imageUrl + '" download="' + safeFilename + '">Descargar PNG</a></div>' +
-    '<img src="' + imageUrl + '" alt="Diploma 4K"></body></html>';
+    '<img src="' + imageUrl + '" alt="Diploma HD"></body></html>';
 
   previewWindow.document.open();
   previewWindow.document.write(html);
@@ -3715,7 +3812,7 @@ function showDiplomaInlinePreview(result, filename) {
 
   var title = document.createElement('div');
   title.style.cssText = 'font-family:Cinzel,serif;color:#F3D26C;letter-spacing:.12em;text-transform:uppercase;font-size:.72rem;';
-  title.textContent = 'Diploma PNG 4K';
+  title.textContent = 'Diploma PNG HD';
 
   var actions = document.createElement('div');
   actions.style.cssText = 'display:flex;gap:8px;align-items:center;';
@@ -3732,7 +3829,7 @@ function showDiplomaInlinePreview(result, filename) {
 
   var img = document.createElement('img');
   img.src = imageUrl;
-  img.alt = 'Diploma 4K';
+  img.alt = 'Diploma HD';
   img.style.cssText = 'width:min(100%,1100px);height:auto;background:#fff;box-shadow:0 22px 90px rgba(0,0,0,.75);';
 
   closeBtn.addEventListener('click', function() { overlay.remove(); });
@@ -3761,17 +3858,17 @@ document.getElementById('btnOpenDiploma').addEventListener('click', function() {
   var data = getDiplomaExportData();
   var filename = getDiplomaFilename(data);
   setDiplomaButtonBusy(btn, true);
-  showToast('Abriendo diploma PNG 4K...');
+  showToast('Abriendo diploma PNG HD...');
   renderDiplomaPng4K(data).then(function(result) {
     rememberDiplomaExport(result);
     if (showDiplomaInlinePreview(result, filename)) {
-      showToast('Diploma 4K abierto');
+      showToast('Diploma HD abierto');
       return;
     }
     downloadDiplomaResult(result, filename);
     showToast('El navegador bloqueó la vista; diploma descargado');
   }).catch(function(err) {
-    showToast('Error abriendo PNG 4K');
+    showToast('Error abriendo PNG HD');
   }).finally(function() {
     setDiplomaButtonBusy(btn, false);
   });
@@ -3782,14 +3879,14 @@ document.getElementById('btnDownload').addEventListener('click', function() {
   var data = getDiplomaExportData();
   var filename = getDiplomaFilename(data);
   setDiplomaButtonBusy(btn, true);
-  showToast('Generando diploma PNG 4K...');
+  showToast('Generando diploma PNG HD...');
   renderDiplomaPng4K(data).then(function(result) {
     rememberDiplomaExport(result);
     downloadDiplomaResult(result, filename);
-    showToast('Diploma 4K descargado');
+    showToast('Diploma HD descargado');
   }).catch(function(err) {
 
-    showToast('Error generando PNG 4K');
+    showToast('Error generando PNG HD');
   }).finally(function() {
     setDiplomaButtonBusy(btn, false);
   });
