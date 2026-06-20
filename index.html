@@ -1689,15 +1689,15 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
 
             <div class="flex-1 flex flex-col justify-center py-2 sm:py-3 mb-3 sm:mb-5">
                 <p class="font-academic italic text-[13px] sm:text-[13px] leading-relaxed max-w-[680px] mx-auto tracking-wide" style="color:#c8b088;" data-reveal>
-                    Donde ruge el jaguar, nace la patria.
+                    Dios bendiga el sancocho, la bandeja paisa y la cumbia.
                 </p>
 
                 <h1 class="diploma-gothic-title font-gothic text-3xl sm:text-3.5xl lg:text-4xl my-1 sm:my-2 select-none leading-none tracking-wide" data-reveal="scale">
-                    Honor, Soberanía y Patria
+                    En honor por su máxima lealtad
                 </h1>
 
                 <p class="font-cinzel text-[8px] sm:text-[8px] tracking-[0.25em] text-slate-500 font-bold" data-reveal>
-                    SE DECLARA EN CUMBIA, CAFÉ Y CORAZÓN A:
+                    Se declara colombiano de pura cepa y corazón a:
                 </p>
 
                 <div class="my-1 sm:my-1.5 border-b border-[#e5d4a7]/80 w-fit mx-auto px-6 sm:px-10 pb-0.5 relative" data-reveal="scale">
@@ -3454,9 +3454,9 @@ function buildDiplomaSvg4K(data) {
     '<circle cx="1920" cy="1080" r="520" fill="none" stroke="#8f733a" stroke-width="1.5" opacity=".16"/>' +
     '<text x="1920" y="390" text-anchor="middle" class="cinzel" font-size="54" font-weight="800" letter-spacing="16" fill="#866a2f">CONSEJO SUPREMO DE LA COLOMBIANIDAD</text>' +
     '<line x1="1420" y1="485" x2="1785" y2="485" stroke="url(#gold)" stroke-width="5"/><rect x="1906" y="471" width="28" height="28" transform="rotate(45 1920 485)" fill="#fbf9f1" stroke="#bea66d" stroke-width="5"/><line x1="2055" y1="485" x2="2420" y2="485" stroke="url(#gold)" stroke-width="5"/>' +
-    '<text x="1920" y="665" text-anchor="middle" class="academic" font-size="82" font-style="italic" letter-spacing="3" fill="#b69961">Donde ruge el jaguar, nace la patria.</text>' +
-    '<text x="1920" y="850" text-anchor="middle" class="gothic" font-size="236" fill="url(#titleGold)" stroke="#6c4a16" stroke-width="2" paint-order="stroke fill">Honor, Soberanía y Patria</text>' +
-    '<text x="1920" y="1010" text-anchor="middle" class="cinzel" font-size="43" font-weight="800" letter-spacing="20" fill="#667085">SE DECLARA EN CUMBIA, CAFÉ Y CORAZÓN A:</text>' +
+    '<text x="1920" y="665" text-anchor="middle" class="academic" font-size="82" font-style="italic" letter-spacing="3" fill="#b69961">Dios bendiga el sancocho, la bandeja paisa y la cumbia.</text>' +
+    '<text x="1920" y="850" text-anchor="middle" class="gothic" font-size="236" fill="url(#titleGold)" stroke="#6c4a16" stroke-width="2" paint-order="stroke fill">En honor por su máxima lealtad</text>' +
+    '<text x="1920" y="1010" text-anchor="middle" class="cinzel" font-size="43" font-weight="800" letter-spacing="5" fill="#667085">Se declara colombiano de pura cepa y corazón a:</text>' +
     '<text x="1920" y="1218" text-anchor="middle" class="signature" font-size="' + nameSize + '" fill="#7b3f12"' + nameFit + '>' + xmlEscape(name) + '</text>' +
     '<line x1="1280" y1="1280" x2="2560" y2="1280" stroke="#e0c891" stroke-width="5" opacity=".82"/>' +
     svgLines(meritLines, 1920, 1412, {size:64, leading:78, family:'Cormorant Garamond, Georgia, serif', fill:'#4a4033', style:'italic', extra:'class="academic"'}) +
@@ -3636,21 +3636,21 @@ function renderDiplomaPng4K(data) {
 
         ctx.font = 'italic 52px "Cormorant Garamond", Georgia, serif';
         ctx.fillStyle = '#c8b088';
-        ctx.fillText('Donde ruge el jaguar, nace la patria.', w / 2, 474);
+        ctx.fillText('Dios bendiga el sancocho, la bandeja paisa y la cumbia.', w / 2, 474);
 
         ctx.font = '144px UnifrakturMaguntia, "Old English Text MT", Georgia, serif';
         ctx.fillStyle = '#1a1a1a';
         ctx.shadowColor = 'rgba(0,0,0,0.08)';
         ctx.shadowBlur = 8;
         ctx.shadowOffsetY = 4;
-        ctx.fillText('Honor, Soberanía y Patria', w / 2, 620);
+        ctx.fillText('En honor por su máxima lealtad', w / 2, 620);
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
 
         ctx.font = '700 32px Cinzel, Georgia, serif';
         ctx.fillStyle = '#64748b';
-        drawTrackedText(ctx, 'SE DECLARA EN CUMBIA, CAFÉ Y CORAZÓN A:', w / 2, 748, 9);
+        drawTrackedText(ctx, 'Se declara colombiano de pura cepa y corazón a:', w / 2, 748, 2.5);
 
         drawCenteredFitText(ctx, name, w / 2, 906, 1900, 144, 88, '"Great Vibes", "Brush Script MT", cursive', '#78350f');
         ctx.strokeStyle = 'rgba(229,212,167,0.78)';
