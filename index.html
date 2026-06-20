@@ -2531,9 +2531,10 @@ function enterChapter(ch) {
       if (data) populateChapter4Displays(data);
       startChapter4Refresh();
       startRealtimeSubscription();
-    }).catch(function() { startChapter4Refresh(); startRealtimeSubscription(); });
+      startSimulation();
+    }).catch(function() { startChapter4Refresh(); startRealtimeSubscription(); startSimulation(); });
   }
-  if (ch !== 4) { stopMapDots(); stopFloatingNames(); stopChapter4Refresh(); stopRealtimeSubscription(); }
+  if (ch !== 4) { stopMapDots(); stopFloatingNames(); stopChapter4Refresh(); stopRealtimeSubscription(); stopSimulation(); }
   if (ch === 5) { initPropuestas(); }
   if (ch === 6) {
     loadDepartments();
@@ -2577,13 +2578,14 @@ function refreshCounter(el) {
   el = el || document.getElementById('liveCounter');
   if (!el) return;
   if (HAS_SB) {
-    DB.from('supporters').select('*', { count: 'exact', head: true }).then(function(r) {
-      if (!r.error && r.count != null) {
-        _cachedCount = r.count;
-        try { localStorage.setItem('doc-counter-cache', r.count); } catch(ex) {}
-        animateCounter(el, r.count);
+    DB.rpc('get_total_count').then(function(r) {
+      if (!r.error && r.data && r.data.total != null) {
+        var total = r.data.total;
+        _cachedCount = total;
+        try { localStorage.setItem('doc-counter-cache', total); } catch(ex) {}
+        animateCounter(el, total);
       }
-    });
+    }).catch(function(){});
   }
 }
 
@@ -2831,6 +2833,22 @@ function startChapter4Refresh() {
 
 function stopChapter4Refresh() {
   if (_chapter4Refresh) { clearInterval(_chapter4Refresh); _chapter4Refresh = null; }
+}
+
+var _simInterval = null;
+function startSimulation() {
+  if (!HAS_SB) return;
+  stopSimulation();
+  _simInterval = setInterval(function() {
+    if (currentChapter !== 4) { stopSimulation(); return; }
+    DB.rpc('simulate_signers').then(function(r) {
+      // Simulation runs silently — INSERTs trigger realtime events for all viewers
+    }).catch(function(){});
+  }, 10000);
+}
+
+function stopSimulation() {
+  if (_simInterval) { clearInterval(_simInterval); _simInterval = null; }
 }
 
 function startRealtimeSubscription() {
