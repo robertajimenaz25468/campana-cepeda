@@ -1801,6 +1801,12 @@ try {
 } catch(e) {}
 var HAS_SB = DB && typeof DB.from === 'function';
 
+var _realtimeChannel = null;
+var _realtimeQueue = [];
+var _realtimeTimer = null;
+var _knownSignerKeys = null;
+var _deptCountsRealtime = {};
+
 var TOTAL = 7;
 var currentChapter = 0;
 var isTransitioning = false;
@@ -2524,9 +2530,10 @@ function enterChapter(ch) {
     fetchRecentSigners().then(function(data) {
       if (data) populateChapter4Displays(data);
       startChapter4Refresh();
-    }).catch(function() { startChapter4Refresh(); });
+      startRealtimeSubscription();
+    }).catch(function() { startChapter4Refresh(); startRealtimeSubscription(); });
   }
-  if (ch !== 4) { stopMapDots(); stopFloatingNames(); stopChapter4Refresh(); }
+  if (ch !== 4) { stopMapDots(); stopFloatingNames(); stopChapter4Refresh(); stopRealtimeSubscription(); }
   if (ch === 5) { initPropuestas(); }
   if (ch === 6) {
     loadDepartments();
@@ -2630,6 +2637,16 @@ function populateChapter4Displays(data) {
   namePool = data.display.length ? data.display.slice() : [];
   buildSignatureTicker(data.display);
   highlightDepartments(data.raw);
+  if (!_knownSignerKeys) _knownSignerKeys = {};
+  for (var i = 0; i < data.raw.length; i++) {
+    var r = data.raw[i];
+    _knownSignerKeys[r.name + '|' + r.department + '|' + (r.created_at || '')] = true;
+  }
+  _deptCountsRealtime = {};
+  for (var j = 0; j < data.raw.length; j++) {
+    var dept = data.raw[j].department;
+    if (dept) _deptCountsRealtime[dept] = (_deptCountsRealtime[dept] || 0) + 1;
+  }
 }
 
 var namePool = [];
@@ -2814,6 +2831,96 @@ function startChapter4Refresh() {
 
 function stopChapter4Refresh() {
   if (_chapter4Refresh) { clearInterval(_chapter4Refresh); _chapter4Refresh = null; }
+}
+
+function startRealtimeSubscription() {
+  if (!HAS_SB) return;
+  stopRealtimeSubscription();
+  if (!_knownSignerKeys) _knownSignerKeys = {};
+  _realtimeChannel = DB.channel('public:supporters')
+    .on('postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'supporters' },
+      function(payload) { handleRealtimeInsert(payload); }
+    )
+    .subscribe(function(status) {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {}
+    });
+}
+
+function stopRealtimeSubscription() {
+  if (_realtimeTimer) {
+    clearTimeout(_realtimeTimer);
+    _realtimeTimer = null;
+    if (_realtimeQueue.length > 0 && currentChapter === 4) flushRealtimeBatch();
+  }
+  if (_realtimeChannel) {
+    _realtimeChannel.unsubscribe();
+    _realtimeChannel = null;
+  }
+}
+
+function handleRealtimeInsert(payload) {
+  var row = payload.new;
+  if (!row || !row.name || !row.department) return;
+  var name = row.name;
+  var department = row.department;
+  var municipality = row.municipality || '';
+  var createdAt = row.created_at || '';
+  var key = name + '|' + department + '|' + createdAt;
+  if (_knownSignerKeys && _knownSignerKeys[key]) return;
+  if (_knownSignerKeys) _knownSignerKeys[key] = true;
+  _realtimeQueue.push({
+    name: name,
+    department: department,
+    municipality: municipality,
+    display: name + ' · ' + municipality,
+    key: key
+  });
+  if (!_realtimeTimer) _realtimeTimer = setTimeout(flushRealtimeBatch, 500);
+}
+
+function flushRealtimeBatch() {
+  _realtimeTimer = null;
+  if (!_realtimeQueue.length) return;
+  if (currentChapter !== 4) { _realtimeQueue = []; return; }
+  var batch = _realtimeQueue.slice();
+  _realtimeQueue = [];
+  for (var i = 0; i < batch.length; i++) {
+    var entry = batch[i];
+    namePool.unshift(entry.display);
+    _deptCountsRealtime[entry.department] = (_deptCountsRealtime[entry.department] || 0) + 1;
+    if (entry.municipality && MUNI_COORDS[entry.municipality]) {
+      if (_recentMunis.indexOf(entry.municipality) === -1) _recentMunis.push(entry.municipality);
+    }
+  }
+  var counterEl = document.getElementById('liveCounter');
+  if (counterEl) {
+    var curVal = parseInt(counterEl.textContent.replace(/\D/g,''), 10) || 0;
+    var newVal = curVal + batch.length;
+    counterEl.textContent = newVal.toLocaleString('es-CO');
+    _cachedCount = newVal;
+    try { localStorage.setItem('doc-counter-cache', String(newVal)); } catch(e) {}
+  }
+  buildSignatureTicker(namePool);
+  var svg = document.getElementById('mapaSVG');
+  if (svg && _deptCountsRealtime) {
+    var maxC = 0;
+    for (var d in _deptCountsRealtime) { if (_deptCountsRealtime[d] > maxC) maxC = _deptCountsRealtime[d]; }
+    for (var dept in _deptCountsRealtime) {
+      var svgId = DEPT_SVG_IDS[dept];
+      if (!svgId) continue;
+      var path = svg.querySelector('#' + svgId);
+      if (!path) continue;
+      if (!path.classList.contains('has-votes')) path.classList.add('has-votes');
+      var ratio = maxC > 0 ? _deptCountsRealtime[dept] / maxC : 0.3;
+      path.style.setProperty('--highlight-opacity', (0.25 + ratio * 0.75).toFixed(2));
+    }
+  }
+  var lastEntry = batch[batch.length - 1];
+  if (lastEntry.municipality && MUNI_COORDS[lastEntry.municipality]) {
+    spawnMapDot();
+    setTimeout(spawnMapDot, 300);
+  }
 }
 
 var DEPTOS = ['Amazonas','Antioquia','Arauca','Atlántico','Bolívar','Boyacá','Caldas','Caquetá','Casanare','Cauca','Cesar','Chocó','Córdoba','Cundinamarca','Guainía','Guaviare','Huila','La Guajira','Magdalena','Meta','Nariño','Norte de Santander','Putumayo','Quindío','Risaralda','San Andrés y Providencia','Santander','Sucre','Tolima','Valle del Cauca','Vaupés','Vichada','Bogotá D.C.'];
@@ -3523,34 +3630,7 @@ function downloadBlob(blob, filename) {
   setTimeout(function() { URL.revokeObjectURL(url); }, 30000);
 }
 
-function getDiplomaDataUrl(result) {
-  if (!result) return '';
-  if (result.dataUrl) return result.dataUrl;
-  if (result.canvas && result.canvas.toDataURL) {
-    try {
-      result.dataUrl = result.canvas.toDataURL('image/png');
-      return result.dataUrl;
-    } catch(ex) {}
-  }
-  return '';
-}
-
-function downloadDataUrl(dataUrl, filename) {
-  var a = document.createElement('a');
-  a.href = dataUrl;
-  a.download = filename;
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-}
-
 function downloadDiplomaResult(result, filename) {
-  var dataUrl = getDiplomaDataUrl(result);
-  if (dataUrl) {
-    downloadDataUrl(dataUrl, filename);
-    return;
-  }
   downloadBlob(result.blob, filename);
 }
 
@@ -3583,12 +3663,21 @@ function rememberDiplomaExport(result) {
   window._diplomaCanvas = result.canvas;
   window._diplomaSvg4K = result.svg;
   window._diplomaBlob4K = result.blob;
-  window._diplomaDataUrl4K = getDiplomaDataUrl(result);
+}
+
+function getDiplomaObjectUrl(result) {
+  if (!result || !result.blob) return '';
+  var imageUrl = URL.createObjectURL(result.blob);
+  window._diplomaPreviewUrls = window._diplomaPreviewUrls || [];
+  window._diplomaPreviewUrls.push(imageUrl);
+  while (window._diplomaPreviewUrls.length > 6) {
+    URL.revokeObjectURL(window._diplomaPreviewUrls.shift());
+  }
+  return imageUrl;
 }
 
 function writeDiplomaPreview(previewWindow, result, filename) {
-  var imageUrl = getDiplomaDataUrl(result);
-  if (!imageUrl) imageUrl = URL.createObjectURL(result.blob);
+  var imageUrl = getDiplomaObjectUrl(result);
   var safeFilename = escapeHtml(filename);
   var html = '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
@@ -3611,7 +3700,7 @@ function writeDiplomaPreview(previewWindow, result, filename) {
 }
 
 function showDiplomaInlinePreview(result, filename) {
-  var imageUrl = getDiplomaDataUrl(result);
+  var imageUrl = getDiplomaObjectUrl(result);
   if (!imageUrl) return false;
 
   var existing = document.getElementById('diplomaPreviewOverlay');
@@ -3671,24 +3760,10 @@ document.getElementById('btnOpenDiploma').addEventListener('click', function() {
   var btn = this;
   var data = getDiplomaExportData();
   var filename = getDiplomaFilename(data);
-  var previewWindow = window.open('', '_blank');
-  if (previewWindow) {
-    previewWindow.document.write('<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Generando diploma</title><style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070602;color:#f3d26c;font-family:Georgia,serif;letter-spacing:.12em;text-transform:uppercase}</style></head><body>Generando diploma 4K...</body></html>');
-    previewWindow.document.close();
-  }
   setDiplomaButtonBusy(btn, true);
   showToast('Abriendo diploma PNG 4K...');
   renderDiplomaPng4K(data).then(function(result) {
     rememberDiplomaExport(result);
-    if (previewWindow) {
-      try {
-        writeDiplomaPreview(previewWindow, result, filename);
-        showToast('Diploma 4K abierto');
-        return;
-      } catch(ex) {
-        try { previewWindow.close(); } catch(closeEx) {}
-      }
-    }
     if (showDiplomaInlinePreview(result, filename)) {
       showToast('Diploma 4K abierto');
       return;
@@ -3696,7 +3771,6 @@ document.getElementById('btnOpenDiploma').addEventListener('click', function() {
     downloadDiplomaResult(result, filename);
     showToast('El navegador bloqueó la vista; diploma descargado');
   }).catch(function(err) {
-    if (previewWindow && !previewWindow.closed) { previewWindow.close(); }
     showToast('Error abriendo PNG 4K');
   }).finally(function() {
     setDiplomaButtonBusy(btn, false);
