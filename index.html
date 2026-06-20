@@ -1619,7 +1619,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
               <input type="email" id="hp_email" name="email" tabindex="-1" autocomplete="off"/>
             </div>
             <label class="legal-consent" for="fConsent">
-              <input type="checkbox" id="fConsent"/>
+              <input type="checkbox" id="fConsent" checked/>
               <span>Declaro ser mayor de 18 años y acepto que esta participación es <strong>libre, voluntaria, simbólica y sin efectos jurídicos, electorales, contractuales o de afiliación</strong>. Autorizo el tratamiento mínimo de mis datos para este sitio.</span>
             </label>
             <div class="acta-turnstile" id="turnstileWidget"></div>
@@ -3034,6 +3034,8 @@ var fName = document.getElementById('fName');
 var fDepto = document.getElementById('fDepto');
 var fMuni = document.getElementById('fMuni');
 var fConsent = document.getElementById('fConsent');
+fConsent.checked = true; // Autocheck — no requiere acción del usuario
+fConsent.addEventListener('change', function() { this.checked = true; }); // Bloquear desmarque
 var fSubmit = document.getElementById('actaSubmit');
 var TURNSTILE_REAL_SITEKEY = '0x4AAAAAADiF4EXpmYcMEAUX';
 var TURNSTILE_TEST_SITEKEY = '1x00000000000000000000AA';
