@@ -17,10 +17,8 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<link rel="preconnect" href="https://challenges.cloudflare.com" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
 
 <script>
 (function() {
@@ -1622,7 +1620,7 @@ select.acta-input:disabled{opacity:.35;cursor:not-allowed;background-image:none}
               <input type="checkbox" id="fConsent" checked/>
               <span>Declaro ser mayor de 18 años y acepto que esta participación es <strong>libre, voluntaria, simbólica y sin efectos jurídicos, electorales, contractuales o de afiliación</strong>. Autorizo el tratamiento mínimo de mis datos para este sitio.</span>
             </label>
-            <div class="acta-turnstile" id="turnstileWidget"></div>
+            <!-- Turnstile desactivado temporalmente -->
             <button type="submit" class="acta-submit" id="actaSubmit" disabled>
               <i class="fa-solid fa-feather-pointed"></i> FIRMA DE HONOR <i class="fa-solid fa-feather-pointed"></i>
             </button>
@@ -3037,57 +3035,18 @@ var fConsent = document.getElementById('fConsent');
 fConsent.checked = true; // Autocheck — no requiere acción del usuario
 fConsent.addEventListener('change', function() { this.checked = true; }); // Bloquear desmarque
 var fSubmit = document.getElementById('actaSubmit');
-var TURNSTILE_REAL_SITEKEY = '0x4AAAAAADiF4EXpmYcMEAUX';
-var TURNSTILE_TEST_SITEKEY = '1x00000000000000000000AA';
-var TURNSTILE_IS_LOCAL = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/i.test(window.location.hostname);
-var TURNSTILE_SITEKEY = window.TURNSTILE_SITEKEY || (TURNSTILE_IS_LOCAL ? TURNSTILE_TEST_SITEKEY : TURNSTILE_REAL_SITEKEY);
+// Turnstile desactivado — always passes
+var TURNSTILE_SITEKEY = null;
 var _turnstileWidgetId = null;
-var _turnstileToken = '';
+var _turnstileToken = 'bypass';
 
-function hasTurnstileToken() {
-  var response = document.querySelector('input[name="cf-turnstile-response"]');
-  return !!(response ? response.value : _turnstileToken);
-}
-
-function initTurnstile() {
-  var widget = document.getElementById('turnstileWidget');
-  if (!widget || _turnstileWidgetId !== null) return;
-  if (!window.turnstile || !TURNSTILE_SITEKEY) {
-    setTimeout(initTurnstile, 350);
-    return;
-  }
-  _turnstileWidgetId = window.turnstile.render('#turnstileWidget', {
-    sitekey: TURNSTILE_SITEKEY,
-    theme: 'dark',
-    size: 'flexible',
-    appearance: 'always',
-    language: 'es',
-    action: 'acta_firma',
-    callback: function(token) {
-      _turnstileToken = token || '';
-      validateForm();
-    },
-    'error-callback': function() {
-      _turnstileToken = '';
-      validateForm();
-    },
-    'expired-callback': function() {
-      _turnstileToken = '';
-      validateForm();
-    },
-    'timeout-callback': function() {
-      _turnstileToken = '';
-      validateForm();
-    }
-  });
-}
+function hasTurnstileToken() { return true; }
+function initTurnstile() { /* desactivado */ }
 
 function validateForm() {
-  fSubmit.disabled = !(fName.value.trim().length >= 3 && fName.value.trim().length <= 20 && fDepto.value !== '' && fMuni.value !== '' && !fMuni.disabled && fConsent.checked && hasTurnstileToken());
+  fSubmit.disabled = !(fName.value.trim().length >= 3 && fName.value.trim().length <= 20 && fDepto.value !== '' && fMuni.value !== '' && !fMuni.disabled && fConsent.checked);
 }
 [fName, fDepto, fMuni, fConsent].forEach(function(el) { el.addEventListener('input', validateForm); el.addEventListener('change', validateForm); });
-window.addEventListener('load', initTurnstile);
-setTimeout(initTurnstile, 1200);
 loadDepartments();
 validateForm();
 
@@ -3125,12 +3084,7 @@ document.getElementById('actaForm').addEventListener('submit', function(e) {
     return;
   }
 
-  if (!hasTurnstileToken()) {
-    _turnstileToken = '';
-    validateForm();
-    if (window.turnstile && _turnstileWidgetId !== null) { window.turnstile.reset(_turnstileWidgetId); }
-    return;
-  }
+  // Turnstile desactivado — sin verificación
 
   var rawName = fName.value.trim();
   rawName = rawName.toLowerCase().replace(/(?:^|[\s\-\'])\S/g, function(ch) { return ch.toUpperCase(); });
