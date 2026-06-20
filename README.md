@@ -1,6 +1,13 @@
-# Movimiento de Apoyo a Iván Cepeda 2026
+# Movimiento Ciudadano por el Dialogo Nacional 2026
 
-Sitio de adhesiones ciudadanas independientes. No afiliado a campaña oficial alguna.
+Espacio de participacion ciudadana independiente. Nacido de la sociedad civil.
+No afiliado, financiado ni coordinado por ninguna campana politica oficial,
+partido o movimiento.
+
+Ejercicio del derecho fundamental a la participacion politica
+(Art. 40, Constitucion Politica de Colombia).
+
+Costo operativo: $0 COP. Mantenido con herramientas gratuitas y trabajo voluntario.
 
 ## Stack
 

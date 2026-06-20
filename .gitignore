@@ -36,3 +36,9 @@ index.original.html
 *.mp3
 *.m4a
 *.wav
+
+# Herramientas de automatización (logs con URLs)
+.playwright-mcp/
+
+# Screenshots de desarrollo
+screenshots/

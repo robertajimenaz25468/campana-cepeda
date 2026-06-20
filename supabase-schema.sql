@@ -6,10 +6,10 @@
 -- 1. Muro de apoyo
 CREATE TABLE IF NOT EXISTS supporters (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  name TEXT NOT NULL CHECK (char_length(name) >= 2 AND char_length(name) <= 50),
+  name TEXT NOT NULL CHECK (char_length(name) >= 2 AND char_length(name) <= 35),
   department TEXT DEFAULT '' CHECK (char_length(department) <= 50),
   municipality TEXT NOT NULL CHECK (char_length(municipality) >= 2 AND char_length(municipality) <= 50),
-  description TEXT DEFAULT '' CHECK (char_length(description) <= 280),
+  description TEXT DEFAULT '' CHECK (char_length(description) <= 150),
   hearts INT DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
 );
